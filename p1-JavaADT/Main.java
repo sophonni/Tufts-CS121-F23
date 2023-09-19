@@ -26,9 +26,9 @@ public class Main
         //     }
 
 
-        /************************************
-        *           Shared Test Cases       *
-        *************************************/
+        /**********************************************************************
+        *           Shared Test Cases                                         *
+        **********************************************************************/
         public static void test1()
         {
                 Graph g = new ListGraph();
@@ -419,6 +419,9 @@ public class Main
                 }
         }
 
+        /**********************************************************************
+        *                  Add Nodes                                          *
+        **********************************************************************/
         public static void addNodeTest()
         {
                 Graph g = new ListGraph();
@@ -432,6 +435,9 @@ public class Main
                 assert g.addNode(null) == false;
         }
 
+        /**********************************************************************
+        *                               Add Edges                             *
+        **********************************************************************/
         public static void addEdgeTest1()
         {
                 Graph g = new ListGraph();
@@ -446,9 +452,6 @@ public class Main
         }
 
 
-        /**************************************************
-        *                  Add Edges                      *
-        **************************************************/
         public static void addEdgeTest2()
         {
                 Graph g = new ListGraph();
@@ -459,9 +462,9 @@ public class Main
                 assert g.hasNode("A") == true;
         }
 
-        /**************************************************
-        *                  Remove Nodes                   *
-        **************************************************/
+        /**********************************************************************
+        *                        Remove Nodes                                 * 
+        **********************************************************************/
         public static void removeNodeTest()
         {
                 Graph g = new ListGraph();
@@ -531,9 +534,9 @@ public class Main
                 assert g.hasEdge("F", "A") == false;
         }
 
-        /**************************************************
-        *                  All Nodes in List              *
-        **************************************************/
+        /**********************************************************************
+        *                  All Nodes in List                                  *
+        **********************************************************************/
         public static void nodesListTest()
         {
                 Graph g = new ListGraph();
@@ -558,6 +561,9 @@ public class Main
                 assert allNodesList.size() == 6;
         }
 
+        /**********************************************************************
+        *           List of All Nodes That Given Node is Connected T          *
+        **********************************************************************/
         public static void successcorListTest()
         {
                 Graph g = new ListGraph();
@@ -594,6 +600,9 @@ public class Main
                 assert fromCToOthers.size() == 1;
         }
 
+        /**********************************************************************
+        *           List of All Nodes That Are Connected to The Given Node    *
+        **********************************************************************/
         public static void predecessorListTest()
         {
                 Graph g = new ListGraph();
@@ -628,6 +637,9 @@ public class Main
                 assert fromOtherToC.size() == 1;
         }
 
+        /**********************************************************************
+        *           List of All Nodes That Are Connected to The Given Node    *
+        **********************************************************************/
         public static void unionTest()
         {
                 Graph g = new ListGraph();
@@ -681,6 +693,9 @@ public class Main
                 //assert t.hasEdge("A", "B") == true;
         }
 
+        /**********************************************************************
+        *           Combine All Node From Two Graphs Into One Graph           *
+        **********************************************************************/
         public static void unionSimpleTest()
         {
                 Graph g = new ListGraph();
