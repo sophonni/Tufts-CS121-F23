@@ -26,9 +26,9 @@ public class Main
     //     }
 
 
-    /**********************************************************************
-    *                       Shared Test Cases                             *
-    **********************************************************************/
+    /*********************************************************************
+    *                       Shared Test Cases                            *
+    *********************************************************************/
     public static void test1()
 
     {
@@ -445,9 +445,9 @@ public class Main
         assert eg.edges().isEmpty(); // Validate remove method works and edges() is updated appropriately             
     }
 
-    /**********************************************************************
-    *                               Add Nodes                             *
-    **********************************************************************/
+    /*********************************************************************
+    *                               Add Nodes                            *
+    *********************************************************************/
     public static void addNode()
     {
         Graph g = new ListGraph();
@@ -486,9 +486,9 @@ public class Main
         }
     }
 
-    /**************************************************************************
-    *                               Add Edges                                 *
-    ***************************************************************************/
+    /**********************************************************************
+    *                               Add Edges                             *
+    **********************************************************************/
     public static void addEdge()
     {
         /*
@@ -748,7 +748,7 @@ public class Main
     }
 
     /**********************************************************************
-    *           List of All Nodes That Given Node is Connected To          *
+    *           List of All Nodes That Given Node is Connected To         *
     **********************************************************************/
     public static void successcorList()
     {
@@ -957,8 +957,6 @@ public class Main
         assert g.addEdge("F", "A") == true;
         
         //assert g.addEdge("B", "C") == false;
-
-
         
         Graph h = new ListGraph();
         assert h.addNode("A") == true;
@@ -989,7 +987,6 @@ public class Main
         assert t.hasEdge("A", "X") == true;
         assert t.hasEdge("A", "A") == true;
     }
-
     public static void union1()
     {
         Graph g = new ListGraph();
@@ -1009,7 +1006,6 @@ public class Main
 
         assert k.hasEdge("A", "D") == true;
     }
-
     public static void union2()
     {
         Graph g = new ListGraph();
@@ -1072,8 +1068,7 @@ public class Main
         assert i.hasEdge("D", "B") == false;
         assert i.hasNode("E") == false;    
     }
-
-    public static void simpleSubGraph()
+    public static void subGraph1()
     {
         Graph g = new ListGraph();
         assert g.addNode("A") == true;
@@ -1094,12 +1089,18 @@ public class Main
         assert i.hasNode("B") == true;
         assert i.hasEdge("B", "C") == false;
         assert i.hasEdge("A", "B") == true;
+        assert i.hasNode("C") == false;
     }
 
+    /**********************************************************************
+    *                               MAIN                                  *
+    **********************************************************************/
     public static void main(String[] args)
     {
         //PART 1
+        addNode();
         addNode1();
+        addEdge();
         addEdge1();
         addEdge2();
         removeNode();
@@ -1114,7 +1115,7 @@ public class Main
         union1();
         union2();
         subGraph();
-        simpleSubGraph();
+        subGraph1();
 
         //OTHERS' Tests
         test1();
@@ -1135,14 +1136,11 @@ public class Main
         addEdgeEGraph();
         hasEdgeEGraph();
         removeEdgeEGraph();
+        removeEdgeEGraph1();
         outEdgesEGraph();
         inEdgesEGraph();
         unionEdgeGraphEGraph();
         hasPathEGraph();
-
-        //PART 1 ADDITIONAL TEST
-        addNode();
-        addEdge();
     }
 
     /**********************************************************************
@@ -1152,7 +1150,7 @@ public class Main
     {
         Graph g = new ListGraph();
         Edge e1 = new Edge("A", "B");
-        //Edge e2 = new Edge("", "B");
+        Edge e2 = new Edge("A", "A");
         Edge e3 = new Edge("C", "F");
 
         assert g.addNode("A") == true;
@@ -1162,9 +1160,12 @@ public class Main
         assert g.addNode("") == false;
 
         assert g.addEdge("A", "B") == true;
+
         assert g.addEdge("B", "C") == true;
         assert g.addEdge("B", "A") == true;
+
         assert g.addEdge("C", "B") == true;
+        
         assert g.addEdge("D", "A") == true;
         assert g.addEdge("D", "D") == true;
         
@@ -1172,7 +1173,10 @@ public class Main
         assert ega.addEdge(e1) == false;
         assert ega.addEdge(null) == false;
         assert ega.addEdge(e3) == true;
+        assert ega.addEdge(e2) == true;
+
         assert ega.hasNode("F") == true;
+        assert ega.hasEdge(e2) == true;
         
         //assert ega.addEdge(e2) == false; //SD TODO: addNode in ListGraph might want to throw an exception when trying to add an empty string node
     }
@@ -1184,8 +1188,8 @@ public class Main
     {
         Graph g = new ListGraph();
         Edge e1 = new Edge("A", "B");
-        //Edge e2 = new Edge("", "B");
         Edge e3 = new Edge("C", "F");
+        //Edge e2 = new Edge("", "B");
         
         assert g.addNode("A") == true;
         assert g.addNode("B") == true;
@@ -1197,6 +1201,7 @@ public class Main
         assert g.addEdge("A", "B") == true;
         assert g.addEdge("B", "C") == true;
         assert g.addEdge("B", "A") == true;
+        assert g.addEdge("B", "B") == true;
         assert g.addEdge("C", "B") == true;
         assert g.addEdge("D", "A") == true;
         assert g.addEdge("D", "D") == true;
@@ -1243,6 +1248,29 @@ public class Main
         assert ega.hasEdge(e3) == false;
         assert ega.hasNode("C") == false;
     }
+    public static void removeEdgeEGraph1()
+    {
+        Graph g = new ListGraph();
+        Edge e3 = new Edge("C", "B");
+        
+        assert g.addNode("A") == true;
+        assert g.addNode("C") == true;
+
+        EdgeGraphAdapter ega = new EdgeGraphAdapter(g);
+        assert ega.hasNode("C") == true;
+        assert ega.hasNode("B") == false;
+
+        assert ega.hasEdge(e3) == false;
+        assert ega.addEdge(e3) == true;
+        assert ega.hasNode("C") == true;
+        assert ega.hasNode("B") == true;
+
+        assert ega.removeEdge(e3) == true;
+        assert ega.hasEdge(e3) == false;
+        assert ega.hasNode("C") == false;
+        assert ega.hasNode("B") == true;
+
+    }
 
     /**********************************************************************
     *   Get a List of Edges Where Its Source Node is The Given Node       *
@@ -1267,15 +1295,22 @@ public class Main
         assert g.addEdge("D", "D") == true;
 
         EdgeGraphAdapter ega = new EdgeGraphAdapter(g);
+
         assert ega.hasNode("A") == true;
         assert ega.hasNode("B") == true;
         assert ega.hasNode("C") == true;
         assert ega.hasNode("D") == true;
+
         assert ega.addEdge(e1) == true;
+
         assert ega.hasNode("C") == true;
+
         assert ega.hasEdge(e3) == true;
+
         assert ega.removeEdge(e3) == true;
+
         assert ega.hasEdge(e3) == false;
+
         assert ega.hasNode("C") == false;
 
         Edge e5 = new Edge("A", "C");
@@ -1291,9 +1326,11 @@ public class Main
         assert e4.getDst() == "B";
 
         Edge e7 = edgesStartWithA.get(1);
+        assert e7.getSrc() == "A";
         assert e7.getDst() == "C";
 
         Edge e8 = edgesStartWithA.get(2);
+        assert e8.getSrc() == "A";
         assert e8.getDst() == "D";
     }
 
@@ -1353,6 +1390,9 @@ public class Main
         // assert e7.getDst() == "C";
     }
 
+    /**********************************************************************
+    *   Combine Two Graphs Containing Edges Into One Edge Graph           *
+    **********************************************************************/
     public static void unionEdgeGraphEGraph()
     {
         Graph g = new ListGraph();
@@ -1370,27 +1410,59 @@ public class Main
         assert ega.addEdge(e) == true;
 
         Graph h = new ListGraph();
+        assert h.addNode("A") == true;
         assert h.addNode("W") == true;
         assert h.addNode("X") == true;
         assert h.addNode("Y") == true;
         assert h.addNode("Z") == true;
 
+
         assert h.addEdge("X", "Y") == true;
         assert h.addEdge("Z", "W") == true;
+        assert h.addEdge("A", "W") == true;
+        assert h.addEdge("A", "X") == true;
+        assert h.addEdge("A", "Y") == true;
+        assert h.addEdge("A", "Z") == true;
+
         EdgeGraphAdapter ega2 = new EdgeGraphAdapter(h);
 
         Edge e2 = new Edge("X", "Y");
+        Edge e3 = new Edge("A", "B");
+        Edge e4 = new Edge("A", "C");
+        Edge e5 = new Edge("A", "D");
+        Edge e6 = new Edge("A", "W");
+        Edge e7 = new Edge("A", "X");
+        Edge e8 = new Edge("A", "Y");
+        Edge e9 = new Edge("A", "Z");
 
         EdgeGraph combine = ega.union(ega2);
+
         assert combine.hasNode("A") == true;
         assert combine.hasNode("X") == true;
+
         assert combine.hasEdge(e) == true;
         assert combine.hasEdge(e2) == true;
+        assert combine.hasEdge(e3) == true;
+        assert combine.hasEdge(e4) == true;
+        assert combine.hasEdge(e5) == true;
+        assert combine.hasEdge(e6) == true;
+        assert combine.hasEdge(e7) == true;
+        assert combine.hasEdge(e8) == true;
+        assert combine.hasEdge(e9) == true;
+
+        assert combine.hasNode("D") == true;
     }
 
+    /**********************************************************************
+    *   Given a List of Edges, Check if the Graph of Edges Contains a     *
+    *   Path From Destination Node of Current Edge to Source Node of      *
+    *   Next Edge                                                         *
+    **********************************************************************/
     public static void hasPathEGraph()
     {
         Graph g = new ListGraph();
+        Graph g2 = new ListGraph();
+
         assert g.addNode("A") == true;
         assert g.addNode("B") == true;
         assert g.addNode("C") == true;
@@ -1399,6 +1471,8 @@ public class Main
         assert g.addEdge("A", "B") == true;
 
         EdgeGraphAdapter ega = new EdgeGraphAdapter(g);
+        EdgeGraphAdapter ega2 = new EdgeGraphAdapter(g2);
+
         
         Edge e = new Edge("B", "C");
         assert ega.addEdge(e) == true;
@@ -1408,7 +1482,12 @@ public class Main
 
         List<Edge> edges = ega.edges();
 
+        List<Edge> edges2 = ega2.edges();
+
+
         assert ega.hasPath(edges) == true;
+
+        assert ega2.hasPath(edges2) == true;
     }
 
 }

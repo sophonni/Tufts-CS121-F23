@@ -3,13 +3,13 @@ import java.util.*;
 public class ListGraph implements Graph {
         private HashMap<String, LinkedList<String>> nodes = new HashMap<>();
 
-        /*
-         * Purpose: add a node to current graph
-         * Input: a string representing the data of the node to be added
-         * Output:
-         *      TRUE if a node is successfully added
-         *      FALSE if the given node is already exist in the current graph
-         */
+        /**********************************************************************
+        * Purpose: add a node to current graph                                *
+        * Input: a string representing the data of the node to be added       *
+        * Output:                                                             *
+        *      TRUE if a node is successfully added                           *
+        *      FALSE if the given node is already exist in the current graph  *
+        **********************************************************************/
         public boolean addNode(String n)
         {
             boolean result = false;
