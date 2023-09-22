@@ -7,17 +7,20 @@ public class ListGraph implements Graph {
         * Purpose: add a node to current graph                                *
         * Input: a string representing the data of the node to be added       *
         * Output:                                                             *
-        *      TRUE if a node is successfully added                           *
-        *      FALSE if the given node is already exist in the current graph  *
+        *      - TRUE if a node is successfully added                         *
+        *      - FALSE if the given node is already exist in the current      *
+        *      graph                                                          *
         **********************************************************************/
         public boolean addNode(String n)
         {
             boolean result = false;
 
-            /* only add a node to the graph if given string is non-null and non-empty */
+            /* only add a node to the graph if given string is non-null and
+            non-empty */
             if (n != null && !n.isEmpty())
             {
-                /* ensure that the node doesn't exist in the graph prior to adding 'n' to the graph */
+                /* ensure that the node doesn't exist in the graph prior to
+                adding 'n' to the graph */
                 if (!this.nodes.containsKey(n))
                 {
                     /* add new node to the graph */
@@ -42,6 +45,20 @@ public class ListGraph implements Graph {
             return result;
         }
 
+        /**********************************************************************
+        * Purpose: add an edges between two nodes that exist in the current   *
+        *          graph                                                      *
+        * Input:                                                              *
+        *       - n1 which is a string representing the data of the           *
+        *       source node                                                   *
+        *       - n2 which is a string representing the data of the           *
+        *       destination node                                              *
+        * Output:                                                             *
+        *      - TRUE if an edges between two nodes was successfully added    *
+        *      to the current graph                                           *
+        *      - FALSE if an edge between the two nodes is currently exist    *
+        *      in the current graph                                           *
+        **********************************************************************/
         public boolean addEdge(String n1, String n2)
         {
             Boolean result = false;
@@ -64,23 +81,51 @@ public class ListGraph implements Graph {
             return result;
         }
             
-
+        /**********************************************************************
+        * Purpose: check if the given node is currently exist in the current  *
+        *          graph                                                      *
+        * Input:                                                              *
+        *       - n which is a string representing the data of the node to    *
+        *       look for                                                      *
+        * Output:                                                             *
+        *      - TRUE if the given node is currently exist in the current     *
+        *      graph                                                          *
+        *      - FALSE if the given node is currently doesn't exist in the    *
+        *      current graph                                                  *
+        **********************************************************************/
         public boolean hasNode(String n)
         {
             /* check if node 'n' exist in the graph */
             return (this.nodes.containsKey(n)) ? true : false;
         }
 
+        /**********************************************************************
+        * Purpose: check if an edge between the two given node is currently   *
+        *          exist in the current graph                                 *
+        * Input:                                                              *
+        *       - n1 which is a string representing the data of the           *
+        *       source node                                                   *
+        *       - n2 which is a string representing the data of the           *
+        *       destination node                                              *
+        * Output:                                                             *
+        *      - TRUE if an edges between two nodes is currently exist in     *
+        *      the current graph                                              *
+        *      - FALSE if an edges between two nodes is currently doesn't     *
+        *      exist in the current graph                                     *
+        **********************************************************************/
         public boolean hasEdge(String n1, String n2)
         {
             boolean result = false;
 
             boolean graphContainN1 = hasNode(n1);
             boolean graphContainN2 = hasNode(n2);
-            /* ensure that both 'n1' and 'n2' exist in the graph prior to checking their edge */
+            
+            /* ensure that both 'n1' and 'n2' exist in the graph prior to
+            checking their edge */
             if (graphContainN1 && graphContainN2)
             {
-                /* check if there is already exist an edge between the two nodes */
+                /* check if there is already exist an edge between the
+                two nodes */
                 result = (this.nodes.get(n1).contains(n2)) ? true : false;
             }
             else
@@ -91,13 +136,26 @@ public class ListGraph implements Graph {
             return result;
         }
 
+        /**********************************************************************
+        * Purpose: remove all edges of the given node, remove the given node  *
+        *          from the current graph, and remove all edges from other    *
+        *          nodes to the given node                                    *
+        * Input:                                                              *
+        *       - n which is a string representing the data of the node to    *
+        *       be remove                                                     *
+        * Output:                                                             *
+        *      - TRUE if the given node is successfully removed from the      *
+        *      current graph                                                  *                                            *
+        *      - FALSE if the given node is unsuccessfully removed from the   *
+        *      current graph                                                  *
+        **********************************************************************/
         public boolean removeNode(String n)
         {
             boolean result = false;
 
             if (hasNode(n))
             {
-                /* remove all edges of node 'n' to other nodes */
+                /* remove all edges from node 'n' to other nodes */
                 for (String edgeOfGivenNode : this.nodes.get(n))
                 {
                     /* remove the current edge from node 'n' */
@@ -111,23 +169,22 @@ public class ListGraph implements Graph {
                 /* remove node 'n' from the graph */
                 this.nodes.remove(n);
                     
-                /* iterate through all nodes in the hashmap */
-                for (String currNode : nodes.keySet())
-                {
+                for (String currNode : nodes.keySet()) {
                     LinkedList<String> currNodeEdges = nodes.get(currNode);
-
-                    /* use an iterator for safe removal */
-                    Iterator<String> iterator = currNodeEdges.iterator();
-
-                    while (iterator.hasNext())
-                    {
-                        String edgeOfCurrentNode = iterator.next();
-
-                        /* remove node 'n' from current node's edge */
+                    
+                    int i = 0;
+                    while (i < currNodeEdges.size()) {
+                        String edgeOfCurrentNode = currNodeEdges.get(i);
+                
+                        /* remove an edge from current node to node 'n' */
                         if (edgeOfCurrentNode.equals(n))
                         {
-                            /* safely remove the edge */
-                            iterator.remove();
+                            currNodeEdges.remove(i);
+                        }
+                        else
+                        {
+                            /* move to the next edge */
+                            i++;
                         }
                     }
                 }
@@ -377,7 +434,8 @@ public class ListGraph implements Graph {
                     /* get a list of all the edges of the current visiting node */
                     List<String> currNodeEdges = this.succ(currentNode);
 
-                    /* iterate through the list and add nodes that have not been visited to the 'nodesToVisit' queue */
+                    /* iterate through the list and add nodes that have not
+                    been visited to the 'nodesToVisit' queue */
                     for (String currNodeEdge : currNodeEdges)
                     {
                         if (!visitedNodes.contains(currNodeEdge))

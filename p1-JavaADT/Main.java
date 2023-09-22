@@ -1132,11 +1132,13 @@ public class Main
         test12();
         test13();
 
-        //PART 2
+        // //PART 2
         addEdgeEGraph();
         hasEdgeEGraph();
         removeEdgeEGraph();
         removeEdgeEGraph1();
+        removeEdgeEGraph2();
+        removeEdgeEGraph3();
         outEdgesEGraph();
         inEdgesEGraph();
         unionEdgeGraphEGraph();
@@ -1233,11 +1235,13 @@ public class Main
         assert g.addNode("D") == true;
         assert g.addNode("") == false;
 
-        
-        assert g.addEdge("A", "B") == true;
-        assert g.addEdge("B", "C") == true;
-        assert g.addEdge("B", "A") == true;
+        // assert g.addEdge("A", "B") == true;
+
+        // assert g.addEdge("B", "C") == true;
+        // assert g.addEdge("B", "A") == true;
+
         assert g.addEdge("C", "B") == true;
+
         assert g.addEdge("D", "A") == true;
         assert g.addEdge("D", "D") == true;
 
@@ -1247,6 +1251,8 @@ public class Main
         assert ega.removeEdge(e3) == true;
         assert ega.hasEdge(e3) == false;
         assert ega.hasNode("C") == false;
+        assert ega.hasNode("B") == false;
+
     }
     public static void removeEdgeEGraph1()
     {
@@ -1267,9 +1273,53 @@ public class Main
 
         assert ega.removeEdge(e3) == true;
         assert ega.hasEdge(e3) == false;
+        assert ega.hasNode("B") == false;
         assert ega.hasNode("C") == false;
-        assert ega.hasNode("B") == true;
 
+    }
+    public static void removeEdgeEGraph2()
+    {
+        Graph g = new ListGraph();
+        Edge e1 = new Edge("A", "B");
+        Edge e2 = new Edge("B", "C");
+
+        EdgeGraphAdapter ega = new EdgeGraphAdapter(g);
+        assert ega.addEdge(e1) == true;
+        assert ega.addEdge(e2) == true;
+
+        assert ega.hasNode("A") == true;
+        assert ega.hasNode("B") == true;
+        assert ega.hasNode("C") == true;
+
+        assert ega.hasEdge(e1);
+        assert ega.removeEdge(e2) == true;
+        assert ega.hasNode("A") == true;
+        assert ega.hasNode("B") == true;
+        assert ega.hasNode("C") == false;
+        assert ega.hasEdge(e1) == true;
+
+    }
+    public static void removeEdgeEGraph3()
+    {
+        Graph g = new ListGraph();
+        Edge e1 = new Edge("C", "A");
+        Edge e2 = new Edge("D", "A");
+        Edge e3 = new Edge("E", "A");
+        Edge e4 = new Edge("F", "A");
+
+
+        Edge e5 = new Edge("A", "B");
+
+        EdgeGraphAdapter ega = new EdgeGraphAdapter(g);
+        assert ega.addEdge(e1) == true;
+        assert ega.addEdge(e2) == true;
+        assert ega.addEdge(e3) == true;
+        assert ega.addEdge(e4) == true;
+        assert ega.addEdge(e5) == true;
+
+        assert ega.removeEdge(e5) == true;
+        assert ega.hasNode("A") == true;
+        assert ega.hasNode("B") == false;
     }
 
     /**********************************************************************
@@ -1311,7 +1361,9 @@ public class Main
 
         assert ega.hasEdge(e3) == false;
 
-        assert ega.hasNode("C") == false;
+        assert ega.hasNode("C") == true;
+
+        assert ega.hasNode("B") == true;
 
         Edge e5 = new Edge("A", "C");
         Edge e6 = new Edge("A", "D");
@@ -1489,5 +1541,4 @@ public class Main
 
         assert ega2.hasPath(edges2) == true;
     }
-
 }

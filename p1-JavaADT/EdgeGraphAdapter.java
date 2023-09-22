@@ -17,9 +17,6 @@ public class EdgeGraphAdapter implements EdgeGraph {
             /* ensure that edge between srcNode and dstNode doesn't already exist in the graph */
             if (!this.g.hasEdge(srcNode, dstNode))
             {
-                // System.out.println("src: " + srcNode);       //SD TODO: to be remove before submitting
-                // System.out.println("dest: " + dstNode);
-
                 /* automatically add both source node and destination node to the graph */
                 this.g.addNode(srcNode);
                 this.g.addNode(dstNode);
@@ -50,44 +47,45 @@ public class EdgeGraphAdapter implements EdgeGraph {
 
     public boolean removeEdge(Edge e)
     {
-            Boolean result = false;
-            String srcNode = e.getSrc();
-            String dstNode = e.getDst();
-
-            if (this.g.hasEdge(srcNode, dstNode))
+        String srcNode = e.getSrc();
+        String dstNode = e.getDst();
+    
+        if (this.g.hasEdge(srcNode, dstNode)) {
+            this.g.removeEdge(srcNode, dstNode);
+    
+            List<String> succOfDstNode = this.g.succ(dstNode);
+            List<String> predOfDstNode = this.g.pred(dstNode);
+            
+            /* check if the destination node of the removed edge is connected
+            to any other nodes or if there are node/s connecting to it */
+            if (succOfDstNode.isEmpty() && predOfDstNode.isEmpty())
             {
-                this.g.removeEdge(srcNode, dstNode);
-
-                /* get all edges of the source node */
-                List<String> srcNodeEdges = this.g.succ(srcNode);
-
-                /* check if the removed edge node was the last edge of the source node */
-                if (srcNodeEdges.size() == 0)
-                {
-                    /* remove source node after removing its last edge */
-                    this.g.removeNode(srcNode);
-
-                    /* get a list of all available nodes */
-                    List<String> allNodes = this.g.nodes();
-
-                    /* remove the eddge of all nodes to the source node that has already been removed due to the removal of its last edge */
-                    for (String currNode : allNodes)
-                    {
-                        if (this.g.hasEdge(currNode, srcNode))
-                        {
-                            this.g.removeEdge(currNode, srcNode);
-                        }
-                    }
-                }
-                result = true;
-
+                /* remove the destination node if it's isolated i.e. meaning
+                there are no node connected to it AND there are no node that
+                it's connected to */
+                this.g.removeNode(dstNode);
             }
-            else
+            
+            List<String> succOfSrcNode = this.g.succ(srcNode);
+            List<String> predOfSrcNode = this.g.pred(srcNode);
+            
+            /* check if the source node of the removed edge is connected
+            to any other nodes or if there are node/s connecting to it */
+            if (succOfSrcNode.isEmpty() && predOfSrcNode.isEmpty())
             {
-                result = false;
+                /* remove the source node if it's isolated i.e. meaning
+                there are no node connected to it AND there are no node that
+                it's connected to */
+                this.g.removeNode(srcNode);
             }
-            return result;
+    
+            /* edge successfully removed */
+            return true;
+        }
+    
+        return false; // Edge not found
     }
+    
 
     public List<Edge> outEdges(String n)
     {
