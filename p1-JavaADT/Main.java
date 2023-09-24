@@ -1132,13 +1132,14 @@ public class Main
         test12();
         test13();
 
-        // //PART 2
+        //PART 2
         addEdgeEGraph();
         hasEdgeEGraph();
         removeEdgeEGraph();
         removeEdgeEGraph1();
         removeEdgeEGraph2();
         removeEdgeEGraph3();
+        removeEdgeEGraph4();
         outEdgesEGraph();
         inEdgesEGraph();
         inEdgesEGraph1();
@@ -1322,7 +1323,20 @@ public class Main
         assert ega.hasNode("A") == true;
         assert ega.hasNode("B") == false;
     }
+    public static void removeEdgeEGraph4()
+    {
+        Graph g = new ListGraph();
+        Edge e1 = new Edge("A", "B");
+        //Edge e2 = new Edge("B", "A");
 
+        EdgeGraphAdapter ega = new EdgeGraphAdapter(g);
+        assert ega.addEdge(e1) == true;
+        //assert ega.addEdge(e2) == true;
+
+        assert ega.removeEdge(e1) == true;
+        assert ega.hasNode("A") == false;
+        assert ega.hasNode("B") == false;
+    }
     /**********************************************************************
     *   Get a List of Edges Where Its Source Node is The Given Node       *
     **********************************************************************/

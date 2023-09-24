@@ -153,13 +153,13 @@ public class ListGraph implements Graph {
         {
             boolean result = false;
 
-            if (hasNode(n))
+            if (this.hasNode(n))
             {
                 /* remove all edges from node 'n' to other nodes */
                 for (String edgeOfGivenNode : this.nodes.get(n))
                 {
                     /* remove the current edge from node 'n' */
-                    result = removeEdge(n, edgeOfGivenNode);
+                    result = this.removeEdge(n, edgeOfGivenNode);
                     if (!result)
                     {
                         return result;
@@ -169,11 +169,14 @@ public class ListGraph implements Graph {
                 /* remove node 'n' from the graph */
                 this.nodes.remove(n);
                     
+                /* remove all edges from all other nodes to node 'n' */
                 for (String currNode : nodes.keySet()) {
                     LinkedList<String> currNodeEdges = nodes.get(currNode);
                     
                     int i = 0;
                     while (i < currNodeEdges.size()) {
+
+                        /* get edges of current node */
                         String edgeOfCurrentNode = currNodeEdges.get(i);
                 
                         /* remove an edge from current node to node 'n' */
@@ -190,7 +193,7 @@ public class ListGraph implements Graph {
                 }
 
                 /* verify that node 'n' has been removed from graph */
-                if (hasNode(n))
+                if (this.hasNode(n))
                 {
                     result = false;
                 }
@@ -255,13 +258,13 @@ public class ListGraph implements Graph {
             List<String> nodesWithEdgeFromGivenNode = new ArrayList<String>();
 
             /* ensure that node 'n' exist in the graph */
-            if (hasNode(n))
+            if (this.hasNode(n))
             {
                 /* iterate through all nodes in the hashmap */
                 for (String currNode : this.nodes.keySet())
                 {
                     /* check if there an edge from node 'n' to current node */
-                    hasEdgeFromGivenNode = hasEdge(n, currNode);
+                    hasEdgeFromGivenNode = this.hasEdge(n, currNode);
                     if (hasEdgeFromGivenNode)
                     {
                         nodesWithEdgeFromGivenNode.add(currNode); 
@@ -282,13 +285,13 @@ public class ListGraph implements Graph {
             List<String> nodesWithEdgeToGivenNode = new ArrayList<String>();
 
             /* ensure that node 'n' exist in the graph */
-            if (hasNode(n))
+            if (this.hasNode(n))
             {
                 /* iterate through all nodes in the hashmap */
                 for (String currNode : nodes.keySet())
                 {
                     /* check if there an edge from current to node 'n' */
-                    hasEdgeToGivenNode = hasEdge(currNode, n);
+                    hasEdgeToGivenNode = this.hasEdge(currNode, n);
                     if (hasEdgeToGivenNode)
                     {
                         nodesWithEdgeToGivenNode.add(currNode);
@@ -406,6 +409,11 @@ public class ListGraph implements Graph {
             if (!this.hasNode(n1) || ! this.hasNode(n2))
             {
                 throw new NoSuchElementException();
+            }
+
+            if (n1.equals(n2))
+            {
+                return true;
             }
 
             /* use to keep track of nodes that need to be visited */

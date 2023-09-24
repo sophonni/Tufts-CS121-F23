@@ -151,21 +151,25 @@ public class EdgeGraphAdapter implements EdgeGraph {
         /* graph to store all the nodes and edges of the given Edge Graph */
         Graph nodesAndEdgesOfG = new ListGraph();
 
-        /* get all the edges of the given Edge Graph and put them in a list for iterating purposes */
+        /* get all the edges of the given Edge Graph and put them in a list
+        for iterating purposes */
         List<Edge> edgesOfG = g.edges();
 
         /* iterate through all the edges of the given Edge Graph */
         for (Edge edge : edgesOfG)
         {
-            /* add both the source node and destination node to the graph containign all nodes and edges of the given Edge Graph */
+            /* add both the source node and destination node to the graph
+            containign all nodes and edges of the given Edge Graph */
             nodesAndEdgesOfG.addNode(edge.getSrc());
             nodesAndEdgesOfG.addNode(edge.getDst());
 
-            /* add and edge between the source node and destination node to the same graph */
+            /* add and edge between the source node and destination node to
+            the same graph */
             nodesAndEdgesOfG.addEdge(edge.getSrc(), edge.getDst());
         }
 
-        /* combine all nodes and edges between current Edge Graph and the given Edge Graph */
+        /* combine all nodes and edges between current Edge Graph and the
+        given Edge Graph */
         Graph combineNodesAndEdges = this.g.union(nodesAndEdgesOfG);
 
         EdgeGraph combineEdges = new EdgeGraphAdapter(combineNodesAndEdges);
