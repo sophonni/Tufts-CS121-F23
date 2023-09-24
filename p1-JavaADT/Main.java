@@ -1141,6 +1141,7 @@ public class Main
         removeEdgeEGraph3();
         outEdgesEGraph();
         inEdgesEGraph();
+        inEdgesEGraph1();
         unionEdgeGraphEGraph();
         hasPathEGraph();
     }
@@ -1441,7 +1442,37 @@ public class Main
         // assert e4.getSrc() == "A";
         // assert e7.getDst() == "C";
     }
+    public static void inEdgesEGraph1()
+    {
+        Graph g = new ListGraph();
+        //Edge e1 = new Edge("A", "B");
+        Edge e1 = new Edge("A", "B");
+        Edge e2 = new Edge("A", "C");
+        Edge e3 = new Edge("B", "C");
+        Edge e4 = new Edge("B", "A");
 
+        EdgeGraphAdapter ega = new EdgeGraphAdapter(g);
+        assert ega.addEdge(e1) == true;
+        assert ega.addEdge(e2) == true;
+        assert ega.addEdge(e3) == true;
+        assert ega.addEdge(e4) == true;
+
+        List<Edge> edgesEndsWithC = ega.inEdges("C");
+        assert edgesEndsWithC.size() == 2;
+
+        Edge e1FromList = edgesEndsWithC.get(0);
+        String srcE1 = e1FromList.getSrc();
+        String dstE1 = e1FromList.getDst();
+        assert srcE1 == "A" == true;
+        assert dstE1 == "C" == true;
+
+        Edge e2FromList = edgesEndsWithC.get(1);
+        String srcE2 = e2FromList.getSrc();
+        String dstE2 = e2FromList.getDst();
+        assert srcE2 == "B" == true;
+        assert dstE2 == "C" == true;
+    }
+    
     /**********************************************************************
     *   Combine Two Graphs Containing Edges Into One Edge Graph           *
     **********************************************************************/
