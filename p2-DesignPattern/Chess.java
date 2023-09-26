@@ -16,7 +16,7 @@ public class Chess {
 	// here.
 
 	// Leave the following code at the end of the simulation:
-	System.out.println("Final board:");
-	Board.theBoard().iterate(new BoardPrinter());
+        System.out.println("Final board:");
+        Board.theBoard().iterate(new BoardPrinter());
     }
 }
