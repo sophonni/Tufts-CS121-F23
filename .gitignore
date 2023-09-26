@@ -1,4 +1,8 @@
 # Compiled class file
 *.class
 
+# README files
 README
+
+# Ignore files with spaces in their names
+* -whitespace
