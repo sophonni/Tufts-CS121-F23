@@ -54,8 +54,51 @@ public class Test {
         String[] fileNames = new String[2];
         fileNames[0] = "layout1";
         fileNames[1] = "moves1";
-
         
+        Chess.main(fileNames);
+    }
+
+    public static void filesParsingTest_InCorrectLayoutFileFormat()
+    {
+        //Chess c = new Chess();
+        String[] fileNames = new String[2];
+        fileNames[0] = "incorrectLayoutFileFormat.txt";
+        fileNames[1] = "moves1";
+
+        try
+        {
+            Chess.main(fileNames);
+        }
+        catch (Exception e)
+        {
+            assert e instanceof Exception == true;
+        }
+    }
+
+    public static void filesParsingTest_InCorrectMoveFileFormat()
+    {
+        //Chess c = new Chess();
+        String[] fileNames = new String[2];
+        fileNames[0] = "layout1";
+        fileNames[1] = "incorrectMoveFileFormat.txt";
+
+        try
+        {
+            Chess.main(fileNames);
+        }
+        catch (Exception e)
+        {
+            assert e instanceof Exception == true;
+        }
+    }
+
+    public static void filesParsingTest_InCorrectFilesFormat()
+    {
+        //Chess c = new Chess();
+        String[] fileNames = new String[2];
+        fileNames[0] = "incorrectLayoutFileFormat.txt";
+        fileNames[1] = "incorrectMoveFileFormat.txt";
+
         try
         {
             Chess.main(fileNames);
@@ -124,7 +167,10 @@ public class Test {
 	    //test1();
         //filesParsing_NotEnoughArgument();
         //filesParsingTest_TooManyArguments();
-        //filesParsingTest_CorrectFilesAndFormat();
+        filesParsingTest_CorrectFilesAndFormat();
+        //filesParsingTest_InCorrectLayoutFileFormat();
+        //filesParsingTest_InCorrectMoveFileFormat();
+        //filesParsingTest_InCorrectFilesFormat();
         //filesParsingTest_NonExistanceFileName();
         //filesParsingTest_NonExistanceFileNames();
         //filesParsingTest_CommentAtEndAndMid();
