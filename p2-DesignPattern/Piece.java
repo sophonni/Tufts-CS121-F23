@@ -1,19 +1,28 @@
 import java.util.*;
 
 abstract public class Piece {
-    public static void registerPiece(PieceFactory pf) {
-	throw new UnsupportedOperationException();
+    public Color color;
+
+    private static Map<Character, PieceFactory> symbolToPieceTypeMapping = new HashMap<>();
+    public static void registerPiece(PieceFactory pf)
+    {
+        char symbol = pf.symbol();
+        symbolToPieceTypeMapping.put(symbol, pf);
     }
 
-    public static Piece createPiece(String name) {
-	throw new UnsupportedOperationException();
+    public static Piece createPiece(String name)
+    {
+        Character color = name.charAt(0);
+        Character pieceType = name.charAt(1);
+
+        PieceFactory pfOfGivenPiece = symbolToPieceTypeMapping.get(pieceType);
+        Color colorOfGivenPiece = (color.equals('b')) ? Color.BLACK : Color.WHITE;
+        return pfOfGivenPiece.create(colorOfGivenPiece);
     }
 
-    public Color color() {
-	// You should write code here and just inherit it in
-	// subclasses. For this to work, you should know
-	// that subclasses can access superclass fields.
-	throw new UnsupportedOperationException();
+    public Color color()
+    {
+        return this.color;
     }
 
     abstract public String toString();

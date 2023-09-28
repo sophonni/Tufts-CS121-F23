@@ -1,11 +1,17 @@
 import java.util.*;
 
 public class Queen extends Piece {
-    public Queen(Color c) { throw new UnsupportedOperationException(); }
+    public Queen(Color c)
+    {
+        super.color = c;
+    }
     // implement appropriate methods
 
-    public String toString() {
-	throw new UnsupportedOperationException();
+    public String toString()
+    {
+        Color color = color();
+        String queenName= (color == Color.BLACK) ? "b" : "w";
+        return queenName + "q";
     }
 
     public List<String> moves(Board b, String loc) {

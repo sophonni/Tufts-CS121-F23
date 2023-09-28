@@ -1,11 +1,17 @@
 import java.util.*;
 
 public class Pawn extends Piece {
-    public Pawn(Color c) { throw new UnsupportedOperationException(); }
+    public Pawn(Color c)
+    {
+        super.color = c;
+    }
     // implement appropriate methods
 
-    public String toString() {
-	throw new UnsupportedOperationException();
+    public String toString()
+    {
+        Color color = color();
+        String pawnName= (color == Color.BLACK) ? "b" : "w";
+        return pawnName + "p";
     }
 
     public List<String> moves(Board b, String loc) {
