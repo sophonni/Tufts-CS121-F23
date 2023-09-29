@@ -14,10 +14,19 @@ abstract public class Piece {
     {
         Character color = name.charAt(0);
         Character pieceType = name.charAt(1);
+        String errorMessage;
 
         PieceFactory pfOfGivenPiece = symbolToPieceTypeMapping.get(pieceType);
-        Color colorOfGivenPiece = (color.equals('b')) ? Color.BLACK : Color.WHITE;
-        return pfOfGivenPiece.create(colorOfGivenPiece);
+        if (pfOfGivenPiece == null)
+        {
+            errorMessage = String.format("Error: {%1$s} piece name is not in a correct.", name);
+            throw new IllegalArgumentException(errorMessage);
+        }
+        else
+        {
+            Color colorOfGivenPiece = (color.equals('b')) ? Color.BLACK : Color.WHITE;
+            return pfOfGivenPiece.create(colorOfGivenPiece);
+        }
     }
 
     public Color color()

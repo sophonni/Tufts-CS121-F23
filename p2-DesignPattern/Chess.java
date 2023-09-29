@@ -27,6 +27,7 @@ public class Chess {
         
         File layoutFile = new File(layoutFileName);
         File moveSeqFile = new File(moveSeqFileName);
+        String errorMessage;
     
         /* check for files existency */
         if (layoutFile.exists() && moveSeqFile.exists())
@@ -37,13 +38,13 @@ public class Chess {
 
             if (!isLayoutFileInCorrectFormat)
             {
-                System.out.println(String.format("Error: Layout  File {%1$s} is in an incorrect format.", layoutFileName));
-                throw new IllegalArgumentException();
+                errorMessage = String.format("Error: Layout  File {%1$s} is in an incorrect format.", layoutFileName);
+                throw new IllegalArgumentException(errorMessage);
             }
             if (!isMoveSeqFileInCorrectFormat)
             {
-                System.out.println(String.format("Error: Move File {%1$s} is in an incorrect format.", moveSeqFileName));
-                // throw new IllegalArgumentException();
+                errorMessage = String.format("Error: Move File {%1$s} is in an incorrect format.", moveSeqFileName);
+                throw new IllegalArgumentException(errorMessage);
             }
             
         }
@@ -52,13 +53,16 @@ public class Chess {
             /* give layout file name doesn't exist in current directory */
             if (!layoutFile.exists())
             {
-                System.out.println(String.format("Error: {%1$s} file does not exist in current directory.", layoutFileName));
+                errorMessage = String.format("Error: {%1$s} file does not exist in current directory.", layoutFileName);
+                throw new IllegalArgumentException(errorMessage);
+
             }
             
             /* give move sequence file name doesn't exist in current directory */
             if (!moveSeqFile.exists())
             {
-                System.out.println(String.format("Error: {%1$s} file does not exist in current directory.", moveSeqFileName));
+                errorMessage = String.format("Error: {%1$s} file does not exist in current directory.", moveSeqFileName);
+                throw new IllegalArgumentException(errorMessage);
             }
         }
 

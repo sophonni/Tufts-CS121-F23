@@ -189,6 +189,41 @@ public class Test {
         Piece.registerPiece(new RookFactory());
         Piece.registerPiece(new PawnFactory());
     }
+
+    public static void createKnownPiecesTest()
+    {
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece whiteQ = Piece.createPiece("wq");
+        assert whiteQ != null;
+        assert whiteQ.color == Color.WHITE;
+        assert whiteQ.color != Color.BLACK;
+        assert whiteQ.toString().equals("wq");
+    }
+
+    public static void createUnknownPiecesTest()
+    {
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        try
+        {
+            Piece unknownPiece = Piece.createPiece("unknown");
+        }
+        catch (Exception e)
+        {
+            assert e instanceof Exception;
+        }
+    }
     
     public static void main(String[] args)
     {
@@ -204,7 +239,9 @@ public class Test {
         //filesParsingTest_CommentAtEndAndMid();
 
         //pawnColorTest();
-        registerPieceTest();
+        //registerPieceTest();
+        createKnownPiecesTest();
+        createUnknownPiecesTest();
     }
 
 }
