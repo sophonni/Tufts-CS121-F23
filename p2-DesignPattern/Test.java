@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Test {
 
     // Run "java -ea Test" to run with assertions enabled (If you run
@@ -224,7 +226,91 @@ public class Test {
             assert e instanceof Exception;
         }
     }
-    
+
+    // public static void pieceLocationCorrectLocFormatTest()
+    // {
+    //     Board b = Board.theBoard();
+    //     int[] i = b.strLocToArrIndices("a5");
+    //     assert i[0] == 0;
+    //     assert i[1] == 4;
+    // }
+    // public static void pieceLocationIncorrectLocFormatTest()
+    // {
+    //     try
+    //     {
+    //         Board b = Board.theBoard();
+    //         int[] i = b.strLocToArrIndices("a9");
+    //         assert i[0] == 0;
+    //         assert i[1] == 4;
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         assert e instanceof Exception;
+    //     }
+    // }
+
+    // public static void addAndGetPieceInCorrectFormatTest()
+    // {
+    //     Board b = Board.theBoard();
+    //     Piece.registerPiece(new KingFactory());
+    //     Piece.registerPiece(new QueenFactory());
+    //     Piece.registerPiece(new KnightFactory());
+    //     Piece.registerPiece(new BishopFactory());
+    //     Piece.registerPiece(new RookFactory());
+    //     Piece.registerPiece(new PawnFactory());
+
+    //     Piece whiteP = Piece.createPiece("wp");
+    //     assert whiteP != null;
+
+    //     b.addPiece(whiteQ, "h8");
+
+    //     Piece verifyWiteP = b.getPiece("h8");
+    //     assert verifyWiteP != null;
+    //     assert verifyWiteP.color == Color.WHITE;
+    //     assert verifyWiteP.toString().equals("wp");
+    // }
+
+    public static void availableListForPawnMoveWithoutOponentNearByTest()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece whiteP = Piece.createPiece("wp");
+
+        b.addPiece(whiteP, "a2");
+        List t = whiteP.moves(b, "a2");
+        assert t.size() == 2;
+    }
+
+    public static void availableListForPawnMoveWithOponentNearByTest()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece whiteP = Piece.createPiece("wp");
+        Piece blackPR = Piece.createPiece("bp");
+        Piece blackPL = Piece.createPiece("bp");
+
+
+
+        b.addPiece(blackPL, "d3");
+        b.addPiece(whiteP, "c2");
+        b.addPiece(blackPR, "b3");
+
+        List t = whiteP.moves(b, "c2");
+        assert t.size() == 4;
+    }
+
     public static void main(String[] args)
     {
 	    //test1();
@@ -240,8 +326,16 @@ public class Test {
 
         //pawnColorTest();
         //registerPieceTest();
-        createKnownPiecesTest();
-        createUnknownPiecesTest();
+        //createKnownPiecesTest();
+        //createUnknownPiecesTest();
+
+        //pieceLocationCorrectLocFormatTest();
+        //pieceLocationIncorrectLocFormatTest();
+
+        //addAndGetPieceInCorrectFormatTest();
+
+        //availableListForPawnMoveWithoutOponentNearByTest();
+        availableListForPawnMoveWithOponentNearByTest();
     }
 
 }
