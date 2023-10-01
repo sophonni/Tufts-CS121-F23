@@ -312,6 +312,33 @@ public class Test {
         assert possibleMoveLoc.contains("c3") == true;
         assert possibleMoveLoc.contains("c4") == true;
     }
+    public static void whitePawnPossibleMoveWithOpponentsNearByAndPieceBlockingTest()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece whiteP1 = Piece.createPiece("wp");
+        Piece whiteP2 = Piece.createPiece("wp");
+        Piece blackPR = Piece.createPiece("bp");
+        Piece blackPL = Piece.createPiece("bp");
+
+        b.addPiece(blackPL, "d3");
+        b.addPiece(whiteP1, "c2");
+        b.addPiece(whiteP2, "c4");
+        b.addPiece(blackPR, "b3");
+
+        List possibleMoveLoc = whiteP1.moves(b, "c2");
+        assert possibleMoveLoc.size() == 3;
+        assert possibleMoveLoc.contains("b3") == true;
+        assert possibleMoveLoc.contains("d3") == true;
+        assert possibleMoveLoc.contains("c3") == true;
+        assert possibleMoveLoc.contains("c4") == false;
+    }
 
     public static void blackPawnPossibleMoveWithOpponentsNearByTest()
     {
@@ -364,6 +391,7 @@ public class Test {
         //availableListForPawnMoveWithoutOponentNearByTest();
         whitePawnPossibleMoveWithOpponentsNearByTest();
         blackPawnPossibleMoveWithOpponentsNearByTest();
+        whitePawnPossibleMoveWithOpponentsNearByAndPieceBlockingTest();
     }
 
 }
