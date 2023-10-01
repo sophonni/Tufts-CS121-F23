@@ -287,7 +287,7 @@ public class Test {
         assert t.size() == 2;
     }
 
-    public static void availableListForPawnMoveWithOponentNearByTest()
+    public static void whitePawnPossibleMoveWithOpponentsNearByTest()
     {
         Board b = Board.theBoard();
         Piece.registerPiece(new KingFactory());
@@ -301,14 +301,41 @@ public class Test {
         Piece blackPR = Piece.createPiece("bp");
         Piece blackPL = Piece.createPiece("bp");
 
-
-
         b.addPiece(blackPL, "d3");
         b.addPiece(whiteP, "c2");
         b.addPiece(blackPR, "b3");
 
-        List t = whiteP.moves(b, "c2");
-        assert t.size() == 4;
+        List possibleMoveLoc = whiteP.moves(b, "c2");
+        assert possibleMoveLoc.size() == 4;
+        assert possibleMoveLoc.contains("b3") == true;
+        assert possibleMoveLoc.contains("d3") == true;
+        assert possibleMoveLoc.contains("c3") == true;
+        assert possibleMoveLoc.contains("c4") == true;
+    }
+
+    public static void blackPawnPossibleMoveWithOpponentsNearByTest()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece blackP = Piece.createPiece("bp");
+        Piece whitePRight = Piece.createPiece("wp");
+        Piece whitePLeft = Piece.createPiece("wp");
+
+        b.addPiece(whitePLeft, "d5");
+        b.addPiece(blackP, "c6");
+        b.addPiece(whitePRight, "b5");
+
+        List possibleMoveLoc = blackP.moves(b, "c6");
+        assert possibleMoveLoc.size() == 3;
+        assert possibleMoveLoc.contains("b5") == true;
+        assert possibleMoveLoc.contains("d5") == true;
+        assert possibleMoveLoc.contains("c5") == true;
     }
 
     public static void main(String[] args)
@@ -335,7 +362,8 @@ public class Test {
         //addAndGetPieceInCorrectFormatTest();
 
         //availableListForPawnMoveWithoutOponentNearByTest();
-        availableListForPawnMoveWithOponentNearByTest();
+        whitePawnPossibleMoveWithOpponentsNearByTest();
+        blackPawnPossibleMoveWithOpponentsNearByTest();
     }
 
 }

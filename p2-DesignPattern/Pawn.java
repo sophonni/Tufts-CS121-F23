@@ -22,6 +22,8 @@ public class Pawn extends Piece {
         int[] indicesOfPiece = b.locStrToArrIndices(loc);
         int currLocXCoor = indicesOfPiece[0];
         int currLocYCoor = indicesOfPiece[1];
+        // System.out.println("curr x: " + currLocXCoor);
+        // System.out.println("curr y: " + currLocYCoor);
 
         int leftDiagonalLocXCoor;
         int leftDiagonalLocYCoor;
@@ -29,60 +31,46 @@ public class Pawn extends Piece {
         int rightDiagonalLocYCoor;
 
         int forward1LocXCoor = currLocXCoor;
-        int forward1LocYCoor = currLocYCoor + 1;
+        int forward1LocYCoor;
         int forward2LocXCoor = currLocXCoor;
-        int forward2LocYCoor = currLocYCoor + 2;
+        int forward2LocYCoor;
 
         Piece currPawn = b.getPiece(loc);
-
-        Piece pieceAtForward1Loc = null;
-        Piece pieceAtForward2Loc = null;
-
-        Piece leftDiagonalOpponate = null;
-        Piece rightDiagonalOpponate = null;
-
-        String pieceAtForward1LocStr = null;
-        String pieceAtForward2LocStr = null;
-
-        String leftDiagonalPieceLocStr = null;
-        String rightDiagonalPieceLocStr = null;
 
         if (currPawn != null)
         {
     
             if (currPawn.color() == Color.WHITE)
             {
+                forward1LocYCoor = currLocYCoor + 1;
+                forward2LocYCoor = currLocYCoor + 2;
                 /* handle the ability for white pawn to move two space up */
                 if (currLocYCoor == 1)
                 {
-                    int[] forward1LocStr = new int[] {forward1LocXCoor, forward1LocYCoor};
+                    // int[] forward1LocStr = new int[] {forward1LocXCoor, forward1LocYCoor};
+                    // pieceAtForward1LocStr = b.arrIndicesToLocStr(forward1LocStr);
+                    // //System.out.println("Forward 1: " + pieceAtForward1LocStr);
+                    // pieceAtForward1Loc = b.getPiece(pieceAtForward1LocStr);
+                    // if (pieceAtForward1Loc == null)
+                    // {
+                    //     possibleMoveLoc.add(pieceAtForward1LocStr);
+                    // }
+                    checkAndAddPossibleMove(b, currPawn, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc);
+                    
+                    // int[] forward2LocStr = new int[] {forward2LocXCoor, forward2LocYCoor};
+                    // pieceAtForward2LocStr = b.arrIndicesToLocStr(forward2LocStr);
+                    // //System.out.println("Forward 2: " + pieceAtForward2LocStr);
+                    // pieceAtForward2Loc = b.getPiece(pieceAtForward2LocStr);
+                    // if (pieceAtForward2Loc == null)
+                    // {
+                    //     possibleMoveLoc.add(pieceAtForward2LocStr);
+                    // }
+                    checkAndAddPossibleMove(b, currPawn, forward2LocXCoor, forward2LocYCoor, possibleMoveLoc);
 
-                    pieceAtForward1LocStr = b.arrIndicesToLocStr(forward1LocStr);
-                    //System.out.println("Forward 1: " + pieceAtForward1LocStr);
-                    pieceAtForward1Loc = b.getPiece(pieceAtForward1LocStr);
-                    if (pieceAtForward1Loc == null)
-                    {
-                        possibleMoveLoc.add(pieceAtForward1LocStr);
-                    }
-
-                    int[] forward2LocStr = new int[] {forward2LocXCoor, forward2LocYCoor};
-                    pieceAtForward2LocStr = b.arrIndicesToLocStr(forward2LocStr);
-                    //System.out.println("Forward 2: " + pieceAtForward2LocStr);
-                    pieceAtForward2Loc = b.getPiece(pieceAtForward2LocStr);
-                    if (pieceAtForward2Loc == null)
-                    {
-                        possibleMoveLoc.add(pieceAtForward1LocStr);
-                    }
                 }
                 else
                 {
-                    int[] forward1LocStr = new int[] {forward1LocXCoor, forward1LocYCoor};
-                    pieceAtForward1LocStr = b.arrIndicesToLocStr(forward1LocStr);
-                    pieceAtForward1Loc = b.getPiece(pieceAtForward1LocStr);
-                    if (pieceAtForward1Loc == null)
-                    {
-                        possibleMoveLoc.add(pieceAtForward1LocStr);
-                    }
+                    checkAndAddPossibleMove(b, currPawn, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc);
                 }
 
                 /* if the current pawn is not in first column and last column, there a
@@ -91,24 +79,17 @@ public class Pawn extends Piece {
                 {
                     /* get the piece in the left diagonal location of the current pawn, if any */
                     leftDiagonalLocXCoor = currLocXCoor - 1;
-
                     leftDiagonalLocYCoor = currLocYCoor + 1;
-
-                    int[] potentialLeftDiagonalOpponentStrLoc = new int[] {leftDiagonalLocXCoor, leftDiagonalLocYCoor};
-                    leftDiagonalPieceLocStr = b.arrIndicesToLocStr(potentialLeftDiagonalOpponentStrLoc);
-                    //System.out.println("Left Diagonal: " + leftDiagonalPieceLocStr);
-                    leftDiagonalOpponate = b.getPiece(leftDiagonalPieceLocStr);
+                    // System.out.println("L x: " + leftDiagonalLocXCoor);
+                    // System.out.println("L y: " + leftDiagonalLocYCoor);
+                    checkAndAddPossibleMove(b, currPawn, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc);
                     
                     /* get the piece in the right diagonal locationof the current pawn, if any */
                     rightDiagonalLocXCoor = currLocXCoor + 1;
-
                     rightDiagonalLocYCoor = currLocYCoor + 1;
-
-                    int[] potentialRightDiagonalOpponentStrLoc = new int[] {rightDiagonalLocXCoor, rightDiagonalLocYCoor};
-                    rightDiagonalPieceLocStr = b.arrIndicesToLocStr(potentialRightDiagonalOpponentStrLoc);
-                    //System.out.println("Right Diagonal: " + rightDiagonalPieceLocStr);
-
-                    rightDiagonalOpponate = b.getPiece(rightDiagonalPieceLocStr);
+                    // System.out.println("R x: " + rightDiagonalLocXCoor);
+                    // System.out.println("R y: " + rightDiagonalLocYCoor);
+                    checkAndAddPossibleMove(b, currPawn, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc);
                     //assert rightDiagonalOpponate != null;
 
                 }
@@ -117,45 +98,160 @@ public class Pawn extends Piece {
                 that there is 1 opponent (right diagonal) it can take */
                 else if (currLocXCoor == 0)
                 {
-                    rightDiagonalLocXCoor = currLocXCoor;
-                    
-                    rightDiagonalLocYCoor = currLocYCoor;
-                    int[] potentialRightDiagonalOpponentStrLoc = new int[] {rightDiagonalLocXCoor, rightDiagonalLocYCoor};
-                    rightDiagonalPieceLocStr = b.arrIndicesToLocStr(potentialRightDiagonalOpponentStrLoc);
-                    rightDiagonalOpponate = b.getPiece(rightDiagonalPieceLocStr);                
+                    rightDiagonalLocXCoor = currLocXCoor + 1;
+                    rightDiagonalLocYCoor = currLocYCoor + 1;
+                    checkAndAddPossibleMove(b, currPawn, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc);
                 }
 
                 /* if the current pawn is in las† column, there a chance
                 that there is 1 opponent (left diagonal) it can take */
                 else
                 {
-                    leftDiagonalLocXCoor = currLocXCoor;
-                    leftDiagonalLocYCoor = currLocYCoor;
-                    int[] potentialLeftDiagonalOpponentStrLoc = new int[] {leftDiagonalLocXCoor, leftDiagonalLocYCoor};
-                    leftDiagonalPieceLocStr = b.arrIndicesToLocStr(potentialLeftDiagonalOpponentStrLoc);
-                    leftDiagonalOpponate = b.getPiece(leftDiagonalPieceLocStr);
+                    leftDiagonalLocXCoor = currLocXCoor - 1;
+                    leftDiagonalLocYCoor = currLocYCoor + 1;
+                    checkAndAddPossibleMove(b, currPawn, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc);
+
                 }
-                if (leftDiagonalOpponate != null)
+            }
+            else
+            {
+                forward1LocYCoor = currLocYCoor - 1;
+                forward2LocYCoor = currLocYCoor - 2;
+                if (currLocYCoor == 6)
                 {
-                    //System.out.println("Has left opponent");
-                    boolean isLeftDiagonalAnOpponent = b.areTwoPieceOnTheSameTeam(currPawn, leftDiagonalOpponate);
-                    if (isLeftDiagonalAnOpponent)
-                    {
-                        possibleMoveLoc.add(leftDiagonalPieceLocStr);
-                    }
+                    // int[] forward1LocStr = new int[] {forward1LocXCoor, forward1LocYCoor};
+                    // pieceAtForward1LocStr = b.arrIndicesToLocStr(forward1LocStr);
+                    // //System.out.println("Forward 1: " + pieceAtForward1LocStr);
+                    // pieceAtForward1Loc = b.getPiece(pieceAtForward1LocStr);
+                    // if (pieceAtForward1Loc == null)
+                    // {
+                    //     possibleMoveLoc.add(pieceAtForward1LocStr);
+                    // }
+                    checkAndAddPossibleMove(b, currPawn, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc);
+
+                    
+                    // int[] forward2LocStr = new int[] {forward2LocXCoor, forward2LocYCoor};
+                    // pieceAtForward2LocStr = b.arrIndicesToLocStr(forward2LocStr);
+                    // //System.out.println("Forward 2: " + pieceAtForward2LocStr);
+                    // pieceAtForward2Loc = b.getPiece(pieceAtForward2LocStr);
+                    // if (pieceAtForward2Loc == null)
+                    // {
+                    //     possibleMoveLoc.add(pieceAtForward2LocStr);
+                    // }
+                    checkAndAddPossibleMove(b, currPawn, forward2LocXCoor, forward2LocYCoor, possibleMoveLoc);
+
+                }
+                else
+                {
+                    checkAndAddPossibleMove(b, currPawn, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc);
                 }
 
-                if (rightDiagonalOpponate != null)
+                if (currLocXCoor > 0 && currLocXCoor < 7)
                 {
-                    //System.out.println("Has right opponent");
-                    boolean isRightDiagonalAnOpponent = b.areTwoPieceOnTheSameTeam(currPawn, leftDiagonalOpponate);
-                    if (isRightDiagonalAnOpponent)
-                    {
-                        possibleMoveLoc.add(rightDiagonalPieceLocStr);
-                    }
+                    /* get the piece in the left diagonal location of the current pawn, if any */
+                    leftDiagonalLocXCoor = currLocXCoor + 1;
+                    leftDiagonalLocYCoor = currLocYCoor - 1;
+                    // System.out.println("L x: " + leftDiagonalLocXCoor);
+                    // System.out.println("L y: " + leftDiagonalLocYCoor);
+                    checkAndAddPossibleMove(b, currPawn, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc);
+                    
+                    /* get the piece in the right diagonal locationof the current pawn, if any */
+                    rightDiagonalLocXCoor = currLocXCoor - 1;
+                    rightDiagonalLocYCoor = currLocYCoor - 1;
+                    // System.out.println("R x: " + rightDiagonalLocXCoor);
+                    // System.out.println("R y: " + rightDiagonalLocYCoor);
+                    checkAndAddPossibleMove(b, currPawn, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc);
+                    //assert rightDiagonalOpponate != null;
+
                 }
+
+                /* if the current pawn is in first column, there a chance
+                that there is 1 opponent (right diagonal) it can take */
+                else if (currLocXCoor == 0)
+                {
+                    rightDiagonalLocXCoor = currLocXCoor - 1;
+                    rightDiagonalLocYCoor = currLocYCoor - 1;
+                    checkAndAddPossibleMove(b, currPawn, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc);
+                }
+
+                /* if the current pawn is in las† column, there a chance
+                that there is 1 opponent (left diagonal) it can take */
+                else
+                {
+                    leftDiagonalLocXCoor = currLocXCoor + 1;
+                    leftDiagonalLocYCoor = currLocYCoor - 1;
+                    checkAndAddPossibleMove(b, currPawn, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc);
+                }
+
             }
         }
         return possibleMoveLoc;
     }
+
+    private void checkAndAddPossibleMove(Board b, Piece p, int locX, int locY, List<String> possibleMoves)
+    {
+        int[] locStrOfPotentialOpponent = new int[] {locX, locY};
+        String diagonalLocStr = b.arrIndicesToLocStr(locStrOfPotentialOpponent);
+        Piece potentialOpponentPiece = b.getPiece(diagonalLocStr);
+        if (potentialOpponentPiece != null && potentialOpponentPiece.color() != p.color())
+        {
+            possibleMoves.add(b.arrIndicesToLocStr(locStrOfPotentialOpponent));
+        }
+        else if (potentialOpponentPiece == null)
+        {
+            possibleMoves.add(b.arrIndicesToLocStr(locStrOfPotentialOpponent));
+        }
+    }
+
+    // private Piece blackPawnRightDiagonalOpponent(Board b, Piece blackPawn)
+    // {
+    //     int[] indicesLocOfPawn = b.locStrToArrIndices(blackPawn.toString());
+    //     int currLocX = indicesLocOfPawn[0];
+    //     int currLocY = indicesLocOfPawn[1];
+
+    //     int rightDiagonalLocX = currLocX - 1;
+    //     int rightDiagonalLocY = currLocY + 1;
+    //     int[] potentialLeftDiagonalOpponentStrLoc = new int[] {rightDiagonalLocX, rightDiagonalLocY};
+    //     String diagonalLocStr = b.arrIndicesToLocStr(potentialLeftDiagonalOpponentStrLoc);
+    //     return b.getPiece(diagonalLocStr);
+    // }
+
+    // private Piece whitePawnRightDiagonalOpponent(Board b, Piece whitePawn)
+    // {
+    //     int[] indicesLocOfPawn = b.locStrToArrIndices(whitePawn.toString());
+    //     int currLocX = indicesLocOfPawn[0];
+    //     int currLocY = indicesLocOfPawn[1];
+
+    //     int rightDiagonalLocX = currLocX + 1;
+    //     int rightDiagonalLocY = currLocY + 1;
+    //     int[] potentialLeftDiagonalOpponentStrLoc = new int[] {rightDiagonalLocX, rightDiagonalLocY};
+    //     String diagonalLocStr = b.arrIndicesToLocStr(potentialLeftDiagonalOpponentStrLoc);
+    //     return b.getPiece(diagonalLocStr);
+    // }
+
+    // private Piece blackPawnLeftDiagonalOpponent(Board b, Piece blackPawn)
+    // {
+    //     int[] indicesLocOfPawn = b.locStrToArrIndices(blackPawn.toString());
+    //     int currLocX = indicesLocOfPawn[0];
+    //     int currLocY = indicesLocOfPawn[1];
+
+    //     int leftDiagonalLocX = currLocX - 1;
+    //     int leftDiagonalLocY = currLocY - 1;
+    //     int[] potentialLeftDiagonalOpponentStrLoc = new int[] {leftDiagonalLocX, leftDiagonalLocY};
+    //     String diagonalLocStr = b.arrIndicesToLocStr(potentialLeftDiagonalOpponentStrLoc);
+    //     return b.getPiece(diagonalLocStr);
+    // }
+
+    // private Piece whitePawnLeftDiagonalOpponent(Board b, Piece whitePawn)
+    // {
+    //     int[] indicesLocOfPawn = b.locStrToArrIndices(whitePawn.toString());
+    //     int currLocX = indicesLocOfPawn[0];
+    //     int currLocY = indicesLocOfPawn[1];
+
+    //     int leftDiagonalLocX = currLocX - 1;
+    //     int leftDiagonalLocY = currLocY + 1;
+    //     int[] potentialLeftDiagonalOpponentStrLoc = new int[] {leftDiagonalLocX, leftDiagonalLocY};
+    //     String diagonalLocStr = b.arrIndicesToLocStr(potentialLeftDiagonalOpponentStrLoc);
+    //     return b.getPiece(diagonalLocStr);
+    // }
 }
