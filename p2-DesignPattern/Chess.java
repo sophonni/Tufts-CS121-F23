@@ -33,20 +33,8 @@ public class Chess {
         if (layoutFile.exists() && moveSeqFile.exists())
         {
             /* read layout file */
-            boolean isLayoutFileInCorrectFormat = readAndProcessFiles(layoutFile, true);
-            boolean isMoveSeqFileInCorrectFormat = readAndProcessFiles(moveSeqFile, false);
-
-            if (!isLayoutFileInCorrectFormat)
-            {
-                errorMessage = String.format("Error: Layout  File {%1$s} is in an incorrect format.", layoutFileName);
-                throw new IllegalArgumentException(errorMessage);
-            }
-            if (!isMoveSeqFileInCorrectFormat)
-            {
-                errorMessage = String.format("Error: Move File {%1$s} is in an incorrect format.", moveSeqFileName);
-                throw new IllegalArgumentException(errorMessage);
-            }
-            
+            readAndProcessFiles(layoutFile, true);
+            readAndProcessFiles(moveSeqFile, false);
         }
         else
         {
@@ -72,72 +60,97 @@ public class Chess {
         // Board.theBoard().iterate(new BoardPrinter());
     }
 
-    private static boolean readAndProcessFiles(File layoutFile, boolean isLayoutFile)
+    private static void readAndProcessFiles(File layoutFile, boolean isLayoutFile)
     {
         boolean isFileInCorrectFormat = false;
+        String errorMessage;
         try
         {
-            /* check if layout file is an empty file */
+            /* ensure given file is not empty */
             if (layoutFile.length() != 0)
             {
                 FileReader fileReader = new FileReader(layoutFile);
                 try (BufferedReader textReader = new BufferedReader(fileReader))
                 {
                     String currentLineContent = "";
-   
+                    
                     while ((currentLineContent = textReader.readLine()) != null)
                     {
-                        /* check if there exist the character "#" in the current line */
+                        /* check for commented portion of the currrent line */
                         if (currentLineContent.contains("#"))
                         {
                             /* get the index of the character "#" from the current line */
                             int commentIndex = currentLineContent.indexOf("#");
-   
+                            
                             if (commentIndex != -1)
                             {
-                                /* remove everything after "#" and keep only the part before it */
+                                /* remove commented out section of the current line */
                                 currentLineContent = currentLineContent.substring(0, commentIndex);
                             }
                         }
 
-                        /* skip current line and move to the next one b/c current line is a comment */
+                        /* the whole line is commented out */
                         if (currentLineContent.trim().isEmpty())
                         {
                             continue;
                         }
-
-                        /* check what file we're performing the check format on (layout file or move sequence file) */
+                        
+                        /* ensure correct format of the given layout file */
                         if (isLayoutFile)
                         {
-                            
-                            char xCoord = currentLineContent.charAt(0);
-                            char yCoord = currentLineContent.charAt(1);
-                            char equalSign = currentLineContent.charAt(2);
-                            char pieceColor = currentLineContent.charAt(3);
-                            char pieceType = currentLineContent.charAt(4);
-                            
-                            isFileInCorrectFormat = verifyLayoutFormat(xCoord, yCoord, equalSign, pieceColor, pieceType);
-                            
+                            if (currentLineContent.length() >= 5)
+                            {
+                                char xCoord = currentLineContent.charAt(0);
+                                char yCoord = currentLineContent.charAt(1);
+                                char equalSign = currentLineContent.charAt(2);
+                                char pieceColor = currentLineContent.charAt(3);
+                                char pieceType = currentLineContent.charAt(4);
+                                isFileInCorrectFormat = verifyLayoutFormat(xCoord, yCoord, equalSign, pieceColor, pieceType);
+
+                                /* throw exception if line content doesn't meet required content */
+                                if (!isFileInCorrectFormat)
+                                {
+                                    fileReader.close();
+                                    errorMessage = String.format("Error: Layout File {%1$s} with content {%2$s} is not in correct format.", layoutFile.getName(), currentLineContent);
+                                    throw new IllegalArgumentException(errorMessage);
+                                }
+                            }
+                            else
+                            {
+                                fileReader.close();
+                                errorMessage = String.format("Error: Layout File {%1$s} line {%2$s} is not in correct format.", layoutFile.getName(), currentLineContent);
+                                throw new IllegalArgumentException(errorMessage);
+                            }
+
                         }
+                        /* ensure correct format of the give move file */
                         else
                         {
-                            char currXCoord = currentLineContent.charAt(0);
-                            char currYCoord = currentLineContent.charAt(1);
-                            char dashSign = currentLineContent.charAt(2);
-                            char newXCoord = currentLineContent.charAt(3);
-                            char newYCoord = currentLineContent.charAt(4);
+                            /* ensure each line has at least 5 characters */
+                            if (currentLineContent.length() >= 5)
+                            {
+                                char currXCoord = currentLineContent.charAt(0);
+                                char currYCoord = currentLineContent.charAt(1);
+                                char dashSign = currentLineContent.charAt(2);
+                                char newXCoord = currentLineContent.charAt(3);
+                                char newYCoord = currentLineContent.charAt(4);
+                                isFileInCorrectFormat = verifyMoveSeqFormat(currXCoord, currYCoord, newXCoord, newYCoord, dashSign);
+
+                                /* throw exception if line content doesn't meet required content */
+                                if (!isFileInCorrectFormat)
+                                {
+                                    fileReader.close();
+                                    errorMessage = String.format("Error: Layout File {%1$s} line {%2$s} is not in correct format.", layoutFile.getName(), currentLineContent);
+                                    throw new IllegalArgumentException(errorMessage);
+                                }
+                            }
+                            else
+                            {
+                                fileReader.close();
+                                errorMessage = String.format("Error: Layout File {%1$s} line {%2$s} is not in correct format.", layoutFile.getName(), currentLineContent);
+                                throw new IllegalArgumentException(errorMessage);
+                            }
                             
-                            isFileInCorrectFormat = verifyMoveSeqFormat(currXCoord, currYCoord, newXCoord, newYCoord, dashSign);
-                        }
-
-                        if (isFileInCorrectFormat)
-                        {
-
-                        }
-                        else
-                        {
-                            fileReader.close();
-                            return false;
                         }
                     }
                 }
@@ -148,7 +161,6 @@ public class Chess {
         {
             System.out.println(e.toString());
         }
-        return isFileInCorrectFormat;
     }
 
     private static boolean verifyLayoutFormat(char xCoord, char yCoord, char equalSign, char pieceColor, char pieceType)
