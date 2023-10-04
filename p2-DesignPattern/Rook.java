@@ -23,23 +23,23 @@ public class Rook extends Piece {
         if (color() == Color.WHITE)
         {
             /* white rook up-down movement */
-            moveUpDownAndAddedPossibleLoc(b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 7, possibleMoveLoc, true, color());
-            moveUpDownAndAddedPossibleLoc(b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 0, possibleMoveLoc, false, color());
+            moveUpDownAndAddedPossibleLoc(loc, b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 7, possibleMoveLoc, true, color());
+            moveUpDownAndAddedPossibleLoc(loc, b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 0, possibleMoveLoc, false, color());
     
             /* white rook left-right movement */
-            moveLeftRightAndAddedPossibleLoc(b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 7, possibleMoveLoc, true, color());
-            moveLeftRightAndAddedPossibleLoc(b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 0, 7, possibleMoveLoc, false, color());
+            moveLeftRightAndAddedPossibleLoc(loc,b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 7, possibleMoveLoc, true, color());
+            moveLeftRightAndAddedPossibleLoc(loc,b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 0, 7, possibleMoveLoc, false, color());
         }
         else
         {
 
             /* black rook up-down movement */
-            moveUpDownAndAddedPossibleLoc(b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 0, possibleMoveLoc, true, color());
-            moveUpDownAndAddedPossibleLoc(b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 7, possibleMoveLoc, false, color());
+            moveUpDownAndAddedPossibleLoc(loc, b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 0, possibleMoveLoc, true, color());
+            moveUpDownAndAddedPossibleLoc(loc, b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 7, possibleMoveLoc, false, color());
     
             /* black rook left-right movement */
-            moveLeftRightAndAddedPossibleLoc(b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 7, possibleMoveLoc, true, color());
-            moveLeftRightAndAddedPossibleLoc(b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 0, 7, possibleMoveLoc, false, color());
+            moveLeftRightAndAddedPossibleLoc(loc,b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 7, 7, possibleMoveLoc, true, color());
+            moveLeftRightAndAddedPossibleLoc(loc,b, arrIndicesOfCurrRook[0], arrIndicesOfCurrRook[1], 0, 7, possibleMoveLoc, false, color());
         }
         
         return possibleMoveLoc;
@@ -57,14 +57,14 @@ public class Rook extends Piece {
     * @param isMoveUp        A flag indicating whether the rook moves up (true) or down (false).
     * @param currRookColor   The color of the rook.
     **/
-    public void moveUpDownAndAddedPossibleLoc(Board b, int locX, int locY, int xConstraint, int yConstraint, List<String> possibleMoves, boolean isMoveUp, Color currRookColor) {
+    public void moveUpDownAndAddedPossibleLoc(String givenLocStr, Board b, int locX, int locY, int xConstraint, int yConstraint, List<String> possibleMoves, boolean isMoveUp, Color currRookColor) {
         boolean isTherePieceBlockage = false;
 
         if (isMoveUp) {
             /* iterate upward */
             for (int nextLocY = (currRookColor == Color.WHITE) ? locY + 1 : locY - 1;
-                (currRookColor == Color.WHITE) ? nextLocY <= yConstraint : nextLocY >= yConstraint;
-                nextLocY += (currRookColor == Color.WHITE) ? 1 : -1) {
+            (currRookColor == Color.WHITE) ? nextLocY <= yConstraint : nextLocY >= yConstraint;
+            nextLocY += (currRookColor == Color.WHITE) ? 1 : -1) {
                 /* check for piece blockage */
                 isTherePieceBlockage = isTherePieceBlockage(b, pieceLocStr, currRookColor, locX, nextLocY, possibleMoves);
                 if (isTherePieceBlockage) {
@@ -98,7 +98,7 @@ public class Rook extends Piece {
     * @param isMoveRight     A flag indicating whether the rook moves right (true) or left (false).
     * @param currRookColor   The color of the rook.
     */
-    public void moveLeftRightAndAddedPossibleLoc(Board b, int locX, int locY, int xConstraint, int yConstraint, List<String> possibleMoves, boolean isMoveRight, Color currRookColor) {
+    public void moveLeftRightAndAddedPossibleLoc(String givenLocStr, Board b, int locX, int locY, int xConstraint, int yConstraint, List<String> possibleMoves, boolean isMoveRight, Color currRookColor) {
         boolean isTherePieceBlockage = false;
         
         /* iterate left or right */
@@ -106,7 +106,7 @@ public class Rook extends Piece {
             (isMoveRight) ? nextLocX <= xConstraint : nextLocX >= xConstraint;
             nextLocX += (isMoveRight) ? 1 : -1) {
             /* check for piece blockage */
-            isTherePieceBlockage = isTherePieceBlockage(b, pieceLocStr, currRookColor, nextLocX, locY, possibleMoves);
+            isTherePieceBlockage = isTherePieceBlockage(b, givenLocStr, currRookColor, nextLocX, locY, possibleMoves);
             if (isTherePieceBlockage) {
                 break;
             }
@@ -128,23 +128,28 @@ public class Rook extends Piece {
         int[] locStrOfPotentialOpponent = new int[] { locX, locY };
         String potentialOpponentLocStr = b.arrIndicesToLocStr(locStrOfPotentialOpponent);
         Piece potentialOpponent = b.getPiece(potentialOpponentLocStr);
+        //System.out.println("Given: " + currPieceLocStr);
 
         /* blocked piece is an opponent of the given piece */
         if (potentialOpponent != null && potentialOpponent.color() != currPieceColor) {
+            //System.out.println("Opponent: " + potentialOpponentLocStr);
             possibleMoves.add(potentialOpponentLocStr);
             return true;
         }
         /* blocked piece is NOT an opponent of the given piece */
-        else if (potentialOpponent != null && potentialOpponent.color() == currPieceColor && !potentialOpponent.toString().equals(currPieceLocStr)) {
-            possibleMoves.add(potentialOpponentLocStr);
-            return false;
+        else if (potentialOpponent != null && potentialOpponent.color() == currPieceColor && !b.arrIndicesToLocStr(locStrOfPotentialOpponent).equals(currPieceLocStr)) {
+            //System.out.println("Non-Opponent: " + potentialOpponentLocStr);
+            return true;
         }
         /* no piece blocking the given rook's path (x-coordinate or y-coordinate) */
         else if (potentialOpponent == null) {
+            //System.out.println("Non-Occupie: " + potentialOpponentLocStr);
             possibleMoves.add(potentialOpponentLocStr);
             return false;
         } else {
-            return true;
+            //System.out.println("Else: " + potentialOpponentLocStr);
+            possibleMoves.add(potentialOpponentLocStr);
+            return false;
         }
     }
 }

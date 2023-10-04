@@ -322,7 +322,7 @@ public class Test {
         b.addPiece(whiteP, "c2");
         b.addPiece(blackPR, "b3");
 
-        List possibleMoveLoc = whiteP.moves(b, "c2");
+        List<String> possibleMoveLoc = whiteP.moves(b, "c2");
         assert possibleMoveLoc.size() == 4;
         assert possibleMoveLoc.contains("b3") == true;
         assert possibleMoveLoc.contains("d3") == true;
@@ -350,7 +350,7 @@ public class Test {
         b.addPiece(whitePRight, "e3");
         b.addPiece(whitePFront, "d3");
 
-        List possibleMoveLoc = blackP.moves(b, "d4");
+        List<String> possibleMoveLoc = blackP.moves(b, "d4");
         assert possibleMoveLoc.size() == 3;
         assert possibleMoveLoc.contains("c3") == true;
         assert possibleMoveLoc.contains("e3") == true;
@@ -376,7 +376,7 @@ public class Test {
         b.addPiece(blackP, "c6");
         b.addPiece(whitePRight, "b5");
 
-        List possibleMoveLoc = blackP.moves(b, "c6");
+        List<String> possibleMoveLoc = blackP.moves(b, "c6");
         assert possibleMoveLoc.size() == 3;
         assert possibleMoveLoc.contains("b5") == true;
         assert possibleMoveLoc.contains("d5") == true;
@@ -403,7 +403,7 @@ public class Test {
         b.addPiece(blackPL, "d3");
         b.addPiece(blackPR, "b3");
 
-        List possibleMoveLoc = whiteP1.moves(b, "c2");
+        List<String> possibleMoveLoc = whiteP1.moves(b, "c2");
         assert possibleMoveLoc.size() == 3;
         assert possibleMoveLoc.contains("b3") == true;
         assert possibleMoveLoc.contains("d3") == true;
@@ -599,6 +599,10 @@ public class Test {
 
         List<String> possibleMoves3 = blackR1.moves(b, "h2");
         //System.out.println(possibleMoves3.size());
+        // for (String s : possibleMoves3)
+        // {
+        //     System.out.println(s);
+        // }
         assert possibleMoves3.size() == 9;
     }
 
@@ -616,6 +620,88 @@ public class Test {
 
         List<String> possibleMoves1 = whiteR1.moves(b, "f2");
         assert possibleMoves1.size() == 14;
+    }
+
+    public static void rookAndPawnOpponentTest()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+        Piece whiteR1 = Piece.createPiece("wr");
+        b.addPiece(whiteR1, "d4");
+
+        Piece blackP1 = Piece.createPiece("bp");
+        b.addPiece(blackP1, "e3");
+
+        // List<String> whiteRookPossibleMoves1 = whiteR1.moves(b, "d4");
+        // assert whiteRookPossibleMoves1.size() == 14;
+        // List<String> whiteRookPossibleMoves4 = whiteR1.moves(b, "d1");
+        // assert whiteRookPossibleMoves4.size() == 14;
+        List<String> whiteRookPossibleMoves2 = whiteR1.moves(b, "d3");
+        //System.out.println(whiteRookPossibleMoves2.size());
+        // for (String s : whiteRookPossibleMoves2)
+        // {
+        //     System.out.println(s);
+        // }
+        assert whiteRookPossibleMoves2.size() == 11;
+
+        List<String> whiteRookPossibleMoves3 = whiteR1.moves(b, "f3");
+        assert whiteRookPossibleMoves3.size() == 10;
+
+        List<String> possibleMoves3 = blackP1.moves(b, "e3");
+        assert possibleMoves3.size() == 1;
+        List<String> possibleMoves4 = blackP1.moves(b, "e5");
+        assert possibleMoves4.size() == 2;
+    }
+
+    public static void rookPawnBishopOpponentTest()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+        Piece whiteR1 = Piece.createPiece("wr");
+        b.addPiece(whiteR1, "d4");
+
+        Piece whiteR2 = Piece.createPiece("wr");
+        b.addPiece(whiteR2, "e4");
+
+        List<String> whiteRook = whiteR1.moves(b, "d4");
+        //System.out.println(whiteRook.size());
+        // for (String s : whiteRook)
+        // {
+        //     System.out.println(s);
+        // }
+        assert whiteRook.size() == 10;
+
+        Piece blackP1 = Piece.createPiece("bp");
+        b.addPiece(blackP1, "e5");
+        
+        List<String> blackPawn1 = blackP1.moves(b, "e5");
+        assert blackPawn1.size() == 2;
+        
+        Piece blackB2 = Piece.createPiece("bb");
+        b.addPiece(blackB2, "f5");
+        // List<String> blackPawn2 = blackP1.moves(b, "e5");
+        // assert blackPawn2.size() == 1;
+
+        List<String> blackBishop1 = blackB2.moves(b, "f5");
+        assert blackBishop1.size() == 8;
+
+        List<String> blackBishop2 = blackB2.moves(b, "f6");
+        // System.out.println(blackBishop2.size());
+        // for (String s : blackBishop2)
+        // {
+        //     System.out.println(s);
+        // }
+        assert blackBishop2.size() == 6;
     }
 
     public static void bishopTest1()
@@ -664,15 +750,18 @@ public class Test {
         blackPawnWithOpponentOnBoardTesting1();
         blackPawnWithOpponentOnBoardTesting2();
         withPawnWithTeamAndOpponentPieceTest();
-        blackAndWhitePawnOnBoardTest();
         blackRookWithOpponentOnBoardTest1();
         blackRookWithOpponentOnBoardTest2();
         whiteRookWithOpponentOnBoardTest1();
         whiteRookWithOpponentOnBoardTest2();
         bishopAndRookOpponentTest1();
-        bishopAndRookOpponentTest2();
-        rookTest1();
         bishopTest1();
+        rookTest1();
+        rookPawnBishopOpponentTest();
+        
+        rookAndPawnOpponentTest();
+        blackAndWhitePawnOnBoardTest();
+        bishopAndRookOpponentTest2();
     }
 
 }
