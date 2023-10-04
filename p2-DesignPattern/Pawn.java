@@ -37,137 +37,131 @@ public class Pawn extends Piece {
         int forward2LocXCoor = currLocXCoor;
         int forward2LocYCoor;
 
-        Piece currPawn = b.getPiece(loc);
-
-        if (currPawn != null)
+        if (color() == Color.WHITE)
         {
-    
-            if (currPawn.color() == Color.WHITE)
+            forward1LocYCoor = currLocYCoor + 1;
+            forward2LocYCoor = currLocYCoor + 2;
+
+            /* white pawn can move 2 space up */
+            if (currLocYCoor == 1)
             {
-                forward1LocYCoor = currLocYCoor + 1;
-                forward2LocYCoor = currLocYCoor + 2;
-
-                /* white pawn can move 2 space up */
-                if (currLocYCoor == 1)
-                {
-                    checkDiagonal = false;
-                    checkAndAddPossibleMove(b, currPawn, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc, checkDiagonal);
-                    checkAndAddPossibleMove(b, currPawn, forward2LocXCoor, forward2LocYCoor, possibleMoveLoc, checkDiagonal);
-                }
-
-                /* white pawn can move 1 space up */
-                else
-                {
-                    checkDiagonal = false;
-                    checkAndAddPossibleMove(b, currPawn, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc, checkDiagonal);
-                }
-
-                /* possible to have 2 pieces that white pawn can take */
-                if (currLocXCoor > 0 && currLocXCoor < 7)
-                {
-                    checkDiagonal = true;
-                    /* get the piece in the left diagonal location of the current pawn, if any */
-                    leftDiagonalLocXCoor = currLocXCoor - 1;
-                    leftDiagonalLocYCoor = currLocYCoor + 1;
-                    // System.out.println("L x: " + leftDiagonalLocXCoor);
-                    // System.out.println("L y: " + leftDiagonalLocYCoor);
-                    checkAndAddPossibleMove(b, currPawn, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
-                    
-                    /* get the piece in the right diagonal locationof the current pawn, if any */
-                    rightDiagonalLocXCoor = currLocXCoor + 1;
-                    rightDiagonalLocYCoor = currLocYCoor + 1;
-                    // System.out.println("R x: " + rightDiagonalLocXCoor);
-                    // System.out.println("R y: " + rightDiagonalLocYCoor);
-                    checkAndAddPossibleMove(b, currPawn, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
-                    //assert rightDiagonalOpponate != null;
-
-                }
-
-                /* white pawn can only take the piece located at the diagonal right square (from white team POV) */
-                else if (currLocXCoor == 0)
-                {
-                    checkDiagonal = true;
-                    rightDiagonalLocXCoor = currLocXCoor + 1;
-                    rightDiagonalLocYCoor = currLocYCoor + 1;
-                    checkAndAddPossibleMove(b, currPawn, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
-                }
-
-                /* white pawn can only take the piece located at the diagonal left square (from white team POV) */
-                else
-                {
-                    checkDiagonal = true;
-                    leftDiagonalLocXCoor = currLocXCoor - 1;
-                    leftDiagonalLocYCoor = currLocYCoor + 1;
-                    checkAndAddPossibleMove(b, currPawn, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
-
-                }
+                checkDiagonal = false;
+                checkAndAddPossibleMove(b, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc, checkDiagonal);
+                checkAndAddPossibleMove(b, forward2LocXCoor, forward2LocYCoor, possibleMoveLoc, checkDiagonal);
             }
+
+            /* white pawn can move 1 space up */
             else
             {
-                forward1LocYCoor = currLocYCoor - 1;
-                forward2LocYCoor = currLocYCoor - 2;
+                checkDiagonal = false;
+                checkAndAddPossibleMove(b, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc, checkDiagonal);
+            }
 
-                /* black pawn can move 2 space up */
-                if (currLocYCoor == 6)
-                {
-                    checkDiagonal = false;
-                    checkAndAddPossibleMove(b, currPawn, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc, checkDiagonal);
-                    checkAndAddPossibleMove(b, currPawn, forward2LocXCoor, forward2LocYCoor, possibleMoveLoc, checkDiagonal);
-                }
-                /* black pawn can move 1 space up */
-                else
-                {
-                    checkDiagonal = false;
-                    checkAndAddPossibleMove(b, currPawn, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc, checkDiagonal);
-                }
+            /* possible to have 2 pieces that white pawn can take */
+            if (currLocXCoor > 0 && currLocXCoor < 7)
+            {
+                checkDiagonal = true;
+                /* get the piece in the left diagonal location of the current pawn, if any */
+                leftDiagonalLocXCoor = currLocXCoor - 1;
+                leftDiagonalLocYCoor = currLocYCoor + 1;
+                // System.out.println("L x: " + leftDiagonalLocXCoor);
+                // System.out.println("L y: " + leftDiagonalLocYCoor);
+                checkAndAddPossibleMove(b, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
+                
+                /* get the piece in the right diagonal locationof the current pawn, if any */
+                rightDiagonalLocXCoor = currLocXCoor + 1;
+                rightDiagonalLocYCoor = currLocYCoor + 1;
+                // System.out.println("R x: " + rightDiagonalLocXCoor);
+                // System.out.println("R y: " + rightDiagonalLocYCoor);
+                checkAndAddPossibleMove(b, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
+                //assert rightDiagonalOpponate != null;
 
-                /* possible to have 2 pieces that black pawn can take */
-                if (currLocXCoor > 0 && currLocXCoor < 7)
-                {
-                    checkDiagonal = true;
-                    /* get the piece in the left diagonal location of the current pawn, if any */
-                    leftDiagonalLocXCoor = currLocXCoor + 1;
-                    leftDiagonalLocYCoor = currLocYCoor - 1;
-                    // System.out.println("L x: " + leftDiagonalLocXCoor);
-                    // System.out.println("L y: " + leftDiagonalLocYCoor);
-                    checkAndAddPossibleMove(b, currPawn, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
-                    
-                    /* get the piece in the right diagonal locationof the current pawn, if any */
-                    rightDiagonalLocXCoor = currLocXCoor - 1;
-                    rightDiagonalLocYCoor = currLocYCoor - 1;
-                    // System.out.println("R x: " + rightDiagonalLocXCoor);
-                    // System.out.println("R y: " + rightDiagonalLocYCoor);
-                    checkAndAddPossibleMove(b, currPawn, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
-                }
-                /* black pawn can only take the piece located at the diagonal right square (from black team POV) */
-                else if (currLocXCoor == 0)
-                {
-                    checkDiagonal = true;
-                    rightDiagonalLocXCoor = currLocXCoor - 1;
-                    rightDiagonalLocYCoor = currLocYCoor - 1;
-                    checkAndAddPossibleMove(b, currPawn, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
-                }
-                /* black pawn can only take the piece located at the diagonal left square (from black team POV) */
-                else
-                {
-                    checkDiagonal = true;
-                    leftDiagonalLocXCoor = currLocXCoor + 1;
-                    leftDiagonalLocYCoor = currLocYCoor - 1;
-                    checkAndAddPossibleMove(b, currPawn, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
-                }
+            }
+
+            /* white pawn can only take the piece located at the diagonal right square (from white team POV) */
+            else if (currLocXCoor == 0)
+            {
+                checkDiagonal = true;
+                rightDiagonalLocXCoor = currLocXCoor + 1;
+                rightDiagonalLocYCoor = currLocYCoor + 1;
+                checkAndAddPossibleMove(b, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
+            }
+
+            /* white pawn can only take the piece located at the diagonal left square (from white team POV) */
+            else
+            {
+                checkDiagonal = true;
+                leftDiagonalLocXCoor = currLocXCoor - 1;
+                leftDiagonalLocYCoor = currLocYCoor + 1;
+                checkAndAddPossibleMove(b, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
+
+            }
+        }
+        else
+        {
+            forward1LocYCoor = currLocYCoor - 1;
+            forward2LocYCoor = currLocYCoor - 2;
+
+            /* black pawn can move 2 space up */
+            if (currLocYCoor == 6)
+            {
+                checkDiagonal = false;
+                checkAndAddPossibleMove(b, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc, checkDiagonal);
+                checkAndAddPossibleMove(b, forward2LocXCoor, forward2LocYCoor, possibleMoveLoc, checkDiagonal);
+            }
+            /* black pawn can move 1 space up */
+            else
+            {
+                checkDiagonal = false;
+                checkAndAddPossibleMove(b, forward1LocXCoor, forward1LocYCoor, possibleMoveLoc, checkDiagonal);
+            }
+
+            /* possible to have 2 pieces that black pawn can take */
+            if (currLocXCoor > 0 && currLocXCoor < 7)
+            {
+                checkDiagonal = true;
+                /* get the piece in the left diagonal location of the current pawn, if any */
+                leftDiagonalLocXCoor = currLocXCoor + 1;
+                leftDiagonalLocYCoor = currLocYCoor - 1;
+                // System.out.println("L x: " + leftDiagonalLocXCoor);
+                // System.out.println("L y: " + leftDiagonalLocYCoor);
+                checkAndAddPossibleMove(b, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
+                
+                /* get the piece in the right diagonal locationof the current pawn, if any */
+                rightDiagonalLocXCoor = currLocXCoor - 1;
+                rightDiagonalLocYCoor = currLocYCoor - 1;
+                // System.out.println("R x: " + rightDiagonalLocXCoor);
+                // System.out.println("R y: " + rightDiagonalLocYCoor);
+                checkAndAddPossibleMove(b, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
+            }
+            /* black pawn can only take the piece located at the diagonal right square (from black team POV) */
+            else if (currLocXCoor == 0)
+            {
+                checkDiagonal = true;
+                rightDiagonalLocXCoor = currLocXCoor - 1;
+                rightDiagonalLocYCoor = currLocYCoor - 1;
+                checkAndAddPossibleMove(b, rightDiagonalLocXCoor, rightDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
+            }
+            /* black pawn can only take the piece located at the diagonal left square (from black team POV) */
+            else
+            {
+                checkDiagonal = true;
+                leftDiagonalLocXCoor = currLocXCoor + 1;
+                leftDiagonalLocYCoor = currLocYCoor - 1;
+                checkAndAddPossibleMove(b, leftDiagonalLocXCoor, leftDiagonalLocYCoor, possibleMoveLoc, checkDiagonal);
             }
         }
         return possibleMoveLoc;
     }
 
-    private void checkAndAddPossibleMove(Board b, Piece p, int locX, int locY, List<String> possibleMoves, boolean checkDiagonal)
+    private void checkAndAddPossibleMove(Board b, int locX, int locY, List<String> possibleMoves, boolean checkDiagonal)
     {
         int[] locStrOfPotentialOpponent = new int[] {locX, locY};
         String potentialOpponentLocStr = b.arrIndicesToLocStr(locStrOfPotentialOpponent);
         Piece potentialOpponentPiece = b.getPiece(potentialOpponentLocStr);
 
         /* ensure that a peice at a given location is an opponent piece */
-        if (potentialOpponentPiece != null && potentialOpponentPiece.color() != p.color())
+        if (potentialOpponentPiece != null && potentialOpponentPiece.color() != color())
         {
             possibleMoves.add(b.arrIndicesToLocStr(locStrOfPotentialOpponent));
         }

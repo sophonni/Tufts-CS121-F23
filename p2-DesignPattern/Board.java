@@ -6,7 +6,6 @@ public class Board {
     private static Map<Character, Integer> xLocStrToArrIndexMapping = new HashMap<>();
     private static Map<Integer, Character> arrIndicesToLocStrMapping = new HashMap<>();
 
-
     private static void initializeArrIndicesAndNameFormatMapping()
     {
         /* perform character a-h to 1-8 mapping and 1-8 to a-h mapping of the chess board coordinates */
@@ -140,6 +139,7 @@ public class Board {
         if (pieces[xCoor][yCoor] == null)
         {
             pieces[xCoor][yCoor] = p;
+            p.pieceLocStr = loc;
         }
 
         /* throw exception since there's already a piece exist at the given location */

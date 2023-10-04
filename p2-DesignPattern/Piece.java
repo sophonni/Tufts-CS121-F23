@@ -2,6 +2,7 @@ import java.util.*;
 
 abstract public class Piece {
     public Color color;
+    protected String pieceLocStr;
 
     private static Map<Character, PieceFactory> symbolToPieceTypeMapping = new HashMap<>();
     public static void registerPiece(PieceFactory pf)
