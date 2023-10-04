@@ -15,7 +15,16 @@ public class Queen extends Piece {
     }
 
     public List<String> moves(Board b, String loc) {
-	throw new UnsupportedOperationException();
+        String pieceName = (color() == Color.WHITE) ? "w" : "b";
+        Piece rook = Piece.createPiece(pieceName.concat("r"));
+        Piece bishop = Piece.createPiece(pieceName.concat("b"));
+
+        List<String> rookPossibleMoves = rook.moves(b, loc);
+        List<String> bishopPossibleMoves = bishop.moves(b, loc);
+        List<String> queenPossibleMoves = new ArrayList<>();
+        queenPossibleMoves.addAll(rookPossibleMoves);
+        queenPossibleMoves.addAll(bishopPossibleMoves);
+        return queenPossibleMoves;
     }
 
 }

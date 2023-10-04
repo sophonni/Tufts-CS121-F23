@@ -725,6 +725,73 @@ public class Test {
         assert possibleMoves.size() == 7;
     }
 
+    public static void whiteQueenTest1()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+        Piece whiteQ = Piece.createPiece("wq");
+        b.addPiece(whiteQ, "d4");
+
+        List<String> possibleMoves1 = whiteQ.moves(b, "d4");
+        assert possibleMoves1.size() == 27;
+
+        List<String> possibleMoves2 = whiteQ.moves(b, "h1");
+        assert possibleMoves2.size() == 21;
+
+        Piece whiteP = Piece.createPiece("wp");
+        b.addPiece(whiteP, "h4");
+
+        List<String> possibleMoves3 = whiteQ.moves(b, "d4");
+        assert possibleMoves3.size() == 26;
+
+        List<String> possibleMoves4 = whiteQ.moves(b, "h1");
+        assert possibleMoves4.size() == 16;
+
+        // for (String s : possibleMoves)
+        // {
+        //     System.out.println(s);
+        // }
+        // System.out.println(possibleMoves.size());
+    }
+
+/*****************
+* Board TESTING  *
+*****************/
+    public static void clearBoard()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece piece1 = Piece.createPiece("wq");
+        b.addPiece(piece1, "d4");
+        Piece piece2 = Piece.createPiece("bk");
+        b.addPiece(piece2, "e7");
+        Piece piece3 = Piece.createPiece("wp");
+        b.addPiece(piece3, "b3");
+        Piece piece4 = Piece.createPiece("br");
+        b.addPiece(piece4, "a1");
+        Piece piece5 = Piece.createPiece("wb");
+        b.addPiece(piece5, "h8");
+
+        b.clear();
+
+        assert b.getPiece("d4") == null;
+        assert b.getPiece("e7") == null;
+        assert b.getPiece("b3") == null;
+        assert b.getPiece("a1") == null;
+        assert b.getPiece("h8") == null;
+    }
+
     public static void main(String[] args)
     {
 	    test1();
@@ -762,6 +829,9 @@ public class Test {
         rookAndPawnOpponentTest();
         blackAndWhitePawnOnBoardTest();
         bishopAndRookOpponentTest2();
-    }
 
+        whiteQueenTest1();
+
+        clearBoard();
+    }
 }

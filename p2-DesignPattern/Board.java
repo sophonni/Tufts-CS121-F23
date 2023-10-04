@@ -193,7 +193,22 @@ public class Board {
     }
 
     public void clear() {
-	throw new UnsupportedOperationException();
+        if (this.pieces.length != 0 || this.pieces != null)
+        {
+            for (int i = 0; i < this.pieces.length; i++)
+            {
+                if (this.pieces[i].length != 0 || this.pieces[i] != null)
+                {
+                    for (int j = 0; j < this.pieces[i].length; j++)
+                    {
+                        if (this.pieces[i][j] != null)
+                        {
+                            this.pieces[i][j] = null;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void registerListener(BoardListener bl) {
