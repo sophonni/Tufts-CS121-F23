@@ -5,6 +5,7 @@ import java.io.FileReader;
 public class Chess {
     public static void main(String[] args)
     {
+        Board myBoard = Board.theBoard();
         if (args.length != 2) {
             System.out.println("Usage: java Chess layout moves");
 
@@ -13,13 +14,13 @@ public class Chess {
         }
 
         /* SD TODO: un-comment the bottom 7 lines before submission */
-        // Piece.registerPiece(new KingFactory());
-        // Piece.registerPiece(new QueenFactory());
-        // Piece.registerPiece(new KnightFactory());
-        // Piece.registerPiece(new BishopFactory());
-        // Piece.registerPiece(new RookFactory());
-        // Piece.registerPiece(new PawnFactory());
-        // Board.theBoard().registerListener(new Logger());
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+        Board.theBoard().registerListener(new Logger());
 
         /* get file names from command line */
         String layoutFileName = args[0]; /* args[0] is the layout file name */
@@ -32,9 +33,10 @@ public class Chess {
         /* check for files existency */
         if (layoutFile.exists() && moveSeqFile.exists())
         {
-            /* read layout file */
-            readAndProcessFiles(layoutFile, true);
-            readAndProcessFiles(moveSeqFile, false);
+            /* read layout and move files */
+            readAndProcessFiles(myBoard, layoutFile, true);
+            readAndProcessFiles(myBoard, moveSeqFile, false);
+            //Test.printBoard(myBoard);
         }
         else
         {
@@ -60,7 +62,7 @@ public class Chess {
         // Board.theBoard().iterate(new BoardPrinter());
     }
 
-    private static void readAndProcessFiles(File layoutFile, boolean isLayoutFile)
+    private static void readAndProcessFiles(Board b, File layoutFile, boolean isLayoutFile)
     {
         boolean isFileInCorrectFormat = false;
         String errorMessage;
@@ -114,6 +116,13 @@ public class Chess {
                                     errorMessage = String.format("Error: Layout File {%1$s} with content {%2$s} is not in correct format.", layoutFile.getName(), currentLineContent);
                                     throw new IllegalArgumentException(errorMessage);
                                 }
+                                else
+                                {
+                                    String locOfPiece = String.valueOf(xCoord) + String.valueOf(yCoord);
+                                    String pieceInfo = String.valueOf(pieceColor) + String.valueOf(pieceType);
+                                    Piece piece = Piece.createPiece(pieceInfo);
+                                    b.addPiece(piece, locOfPiece);
+                                }
                             }
                             else
                             {
@@ -140,14 +149,20 @@ public class Chess {
                                 if (!isFileInCorrectFormat)
                                 {
                                     fileReader.close();
-                                    errorMessage = String.format("Error: Layout File {%1$s} line {%2$s} is not in correct format.", layoutFile.getName(), currentLineContent);
+                                    errorMessage = String.format("Error: 1 Moves File {%1$s} line {%2$s} is not in correct format.", layoutFile.getName(), currentLineContent);
                                     throw new IllegalArgumentException(errorMessage);
+                                }
+                                else
+                                {
+                                    String currLoc = String.valueOf(currXCoord) + String.valueOf(currYCoord);
+                                    String newLoc = String.valueOf(newXCoord) + String.valueOf(newYCoord);
+                                    b.movePiece(currLoc, newLoc);
                                 }
                             }
                             else
                             {
                                 fileReader.close();
-                                errorMessage = String.format("Error: Layout File {%1$s} line {%2$s} is not in correct format.", layoutFile.getName(), currentLineContent);
+                                errorMessage = String.format("Error: 2 Moves File {%1$s} line {%2$s} is not in correct format.", layoutFile.getName(), currentLineContent);
                                 throw new IllegalArgumentException(errorMessage);
                             }
                             
@@ -195,16 +210,20 @@ public class Chess {
     {
         /* Check current position of the chess piece in x-coordinate (a-h) */
         boolean validXCoord = (currXCoord >= 97 && currXCoord <= 104);
-
+        //System.out.println("X coord: " + validXCoord);
+        
         /* Check current position of the chess piece in y-coordinate (1-8) */
         boolean validYCoord = (currYCoord >= 49 && currYCoord <= 56);
-
+        //System.out.println("Y coord: " + validYCoord);
+        
         /* Check new position of the chess piece in x-coordinate (a-h) */
         boolean validNewXCoord = (newXCoord >= 97 && newXCoord <= 104);
-
+        //System.out.println("New X coord: " + validNewXCoord);
+        
         /* Check new position of the chess piece in y-coordinate (1-8) */
         boolean validNewYCoord = (newYCoord >= 49 && newYCoord <= 56);
-
+        //System.out.println("New Y coord: " + validNewYCoord);
+        
         /* Check equal sign (-) */
         boolean validDashSign = (dashSign == 45);
 

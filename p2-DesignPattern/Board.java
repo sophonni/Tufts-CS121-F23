@@ -5,6 +5,8 @@ public class Board {
     private Piece[][] pieces = new Piece[8][8];
     private static Map<Character, Integer> xLocStrToArrIndexMapping = new HashMap<>();
     private static Map<Integer, Character> arrIndicesToLocStrMapping = new HashMap<>();
+    private List<BoardListener> boardListenerList = new ArrayList<>();
+
 
     private static void initializeArrIndicesAndNameFormatMapping()
     {
@@ -103,7 +105,10 @@ public class Board {
     }
 
 
-    private Board() { }
+    private Board()
+    {
+        registerListener(new Logger());
+    }
     
     public static Board theBoard() {
         initializeArrIndicesAndNameFormatMapping();
@@ -158,12 +163,23 @@ public class Board {
         }
     }
 
-    private void changePiecePosition(String oldLocStr, Piece pieceToPutDown, String newLocStr)
+    private void changePiecePosition(String oldLocStr, Piece pieceToMove, String newLocStr)
     {
+        BoardListener bl = boardListenerList.get(0);
+
+        /* notify that a piece has been move */
+        bl.onMove(oldLocStr, newLocStr, pieceToMove);
+
+        /* notify that a piece has been capture */
+        if (this.getPiece(newLocStr) != null)
+        {
+            bl.onCapture(pieceToMove, this.getPiece(newLocStr));
+        }
+
         int[] locStrNewPos = locStrToArrIndices(newLocStr);
         int[] locStrOldPos = locStrToArrIndices(oldLocStr);
 
-        this.pieces[locStrNewPos[0]][locStrNewPos[1]] = pieceToPutDown;
+        this.pieces[locStrNewPos[0]][locStrNewPos[1]] = pieceToMove;
         this.pieces[locStrOldPos[0]][locStrOldPos[1]] = null;
 
     }
@@ -176,7 +192,6 @@ public class Board {
         verifyLocStrFormat(to);
 
         Piece pieceToMove = getPiece(from);
-        Piece pieceAtTargetPos = getPiece(to);
 
         if (pieceToMove != null)
         {
@@ -185,15 +200,6 @@ public class Board {
             /* check for valid moves */
             if (possibleMoves.contains(to))
             {
-                // /* the piece at the 'to' location is an opponent piece */
-                // if (pieceAtTargetPos != null)
-                // {
-                //     /* take the opponent and remove it from the board */
-                //     changePiecePosition(from, pieceToMove, to);
-                // }
-                // else
-                // {
-                // }
                 changePiecePosition(from, pieceToMove, to);
             }
             else
@@ -246,18 +252,49 @@ public class Board {
     }
 
     public void registerListener(BoardListener bl) {
-	throw new UnsupportedOperationException();
+        if (bl != null)
+        {
+            this.boardListenerList.add(bl);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Error: Unable to register the given listener due to NULL.");
+        }
     }
 
     public void removeListener(BoardListener bl) {
-	throw new UnsupportedOperationException();
+        if (bl != null)
+        {
+            this.boardListenerList.remove(bl);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Error: Unable to remove the given listener due to NULL.");
+        }
     }
 
     public void removeAllListeners() {
-	throw new UnsupportedOperationException();
+        this.boardListenerList.clear();
     }
 
     public void iterate(BoardInternalIterator bi) {
-	throw new UnsupportedOperationException();
+        char columnLetter;
+        char rowNumber;
+
+        String currLocStr;
+        Piece currPiece;
+
+        for (int i = 0; i < pieces.length; i++)
+        {
+            for (int j = 0; j < pieces[i].length; j++)
+            {
+                columnLetter = arrIndicesToLocStrMapping.get(i);
+                rowNumber = (char)((j + 1) + '0');
+
+                currLocStr = String.valueOf(columnLetter) + String.valueOf(rowNumber);
+                currPiece = getPiece(currLocStr);
+                bi.visit(currLocStr, currPiece);
+            }
+        }
     }
 }
