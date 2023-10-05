@@ -759,6 +759,121 @@ public class Test {
         // System.out.println(possibleMoves.size());
     }
 
+    public static void whiteKnightTest()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece whiteKnight1 = Piece.createPiece("wn");
+        b.addPiece(whiteKnight1, "d3");
+
+        Piece whiteKnight2 = Piece.createPiece("wn");
+        b.addPiece(whiteKnight2, "f4");
+
+        Piece blackBishop1 = Piece.createPiece("bb");
+        b.addPiece(blackBishop1, "b5");
+        printBoard(b);
+
+        List<String> whiteKnightPossibleMoves1 = whiteKnight1.moves(b, "d3");
+        // for (String s : whiteKnightPossibleMoves1)
+        // {
+        //     System.out.println(s);
+        // }
+        // System.out.println(whiteKnightPossibleMoves1.size());
+        assert whiteKnightPossibleMoves1.size() == 7;
+
+        try
+        {
+            List<String> whiteKnightPossibleMoves2 = whiteKnight1.moves(b, "b5");
+        }
+        catch(Exception e)
+        {
+            assert e instanceof Exception;
+        }
+
+        List<String> blackBishopPossibleMoves1 = blackBishop1.moves(b, "b5");
+        System.out.println(blackBishopPossibleMoves1.size());
+        assert blackBishopPossibleMoves1.size() == 7;
+
+
+        List<String> whiteKnightPossibleMoves3 = whiteKnight1.moves(b, "a7");
+        //System.out.println(whiteKnightPossibleMoves3.size());
+        assert whiteKnightPossibleMoves3.size() == 3;
+
+        Piece blackRook1 = Piece.createPiece("br");
+        b.addPiece(blackRook1, "b3");
+
+        Piece whitePawn = Piece.createPiece("wp");
+        b.addPiece(whitePawn, "b2");
+        printBoard(b);
+
+        List<String> blackRookPossibleMoves = blackRook1.moves(b, "b3");
+        assert blackRookPossibleMoves.size() == 5;
+
+        Piece blackKnight1 = Piece.createPiece("bn");
+        b.addPiece(blackKnight1, "h8");
+        printBoard(b);
+        List<String> blackKnightPossibleMoves1 = blackKnight1.moves(b, "h8");
+        // System.out.println(blackKnightPossibleMoves1.size());
+        // for (String s : blackKnightPossibleMoves1)
+        // {
+        //     System.out.println(s);
+        // }
+        assert blackKnightPossibleMoves1.size() == 2;
+
+        List<String> blackKnightPossibleMoves2 = blackKnight1.moves(b, "a1");
+        assert blackKnightPossibleMoves2.size() == 1;
+
+        List<String> blackKnightPossibleMoves3 = blackKnight1.moves(b, "d1");
+        // System.out.println(blackKnightPossibleMoves3.size());
+        // for (String s : blackKnightPossibleMoves3)
+        // {
+        //     System.out.println(s);
+        // }
+        assert blackKnightPossibleMoves3.size() == 4;
+
+
+        // System.out.println(possibleMoves.size());
+        // for (String s : possibleMoves)
+        // {
+        //     System.out.println(s);
+        // }
+    }
+
+    public static void printBoard(Board board) 
+    {
+        System.out.println("   a  b  c  d  e  f  g  h");
+        System.out.println("  +------------------------");
+
+        int[] test = new int[] {0, 0};
+        for(int row = 7; row >= 0; row--) 
+        { 
+            System.out.print((row + 1) + " |"); 
+
+            for(int col = 0; col < 8; col++) 
+            {
+                test[0] = col;
+                test[1] = row;
+                String loc = board.arrIndicesToLocStr(test);
+                Piece piece = board.getPiece(loc);
+
+                if(piece != null) 
+                {
+                    System.out.printf("%-3s", piece);
+                } else //hi sophonni
+                {
+                    System.out.print(".  ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
 /*****************
 * Board TESTING  *
 *****************/
@@ -833,5 +948,6 @@ public class Test {
         whiteQueenTest1();
 
         clearBoard();
+        whiteKnightTest();
     }
 }
