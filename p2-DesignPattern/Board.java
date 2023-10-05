@@ -85,7 +85,15 @@ public class Board {
             /* check y-coordinate of the given position to ensure its range 1-8 */
             boolean isValidYCoord = (yCoordChar >= 49 && yCoordChar <= 56);
     
-            return isValidXCoord && isValidYCoord;
+            if (isValidXCoord && isValidYCoord)
+            {
+                return isValidXCoord && isValidYCoord;
+            }
+            else
+            {
+                errorMessage = String.format("Error: Location {%1$s} is in an incorrect format.", loc);
+                throw new IllegalArgumentException(errorMessage);
+            }
         }
         else
         {
@@ -150,28 +158,54 @@ public class Board {
         }
     }
 
+    private void changePiecePosition(String oldLocStr, Piece pieceToPutDown, String newLocStr)
+    {
+        int[] locStrNewPos = locStrToArrIndices(newLocStr);
+        int[] locStrOldPos = locStrToArrIndices(oldLocStr);
+
+        this.pieces[locStrNewPos[0]][locStrNewPos[1]] = pieceToPutDown;
+        this.pieces[locStrOldPos[0]][locStrOldPos[1]] = null;
+
+    }
+
     public void movePiece(String from, String to) {
         String errorMessage;
 
-        /* ensure that given location is valid */
+        /* ensure that given locations are valid */
         verifyLocStrFormat(from);
+        verifyLocStrFormat(to);
 
         Piece pieceToMove = getPiece(from);
         Piece pieceAtTargetPos = getPiece(to);
 
-        if (pieceToMove != null && pieceAtTargetPos == null)
+        if (pieceToMove != null)
         {
-            /* get 2d array indices (x, y) from the given location */
-            int[] indicesOfPieceCurrPos = locStrToArrIndices(from);
-            int xCoorCurr = indicesOfPieceCurrPos[0];
-            int yCoorCurr = indicesOfPieceCurrPos[1];
+            List<String> possibleMoves = pieceToMove.moves(this, from);
 
-            /* SD TODO: to completed */
+            /* check for valid moves */
+            if (possibleMoves.contains(to))
+            {
+                // /* the piece at the 'to' location is an opponent piece */
+                // if (pieceAtTargetPos != null)
+                // {
+                //     /* take the opponent and remove it from the board */
+                //     changePiecePosition(from, pieceToMove, to);
+                // }
+                // else
+                // {
+                // }
+                changePiecePosition(from, pieceToMove, to);
+            }
+            else
+            {
+                errorMessage = String.format("Error: Move {%1$s to %2$s} is invalid for piece {%3$s}.", from, to, pieceToMove.toString());
+                throw new IllegalArgumentException(errorMessage);
+            }
 
         }
-        else
+        else if (pieceToMove == null) 
         {
-            errorMessage = String.format("Error: Location {%1$s} does not contain a piece to move or there already exist a piece at target position {%1$s}.", from, to);
+            errorMessage = String.format("Error: Location {%1$s} does not contain a piece to move.", from);
             throw new IllegalArgumentException(errorMessage);
         }
     }

@@ -885,7 +885,7 @@ public class Test {
         Piece.registerPiece(new PawnFactory());
         Piece whiteK = Piece.createPiece("wk");
         b.addPiece(whiteK, "d4");
-        printBoard(b);
+        //printBoard(b);
         
         List<String> possibleMoves1 = whiteK.moves(b, "d4");
         // System.out.println(possibleMoves1.size());
@@ -903,7 +903,7 @@ public class Test {
 
         Piece blackBishop = Piece.createPiece("bb");
         b.addPiece(blackBishop, "f6");
-        printBoard(b);
+        //printBoard(b);
 
         List<String> whiteKnightPossibleMoves = whiteKnight.moves(b, "d5");
         assert whiteKnightPossibleMoves.size() == 8;
@@ -964,9 +964,93 @@ public class Test {
         assert b.getPiece("h8") == null;
     }
 
+/**********************
+* Move Piece TESTING  *
+**********************/
+    public static void movePiece()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece piece1 = Piece.createPiece("wq");
+        b.addPiece(piece1, "d4");
+        Piece piece2 = Piece.createPiece("bk");
+        b.addPiece(piece2, "e7");
+        Piece piece3 = Piece.createPiece("wp");
+        b.addPiece(piece3, "b3");
+        Piece piece4 = Piece.createPiece("br");
+        b.addPiece(piece4, "a1");
+        Piece piece5 = Piece.createPiece("wb");
+        b.addPiece(piece5, "h8");
+        Piece piece6 = Piece.createPiece("bb");
+        b.addPiece(piece6, "c4");
+
+        //printBoard(b);
+
+        try
+        {
+            b.movePiece("b3", "c8");
+        }
+        catch (Exception e)
+        {
+            System.out.println("Fail on Purpose: " + e.toString());
+            assert e instanceof Exception;
+        }
+
+        b.movePiece("b3", "c4");
+        assert b.getPiece("b3") == null;
+        //printBoard(b);
+
+        try
+        {
+            b.movePiece("c4", "d4");
+        }
+        catch (Exception e)
+        {
+            System.out.println("Fail on Purpose: " + e.toString());
+            assert e instanceof Exception;
+        }
+        //printBoard(b);
+
+        try
+        {
+            b.movePiece("c4", "c6");
+        }
+        catch (Exception e)
+        {
+            System.out.println("Fail on Purpose: " + e.toString());
+            assert e instanceof Exception;
+        }
+        //printBoard(b);
+        
+        b.movePiece("c4", "c5");
+        //printBoard(b);
+        
+        b.movePiece("a1", "d1");
+        printBoard(b);
+        
+        List<String> blackRookPossibleMoves = piece4.moves(b, "d1");
+        assert blackRookPossibleMoves.size() == 10;
+        
+        try
+        {
+            b.movePiece("k0", "T6");
+        }
+        catch (Exception e)
+        {
+            System.out.println("Fail on Purpose: " + e.toString());
+            assert e instanceof Exception;
+        }
+    }
+
     public static void main(String[] args)
     {
-	    test1();
+	    // test1();
         // filesParsing_NotEnoughArgument();
         // filesParsingTest_TooManyArguments();
         // filesParsingTest_CorrectFilesAndFormat();
@@ -977,14 +1061,14 @@ public class Test {
         // filesParsingTest_NonExistanceFileNames();
         // filesParsingTest_CommentAtEndAndMid();
 
+        //// pieceLocationCorrectLocFormatTest();
+        //// pieceLocationIncorrectLocFormatTest();
+        //// addAndGetPieceInCorrectFormatTest();
         pawnColorTest();
         registerPieceTest();
         createKnownPiecesTest();
         createUnknownPiecesTest();
-        // pieceLocationCorrectLocFormatTest();
-        // pieceLocationIncorrectLocFormatTest();
-        // addAndGetPieceInCorrectFormatTest();
-
+        
         justPawnOnBoardTesting();
         blackPawnWithOpponentOnBoardTesting1();
         blackPawnWithOpponentOnBoardTesting2();
@@ -1008,5 +1092,7 @@ public class Test {
         whiteKnightTest();
 
         whiteKingTest1();
+
+        movePiece();
     }
 }

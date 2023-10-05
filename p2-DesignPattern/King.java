@@ -153,7 +153,7 @@ public class King extends Piece {
                 diagonalLocX = locXToCheckForPossibleMoves + 1;
                 diagonalLocY = locYToCheckForPossibleMoves - 1;
                 
-                /* upper right diagonal */
+                /* down right diagonal */
                 if (diagonalLocX <= xConstraint && diagonalLocY >= yConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, diagonalLocX, diagonalLocY, possibleMoves);
@@ -167,7 +167,7 @@ public class King extends Piece {
                 diagonalLocX = locXToCheckForPossibleMoves + 1;
                 diagonalLocY = locYToCheckForPossibleMoves + 1;
              
-                /* upper left diagonal */
+                /* down left diagonal */
                 if (diagonalLocX <= xConstraint && diagonalLocY <= yConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, diagonalLocX, diagonalLocY, possibleMoves);
@@ -178,7 +178,7 @@ public class King extends Piece {
                 diagonalLocX = locXToCheckForPossibleMoves - 1;
                 diagonalLocY = locYToCheckForPossibleMoves + 1;
              
-                /* upper right diagonal */
+                /* down right diagonal */
                 if (diagonalLocX >= xConstraint && diagonalLocY <= yConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, diagonalLocX, diagonalLocY, possibleMoves);
@@ -197,6 +197,7 @@ public class King extends Piece {
             {
                 leftOrRightLocX = locXToCheckForPossibleMoves - 1;
 
+                /* left horizontal */
                 if (leftOrRightLocX >= xConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, leftOrRightLocX, locYToCheckForPossibleMoves, possibleMoves);
@@ -206,6 +207,7 @@ public class King extends Piece {
             {
                 leftOrRightLocX = locXToCheckForPossibleMoves + 1;
                 
+                /* right horizontal */
                 if (leftOrRightLocX <= xConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, leftOrRightLocX, locYToCheckForPossibleMoves, possibleMoves);
@@ -218,6 +220,7 @@ public class King extends Piece {
             {
                 leftOrRightLocX = locXToCheckForPossibleMoves + 1;
 
+                /* left horizontal */
                 if (leftOrRightLocX <= xConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, leftOrRightLocX, locYToCheckForPossibleMoves, possibleMoves);
@@ -227,6 +230,7 @@ public class King extends Piece {
             {
                 leftOrRightLocX = locXToCheckForPossibleMoves - 1;
                 
+                /* right horizontal */
                 if (leftOrRightLocX >= xConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, leftOrRightLocX, locYToCheckForPossibleMoves, possibleMoves);
@@ -245,6 +249,7 @@ public class King extends Piece {
             {
                 upOrDownLocY = locYToCheckForPossibleMoves + 1;
 
+                /* up vertical */
                 if (upOrDownLocY <= yConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, locXToCheckForPossibleMoves, upOrDownLocY, possibleMoves);
@@ -254,6 +259,7 @@ public class King extends Piece {
             {
                 upOrDownLocY = locYToCheckForPossibleMoves - 1;
                 
+                /* down vertical */
                 if (upOrDownLocY >= yConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, locXToCheckForPossibleMoves, upOrDownLocY, possibleMoves);
@@ -266,6 +272,7 @@ public class King extends Piece {
             {
                 upOrDownLocY = locYToCheckForPossibleMoves - 1;
 
+                /* up vertical */
                 if (upOrDownLocY >= yConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, locXToCheckForPossibleMoves, upOrDownLocY, possibleMoves);
@@ -275,6 +282,7 @@ public class King extends Piece {
             {
                 upOrDownLocY = locYToCheckForPossibleMoves + 1;
                 
+                /* down vertical */
                 if (upOrDownLocY <= yConstraint)
                 {
                     Rook.isTherePieceBlockage(b, thisPieceLocStr, thisPieceColor, locXToCheckForPossibleMoves, upOrDownLocY, possibleMoves);
