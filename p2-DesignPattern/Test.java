@@ -777,7 +777,7 @@ public class Test {
 
         Piece blackBishop1 = Piece.createPiece("bb");
         b.addPiece(blackBishop1, "b5");
-        printBoard(b);
+        //printBoard(b);
 
         List<String> whiteKnightPossibleMoves1 = whiteKnight1.moves(b, "d3");
         // for (String s : whiteKnightPossibleMoves1)
@@ -810,14 +810,14 @@ public class Test {
 
         Piece whitePawn = Piece.createPiece("wp");
         b.addPiece(whitePawn, "b2");
-        printBoard(b);
+        //printBoard(b);
 
         List<String> blackRookPossibleMoves = blackRook1.moves(b, "b3");
         assert blackRookPossibleMoves.size() == 5;
 
         Piece blackKnight1 = Piece.createPiece("bn");
         b.addPiece(blackKnight1, "h8");
-        printBoard(b);
+        //printBoard(b);
         List<String> blackKnightPossibleMoves1 = blackKnight1.moves(b, "h8");
         // System.out.println(blackKnightPossibleMoves1.size());
         // for (String s : blackKnightPossibleMoves1)
@@ -872,6 +872,63 @@ public class Test {
             }
             System.out.println();
         }
+    }
+
+    public static void whiteKingTest1()
+    {
+        Board b = Board.theBoard();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+        Piece whiteK = Piece.createPiece("wk");
+        b.addPiece(whiteK, "d4");
+        printBoard(b);
+        
+        List<String> possibleMoves1 = whiteK.moves(b, "d4");
+        // System.out.println(possibleMoves1.size());
+        // for (String s : possibleMoves1)
+        // {
+        //     System.out.println(s);
+        // }
+        assert possibleMoves1.size() == 8;
+
+        List<String> whiteKingPossibleMoves1 = whiteK.moves(b, "d1");
+        assert whiteKingPossibleMoves1.size() == 5;
+
+        Piece whiteKnight = Piece.createPiece("wn");
+        b.addPiece(whiteKnight, "d5");
+
+        Piece blackBishop = Piece.createPiece("bb");
+        b.addPiece(blackBishop, "f6");
+        printBoard(b);
+
+        List<String> whiteKnightPossibleMoves = whiteKnight.moves(b, "d5");
+        assert whiteKnightPossibleMoves.size() == 8;
+
+        List<String> blackBishopPossibleMoves = blackBishop.moves(b, "f6");
+        assert blackBishopPossibleMoves.size() == 8;
+
+        List<String> whiteKingPossibleMoves2 = whiteK.moves(b, "d1");
+        assert whiteKingPossibleMoves2.size() == 5;
+
+        List<String> whiteKingPossibleMoves3 = whiteK.moves(b, "a1");
+        assert whiteKingPossibleMoves3.size() == 3;
+
+        List<String> whiteKingPossibleMoves4 = whiteK.moves(b, "e6");
+        assert whiteKingPossibleMoves4.size() == 7;
+
+        Piece blackKing = Piece.createPiece("bk");
+        b.addPiece(blackKing, "h8");
+        printBoard(b);
+
+        List<String> blackKingPossibleMoves1 = blackKing.moves(b, "h8");
+        assert blackKingPossibleMoves1.size() == 3;
+
+        List<String> blackKingPossibleMoves2 = blackKing.moves(b, "g7");
+        assert blackKingPossibleMoves2.size() == 7;
     }
 
 /*****************
@@ -949,5 +1006,7 @@ public class Test {
 
         clearBoard();
         whiteKnightTest();
+
+        whiteKingTest1();
     }
 }
