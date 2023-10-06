@@ -6,6 +6,7 @@ public class Board {
     private static Map<Character, Integer> xLocStrToArrIndexMapping = new HashMap<>();
     private static Map<Integer, Character> arrIndicesToLocStrMapping = new HashMap<>();
     private List<BoardListener> boardListenerList = new ArrayList<>();
+    private static Board myBoard = new Board();
 
 
     private static void initializeArrIndicesAndNameFormatMapping()
@@ -107,12 +108,11 @@ public class Board {
 
     private Board()
     {
-        registerListener(new Logger());
     }
     
     public static Board theBoard() {
         initializeArrIndicesAndNameFormatMapping();
-        return new Board();
+        return myBoard;
     }
 
     // Returns piece at given loc or null if no such piece
@@ -165,7 +165,11 @@ public class Board {
 
     private void changePiecePosition(String oldLocStr, Piece pieceToMove, String newLocStr)
     {
+        removeAllListeners();
+        registerListener(new Logger());
+
         BoardListener bl = boardListenerList.get(0);
+
 
         /* notify that a piece has been move */
         bl.onMove(oldLocStr, newLocStr, pieceToMove);
@@ -201,6 +205,7 @@ public class Board {
             if (possibleMoves.contains(to))
             {
                 changePiecePosition(from, pieceToMove, to);
+                Test.printBoard(myBoard);
             }
             else
             {

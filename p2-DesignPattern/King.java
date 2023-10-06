@@ -187,11 +187,11 @@ public class King extends Piece {
         }
     }
 
-    private void checkLeftRight(Board b, boolean isLeft, String thisPieceLocStr, Color thisPieceColor, int locXToCheckForPossibleMoves, int locYToCheckForPossibleMoves, int xConstraint, List<String> possibleMoves)
+    public static void checkLeftRight(Board b, boolean isLeft, String thisPieceLocStr, Color thisPieceColor, int locXToCheckForPossibleMoves, int locYToCheckForPossibleMoves, int xConstraint, List<String> possibleMoves)
     {
         int leftOrRightLocX;
 
-        if (color() == Color.WHITE)
+        if (thisPieceColor == Color.WHITE)
         {
             if (isLeft)
             {
@@ -239,11 +239,11 @@ public class King extends Piece {
         }
     }
 
-    private void checkUpDown(Board b, boolean isUp, String thisPieceLocStr, Color thisPieceColor, int locXToCheckForPossibleMoves, int locYToCheckForPossibleMoves, int yConstraint, List<String> possibleMoves)
+    public static void checkUpDown(Board b, boolean isUp, String thisPieceLocStr, Color thisPieceColor, int locXToCheckForPossibleMoves, int locYToCheckForPossibleMoves, int yConstraint, List<String> possibleMoves)
     {
         int upOrDownLocY;
 
-        if (color() == Color.WHITE)
+        if (thisPieceColor == Color.WHITE)
         {
             if (isUp)
             {

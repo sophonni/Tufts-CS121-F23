@@ -223,7 +223,7 @@ public class Knight extends Piece {
                 }
                 else
                 {
-                    if(possibleMoveLocX >= xConstraint && possibleMoveLocY <= yConstraint)
+                    if(possibleMoveLocX <= xConstraint && possibleMoveLocY >= yConstraint)
                     {
                         Rook.isTherePieceBlockage(b, pieceLocStr, color, possibleMoveLocX, possibleMoveLocY, possibleMoves);
                     }

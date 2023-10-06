@@ -5,10 +5,11 @@ public class Test {
     // Run "java -ea Test" to run with assertions enabled (If you run
     // with assertions disabled, the default, then assert statements
     // will not execute!)
-
+    
     public static void test1()
-    {
+    {      
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new PawnFactory());
         Piece p = Piece.createPiece("bp");
         b.addPiece(p, "a3");
@@ -262,6 +263,7 @@ public class Test {
     public static void addAndGetPieceInCorrectFormatTest()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -286,6 +288,7 @@ public class Test {
     public static void justPawnOnBoardTesting()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -307,6 +310,7 @@ public class Test {
     public static void whitePawnWithOpponentOnBoardTesting()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -333,6 +337,7 @@ public class Test {
     public static void blackPawnWithOpponentOnBoardTesting1()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -361,6 +366,7 @@ public class Test {
     public static void blackPawnWithOpponentOnBoardTesting2()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -383,9 +389,10 @@ public class Test {
         assert possibleMoveLoc.contains("c5") == true;
     }
 
-    public static void withPawnWithTeamAndOpponentPieceTest()
+    public static void whitePawnWithTeamAndOpponentPieceTest()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -414,6 +421,7 @@ public class Test {
     public static void blackAndWhitePawnOnBoardTest()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -437,6 +445,7 @@ public class Test {
     public static void blackRookWithOpponentOnBoardTest1()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -466,6 +475,7 @@ public class Test {
     public static void blackRookWithOpponentOnBoardTest2()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -503,6 +513,7 @@ public class Test {
     public static void whiteRookWithOpponentOnBoardTest1()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -532,6 +543,7 @@ public class Test {
     public static void whiteRookWithOpponentOnBoardTest2()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -552,6 +564,7 @@ public class Test {
     public static void bishopAndRookOpponentTest1()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -578,6 +591,7 @@ public class Test {
     public static void bishopAndRookOpponentTest2()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -609,6 +623,7 @@ public class Test {
     public static void rookTest1()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -625,6 +640,7 @@ public class Test {
     public static void rookAndPawnOpponentTest()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -661,6 +677,7 @@ public class Test {
     public static void rookPawnBishopOpponentTest()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -707,6 +724,7 @@ public class Test {
     public static void bishopTest1()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -728,6 +746,7 @@ public class Test {
     public static void whiteQueenTest1()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -762,6 +781,7 @@ public class Test {
     public static void whiteKnightTest()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -877,6 +897,7 @@ public class Test {
     public static void whiteKingTest1()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -937,6 +958,7 @@ public class Test {
     public static void clearBoard()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -954,8 +976,7 @@ public class Test {
         b.addPiece(piece4, "a1");
         Piece piece5 = Piece.createPiece("wb");
         b.addPiece(piece5, "h8");
-
-        b.clear();
+       b.clear();
 
         assert b.getPiece("d4") == null;
         assert b.getPiece("e7") == null;
@@ -970,6 +991,7 @@ public class Test {
     public static void movePiece()
     {
         Board b = Board.theBoard();
+        b.clear();
         Piece.registerPiece(new KingFactory());
         Piece.registerPiece(new QueenFactory());
         Piece.registerPiece(new KnightFactory());
@@ -1048,6 +1070,47 @@ public class Test {
         }
     }
 
+    public static void autoGraderTestCase1()
+    {
+        Board b = Board.theBoard();
+        b.clear();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece piece1 = Piece.createPiece("bn");
+        b.addPiece(piece1, "d4");
+
+        List<String> possibleMoves = piece1.moves(b, "d4");
+        for (String s : possibleMoves)
+        {
+            System.out.println(s);
+        }
+        printBoard(b);
+        System.out.println(possibleMoves.size());
+        assert possibleMoves.size() == 8;
+    }
+
+    public static void blackPawnMoveUp()
+    {
+        Board b = Board.theBoard();
+        b.clear();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece piece1 = Piece.createPiece("bp");
+        b.addPiece(piece1, "a7");
+        printBoard(b);
+        b.movePiece("a7", "a6");
+    }
+
     public static void main(String[] args)
     {
 	    // test1();
@@ -1072,7 +1135,7 @@ public class Test {
         justPawnOnBoardTesting();
         blackPawnWithOpponentOnBoardTesting1();
         blackPawnWithOpponentOnBoardTesting2();
-        withPawnWithTeamAndOpponentPieceTest();
+        whitePawnWithTeamAndOpponentPieceTest();
         blackRookWithOpponentOnBoardTest1();
         blackRookWithOpponentOnBoardTest2();
         whiteRookWithOpponentOnBoardTest1();
@@ -1094,5 +1157,9 @@ public class Test {
         whiteKingTest1();
 
         movePiece();
+
+        autoGraderTestCase1();
+
+        blackPawnMoveUp();
     }
 }
