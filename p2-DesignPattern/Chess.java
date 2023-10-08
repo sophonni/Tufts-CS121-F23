@@ -8,9 +8,8 @@ public class Chess {
         Board myBoard = Board.theBoard();
         if (args.length != 2) {
             System.out.println("Usage: java Chess layout moves");
-
             /* SD TODO: can we throw an exception here? */
-            // throw new ArrayIndexOutOfBoundsException();
+            throw new IllegalArgumentException("Error: Number of Command Line Arguments Aren't Met");
         }
 
         /* SD TODO: un-comment the bottom 7 lines before submission */
@@ -57,9 +56,8 @@ public class Chess {
         }
 
         // // Leave the following code at the end of the simulation:
-        /* SD TODO: un-comment the bottom 2 lines before submission */
-        // System.out.println("Final board:");
-        // Board.theBoard().iterate(new BoardPrinter());
+        System.out.println("Final board:");
+        Board.theBoard().iterate(new BoardPrinter());
     }
 
     private static void readAndProcessFiles(Board b, File layoutFile, boolean isLayoutFile)

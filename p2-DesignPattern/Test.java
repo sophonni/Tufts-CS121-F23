@@ -1111,6 +1111,28 @@ public class Test {
         b.movePiece("a7", "a6");
     }
 
+    public static void iteratorTest()
+    {
+        Board b = Board.theBoard();
+        b.clear();
+
+        String[] fileNames = new String[2];
+        fileNames[0] = "layout1";
+        fileNames[1] = "moves5.txt";
+        
+        try
+        {
+            Chess.main(fileNames);
+            printBoard(b);
+
+            b.iterate(new BoardPrinter());
+        }
+        catch (Exception e)
+        {
+            assert e instanceof Exception == true;
+        }
+    }
+
     public static void main(String[] args)
     {
 	    // test1();
@@ -1161,5 +1183,7 @@ public class Test {
         autoGraderTestCase1();
 
         blackPawnMoveUp();
+
+        iteratorTest();
     }
 }

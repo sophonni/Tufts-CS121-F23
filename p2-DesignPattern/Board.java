@@ -288,7 +288,7 @@ public class Board {
 
         String currLocStr;
         Piece currPiece;
-
+        // int tracker = 1;
         for (int i = 0; i < pieces.length; i++)
         {
             for (int j = 0; j < pieces[i].length; j++)
@@ -299,6 +299,9 @@ public class Board {
                 currLocStr = String.valueOf(columnLetter) + String.valueOf(rowNumber);
                 currPiece = getPiece(currLocStr);
                 bi.visit(currLocStr, currPiece);
+
+                // System.out.println("counter: " + tracker);
+                // tracker++;
             }
         }
     }
