@@ -178,7 +178,7 @@ public class Chess {
 
     private static boolean verifyLayoutFormat(char xCoord, char yCoord, char equalSign, char pieceColor, char pieceType)
     {
-        /* check y-coordinate (1-8) */
+        /* check y-coordinate (a-h) */
         boolean isValidXCoord = (xCoord >= 97 && xCoord <= 104);
 
         /* check y-coordinate (1-8) */

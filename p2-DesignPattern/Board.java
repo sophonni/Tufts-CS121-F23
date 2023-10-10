@@ -7,6 +7,7 @@ public class Board {
     private static Map<Integer, Character> arrIndicesToLocStrMapping = new HashMap<>();
     private List<BoardListener> boardListenerList = new ArrayList<>();
     private static Board myBoard = new Board();
+    private Logger logger = new Logger();
 
 
     private static void initializeArrIndicesAndNameFormatMapping()
@@ -108,6 +109,7 @@ public class Board {
 
     private Board()
     {
+        registerListener(logger);
     }
     
     public static Board theBoard() {
@@ -165,8 +167,8 @@ public class Board {
 
     private void changePiecePosition(String oldLocStr, Piece pieceToMove, String newLocStr)
     {
-        removeAllListeners();
-        registerListener(new Logger());
+        //removeAllListeners();
+        //registerListener(new Logger());
 
         BoardListener bl = boardListenerList.get(0);
 
@@ -174,7 +176,7 @@ public class Board {
         /* notify that a piece has been move */
         bl.onMove(oldLocStr, newLocStr, pieceToMove);
 
-        /* notify that a piece has been capture */
+        /* notify if a peice is captured */
         if (this.getPiece(newLocStr) != null)
         {
             bl.onCapture(pieceToMove, this.getPiece(newLocStr));
@@ -197,6 +199,7 @@ public class Board {
 
         Piece pieceToMove = getPiece(from);
 
+        /* check if there's piece at location 'from' */
         if (pieceToMove != null)
         {
             List<String> possibleMoves = pieceToMove.moves(this, from);
@@ -205,7 +208,7 @@ public class Board {
             if (possibleMoves.contains(to))
             {
                 changePiecePosition(from, pieceToMove, to);
-                Test.printBoard(myBoard);
+                //Test.printBoard(myBoard);
             }
             else
             {
@@ -214,7 +217,7 @@ public class Board {
             }
 
         }
-        else if (pieceToMove == null) 
+        else
         {
             errorMessage = String.format("Error: Location {%1$s} does not contain a piece to move.", from);
             throw new IllegalArgumentException(errorMessage);

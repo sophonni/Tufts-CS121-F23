@@ -26,8 +26,10 @@ abstract public class Piece {
         // boolean isValidColorAndType = isValidPieceColor && isValidPieceType;
         String errorMessage;
 
+        /* ensure valid color of piece (black or white) */
         if (isValidPieceColor)
         {
+            /* get corresponding piece factor for a specific peice */
             PieceFactory pfOfGivenPiece = symbolToPieceTypeMapping.get(pieceType);
             if (pfOfGivenPiece == null)
             {
@@ -36,6 +38,7 @@ abstract public class Piece {
             }
             else
             {
+                /* use the corresponding piece factory method to create a specific piece */
                 Color colorOfGivenPiece = (color.equals('b')) ? Color.BLACK : Color.WHITE;
                 return pfOfGivenPiece.create(colorOfGivenPiece);
             }
