@@ -1609,42 +1609,42 @@ public class Test {
         //// addAndGetPieceInCorrectFormatTest();
 
 
-        // pawnColorTest();
-        // registerPieceTest();
-        // createKnownPiecesTest();
-        // createUnknownPiecesTest();
+        pawnColorTest();
+        registerPieceTest();
+        createKnownPiecesTest();
+        createUnknownPiecesTest();
         
-        // justPawnOnBoardTesting();
-        // blackPawnWithOpponentOnBoardTesting1();
-        // blackPawnWithOpponentOnBoardTesting2();
-        // whitePawnWithTeamAndOpponentPieceTest();
-        // blackRookWithOpponentOnBoardTest1();
-        // blackRookWithOpponentOnBoardTest2();
-        // whiteRookWithOpponentOnBoardTest1();
-        // whiteRookWithOpponentOnBoardTest2();
-        // bishopAndRookOpponentTest1();
-        // bishopTest1();
-        // rookTest1();
-        // rookPawnBishopOpponentTest();
+        justPawnOnBoardTesting();
+        blackPawnWithOpponentOnBoardTesting1();
+        blackPawnWithOpponentOnBoardTesting2();
+        whitePawnWithTeamAndOpponentPieceTest();
+        blackRookWithOpponentOnBoardTest1();
+        blackRookWithOpponentOnBoardTest2();
+        whiteRookWithOpponentOnBoardTest1();
+        whiteRookWithOpponentOnBoardTest2();
+        bishopAndRookOpponentTest1();
+        bishopTest1();
+        rookTest1();
+        rookPawnBishopOpponentTest();
         
-        // rookAndPawnOpponentTest();
-        // blackAndWhitePawnOnBoardTest();
-        // bishopAndRookOpponentTest2();
+        rookAndPawnOpponentTest();
+        blackAndWhitePawnOnBoardTest();
+        bishopAndRookOpponentTest2();
 
-        // whiteQueenTest1();
+        whiteQueenTest1();
 
-        // clearBoard();
-        // whiteKnightTest();
+        clearBoard();
+        whiteKnightTest();
 
-        // whiteKingTest1();
+        whiteKingTest1();
 
-        // movePiece();
+        movePiece();
 
-        // autoGraderTestCase1();
+        autoGraderTestCase1();
 
-        // blackPawnMoveUp();
+        blackPawnMoveUp();
 
-        // iteratorTest();
+        iteratorTest();
 
         test2();
         test3();
@@ -1653,7 +1653,5 @@ public class Test {
         test6();
         test7();
         test8();
-        test9();
-
     }
 }
