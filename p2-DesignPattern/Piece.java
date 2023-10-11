@@ -33,7 +33,7 @@ abstract public class Piece {
             PieceFactory pfOfGivenPiece = symbolToPieceTypeMapping.get(pieceType);
             if (pfOfGivenPiece == null)
             {
-                errorMessage = String.format("Error: {%1$s} piece name is not in a correct format.", name);
+                errorMessage = String.format("Error: {%1$s} piece has not been registered.", name);
                 throw new IllegalArgumentException(errorMessage);
             }
             else

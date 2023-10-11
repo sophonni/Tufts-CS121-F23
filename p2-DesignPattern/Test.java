@@ -1109,6 +1109,7 @@ public class Test {
         b.addPiece(piece1, "a7");
         printBoard(b);
         b.movePiece("a7", "a6");
+        //b.movePiece("a6", "a7");
     }
 
     public static void iteratorTest()
@@ -1133,6 +1134,463 @@ public class Test {
         }
     }
 
+/**********************
+* Others' Test Cases  *
+**********************/
+    public static void test2() {
+        // create board
+        Board b = Board.theBoard();
+    
+        Piece.registerPiece(new PawnFactory());
+        Piece bp = Piece.createPiece("bp");
+        Piece wp = Piece.createPiece("wp");
+    
+        b.addPiece(bp, "g7");
+        b.addPiece(wp, "e2");
+    
+        assert b.getPiece("g7") == bp;
+        assert b.getPiece("e2") == wp;
+    
+    
+    
+        System.out.println("Legal moves for black pawn on g7: " + bp.moves(b, "g7"));
+        System.out.println("Legal moves for white pawn on e2: " + wp.moves(b, "e2"));
+    }
+
+    public static void test3(){
+   
+        Board board_1 = Board.theBoard();
+    
+        
+        Piece.registerPiece(new PawnFactory());
+        Piece wp = Piece.createPiece("wp");
+        Piece bp = Piece.createPiece("bp");
+       
+        board_1.addPiece(bp,"e7");
+        board_1.addPiece(wp,"c2");
+        assert board_1.getPiece("e7") == bp;
+        assert board_1.getPiece("c2") == wp;
+        
+       
+        board_1.movePiece("e7","e6");
+        board_1.movePiece("c2","c3");
+        
+        assert board_1.getPiece("e6") == bp;
+        assert board_1.getPiece("c3") == wp;
+    }
+
+    public static void test4() {
+        Board b = Board.theBoard();
+        b.clear();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece p = Piece.createPiece("br");
+        b.addPiece(p, "c5");
+        assert b.getPiece("c5") == p;
+        List<String> move_list = p.moves(b, "c5");
+        assert !move_list.contains("c5");
+        assert move_list.contains("c1");
+        assert move_list.contains("c2");
+        assert move_list.contains("c3");
+        assert move_list.contains("c4");
+        assert move_list.contains("c6");
+        assert move_list.contains("c7");
+        assert move_list.contains("c8");
+        assert move_list.contains("a5");
+        assert move_list.contains("b5");
+        assert move_list.contains("d5");
+        assert move_list.contains("e5");
+        assert move_list.contains("f5");
+        assert move_list.contains("g5");
+        assert move_list.contains("h5");
+        assert !move_list.contains("g6");
+        Piece p2 = Piece.createPiece("wr");
+        b.addPiece(p2, "c4");
+        assert b.getPiece("c4") == p2;
+        Piece p3 = Piece.createPiece("bk");
+        b.addPiece(p3, "g5");
+        assert b.getPiece("g5") == p3;
+        List<String> move_list2 = p.moves(b, "c5");
+        assert !move_list2.contains("c5");
+        assert !move_list2.contains("c1");
+        assert !move_list2.contains("c2");
+        assert !move_list2.contains("c3");
+        assert move_list2.contains("c4"); //location of white rook
+        assert move_list2.contains("c6");
+        assert move_list2.contains("c7");
+        assert move_list2.contains("c8");
+        assert move_list2.contains("a5");
+        assert move_list2.contains("b5");
+        assert move_list2.contains("d5");
+        assert move_list2.contains("e5");
+        assert move_list2.contains("f5");
+        assert !move_list2.contains("g5"); //location of black king
+        assert !move_list2.contains("h5");
+        assert !move_list2.contains("g6");
+    }
+
+    public static void test5() {
+        Board b = Board.theBoard();
+        b.clear();
+        Piece.registerPiece(new KnightFactory());
+        Piece n1 = Piece.createPiece("wn");
+
+        b.addPiece(n1, "d4");
+
+        // Invalid move ========================================
+        try {
+            b.movePiece("d4", "d5");
+            assert false;
+        } catch (Exception e) {}
+
+        // Valid moves ==========================================
+
+        // far top left (L) -----------------------------
+        b.movePiece("d4", "c6");
+        assert b.getPiece("c6") == n1;
+
+        // reset
+        b.clear();
+        Piece n2 = Piece.createPiece("wn");
+        b.addPiece(n2, "d4");
+
+        // far top right (⅃) -----------------------------
+        b.movePiece("d4", "e6");
+        assert b.getPiece("e6") == n2;
+
+        // reset
+        b.clear();
+        Piece n3 = Piece.createPiece("wn");
+        b.addPiece(n3, "d4");
+
+        // side top left (¬) ------------------------------
+        b.movePiece("d4", "b5");
+        assert b.getPiece("b5") == n3;
+
+        // reset
+        b.clear();
+        Piece n4 = Piece.createPiece("wn");
+        b.addPiece(n4, "d4");
+
+        // side top right (⌐) ------------------------------
+        b.movePiece("d4", "f5");
+        assert b.getPiece("f5") == n4;
+
+        // reset
+        b.clear();
+        Piece n5 = Piece.createPiece("wn");
+        b.addPiece(n5, "d4");
+
+        // side bottom left (⨼) -----------------------------
+        b.movePiece("d4", "b3");
+        assert b.getPiece("b3") == n5;
+
+        // reset
+        b.clear();
+        Piece n6 = Piece.createPiece("wn");
+        b.addPiece(n6, "d4");
+
+        // side bottom right (⨽) -----------------------------
+        b.movePiece("d4", "f3");
+        assert b.getPiece("f3") == n6;
+
+        // reset
+        b.clear();
+        Piece n7 = Piece.createPiece("wn");
+        b.addPiece(n7, "d4");
+            
+        // reset
+        b.clear();
+        Piece n8 = Piece.createPiece("wn");
+        b.addPiece(n8, "d4");
+
+
+        b.clear();
+    }
+
+    public static void test6() {
+        Board b = Board.theBoard();
+        b.clear();
+        Piece.registerPiece(new KingFactory());
+        Piece.registerPiece(new QueenFactory());
+        Piece.registerPiece(new KnightFactory());
+        Piece.registerPiece(new BishopFactory());
+        Piece.registerPiece(new RookFactory());
+        Piece.registerPiece(new PawnFactory());
+
+        Piece bpawn = Piece.createPiece("bp");
+        Piece bknight = Piece.createPiece("bn");
+        Piece brook = Piece.createPiece("br");
+        Piece bbishop = Piece.createPiece("bb");
+        Piece bking = Piece.createPiece("bk");
+        Piece bqueen = Piece.createPiece("bq");
+
+        b.addPiece(bpawn, "a7");
+        b.addPiece(bpawn, "b7");
+        b.addPiece(bpawn, "c7");
+        b.addPiece(bpawn, "d7");
+        b.addPiece(bpawn, "e7");
+        b.addPiece(bpawn, "f7");
+        b.addPiece(bpawn, "g7");
+        b.addPiece(bpawn, "h7");
+        b.addPiece(brook, "a8");
+        b.addPiece(brook, "h8");
+        b.addPiece(bknight, "b8");
+        b.addPiece(bknight, "g8");
+        b.addPiece(bbishop, "c8");
+        b.addPiece(bbishop, "f8");
+        b.addPiece(bking, "d8");
+        b.addPiece(bqueen, "e8");
+
+        b.movePiece("a7", "a5");
+        b.movePiece("d7", "d5");
+        b.movePiece("d8", "d7");
+
+        assert b.getPiece("a5") == bpawn;
+        assert b.getPiece("d5") == bpawn;
+        assert b.getPiece("d7") == bking;
+    }
+
+    public static void test7() {
+        Board b = Board.theBoard();
+        b.clear();
+        Piece.registerPiece(new PawnFactory());
+
+        /*
+         * Verifies that pawns can move only one space in the opponent's home row
+         * Manages the situation where a pawn is allowed to move two spaces 
+         * if it is on the 2nd or 7th row, without checking its color.
+         * (This works because the second spot ahead of these cells is invalid)
+         */
+        for (int i = 0; i < 8; i++) {
+            Piece wp = Piece.createPiece("wp");
+            b.addPiece(wp, "" + (char) ('a' + i) + "7");
+            assert wp.moves(b, "" + (char) ('a' + i) + "7").size() == 1;
+            assert wp.moves(b, "" + (char) ('a' + i) + "7").contains("" + (char) ('a' + i) + "8");
+
+            Piece bp = Piece.createPiece("bp");
+            b.addPiece(bp, "" + (char) ('a' + i) + "2");
+            assert bp.moves(b, "" + (char) ('a' + i) + "2").size() == 1;
+            assert bp.moves(b, "" + (char) ('a' + i) + "2").contains("" + (char) ('a' + i) + "1");
+        }
+    }
+
+    public static void test8() {
+
+        // king moves
+
+        Board b = Board.theBoard();
+
+        b.clear();
+
+        Piece.registerPiece(new KingFactory());
+
+        Piece.registerPiece(new PawnFactory());
+
+        // all open
+
+        Piece k = Piece.createPiece("wk");
+
+        b.addPiece(k, "d5");
+
+        assert k.moves(b, "d5").size() == 8;
+
+        assert k.moves(b, "d5").contains("d6");
+
+        assert k.moves(b, "d5").contains("e6");
+
+        assert k.moves(b, "d5").contains("e5");
+
+        assert k.moves(b, "d5").contains("e4");
+
+        assert k.moves(b, "d5").contains("d4");
+
+        assert k.moves(b, "d5").contains("c4");
+
+        assert k.moves(b, "d5").contains("c5");
+
+        assert k.moves(b, "d5").contains("c6");
+
+        b.clear();
+
+        // all blocked
+
+        Piece k1 = Piece.createPiece("wk");
+
+        b.addPiece(k1, "d5");
+
+        Piece p1 = Piece.createPiece("wp");
+
+        b.addPiece(p1, "d6");
+
+        Piece p2 = Piece.createPiece("wp");
+
+        b.addPiece(p2, "e6");
+
+        Piece p3 = Piece.createPiece("wp");
+
+        b.addPiece(p3, "e5");
+
+        Piece p4 = Piece.createPiece("wp");
+
+        b.addPiece(p4, "e4");
+
+        Piece p5 = Piece.createPiece("wp");
+
+        b.addPiece(p5, "d4");
+
+        Piece p6 = Piece.createPiece("wp");
+
+        b.addPiece(p6, "c4");
+
+        Piece p7 = Piece.createPiece("wp");
+
+        b.addPiece(p7, "c5");
+
+        Piece p8 = Piece.createPiece("wp");
+
+        b.addPiece(p8, "c6");
+
+        assert k.moves(b, "d5").size() == 0;
+
+        b.clear();
+
+        // all capture
+
+        Piece k2 = Piece.createPiece("wk");
+
+        b.addPiece(k2, "d5");
+
+        Piece p9 = Piece.createPiece("bp");
+
+        b.addPiece(p9, "d6");
+
+        Piece p10 = Piece.createPiece("bp");
+
+        b.addPiece(p10, "e6");
+
+        Piece p11 = Piece.createPiece("bp");
+
+        b.addPiece(p11, "e5");
+
+        Piece p12 = Piece.createPiece("bp");
+
+        b.addPiece(p12, "e4");
+
+        Piece p13 = Piece.createPiece("bp");
+
+        b.addPiece(p13, "d4");
+
+        Piece p14 = Piece.createPiece("bp");
+
+        b.addPiece(p14, "c4");
+
+        Piece p15 = Piece.createPiece("bp");
+
+        b.addPiece(p15, "c5");
+
+        Piece p16 = Piece.createPiece("bp");
+
+        b.addPiece(p16, "c6");
+
+        assert k2.moves(b, "d5").size() == 8;
+
+        b.clear();
+
+        // some blocked, some capture
+
+        Piece k3 = Piece.createPiece("wk");
+
+        b.addPiece(k2, "d5");
+
+        Piece p17 = Piece.createPiece("wp");
+
+        b.addPiece(p17, "d6");
+
+        Piece p18 = Piece.createPiece("wp");
+
+        b.addPiece(p18, "e6");
+
+        Piece p19 = Piece.createPiece("wp");
+
+        b.addPiece(p19, "e5");
+
+        Piece p20 = Piece.createPiece("wp");
+
+        b.addPiece(p20, "e4");
+
+        Piece p21 = Piece.createPiece("bp");
+
+        b.addPiece(p21, "d4");
+
+        Piece p22 = Piece.createPiece("bp");
+
+        b.addPiece(p22, "c4");
+
+        Piece p23 = Piece.createPiece("bp");
+
+        b.addPiece(p23, "c5");
+
+        Piece p24 = Piece.createPiece("bp");
+
+        b.addPiece(p24, "c6");
+
+        assert k3.moves(b, "d5").size() == 4;
+
+        b.clear();
+
+        // in row 1
+
+        Piece k4 = Piece.createPiece("wk");
+
+        b.addPiece(k4, "d1");
+
+        assert k4.moves(b, "d1").size() == 5;
+
+        b.clear();
+
+        // in col a
+
+        Piece k5 = Piece.createPiece("wk");
+
+        b.addPiece(k5, "a5");
+
+        assert k5.moves(b, "a5").size() == 5;
+
+        b.clear();
+
+        // in col h
+
+        Piece k6 = Piece.createPiece("wk");
+
+        b.addPiece(k6, "h5");
+
+        assert k6.moves(b, "h5").size() == 5;
+
+        b.clear();
+
+        // in row 8
+
+        Piece k7 = Piece.createPiece("wk");
+
+        b.addPiece(k7, "e8");
+
+        assert k7.moves(b, "e8").size() == 5;
+
+        b.clear();
+
+        // corner
+
+        Piece k8 = Piece.createPiece("wk");
+
+        b.addPiece(k8, "a1");
+
+        assert k8.moves(b, "a1").size() == 3;
+
+        b.clear();
+
+    }
+
     public static void main(String[] args)
     {
 	    // test1();
@@ -1149,41 +1607,53 @@ public class Test {
         //// pieceLocationCorrectLocFormatTest();
         //// pieceLocationIncorrectLocFormatTest();
         //// addAndGetPieceInCorrectFormatTest();
-        pawnColorTest();
-        registerPieceTest();
-        createKnownPiecesTest();
-        createUnknownPiecesTest();
+
+
+        // pawnColorTest();
+        // registerPieceTest();
+        // createKnownPiecesTest();
+        // createUnknownPiecesTest();
         
-        justPawnOnBoardTesting();
-        blackPawnWithOpponentOnBoardTesting1();
-        blackPawnWithOpponentOnBoardTesting2();
-        whitePawnWithTeamAndOpponentPieceTest();
-        blackRookWithOpponentOnBoardTest1();
-        blackRookWithOpponentOnBoardTest2();
-        whiteRookWithOpponentOnBoardTest1();
-        whiteRookWithOpponentOnBoardTest2();
-        bishopAndRookOpponentTest1();
-        bishopTest1();
-        rookTest1();
-        rookPawnBishopOpponentTest();
+        // justPawnOnBoardTesting();
+        // blackPawnWithOpponentOnBoardTesting1();
+        // blackPawnWithOpponentOnBoardTesting2();
+        // whitePawnWithTeamAndOpponentPieceTest();
+        // blackRookWithOpponentOnBoardTest1();
+        // blackRookWithOpponentOnBoardTest2();
+        // whiteRookWithOpponentOnBoardTest1();
+        // whiteRookWithOpponentOnBoardTest2();
+        // bishopAndRookOpponentTest1();
+        // bishopTest1();
+        // rookTest1();
+        // rookPawnBishopOpponentTest();
         
-        rookAndPawnOpponentTest();
-        blackAndWhitePawnOnBoardTest();
-        bishopAndRookOpponentTest2();
+        // rookAndPawnOpponentTest();
+        // blackAndWhitePawnOnBoardTest();
+        // bishopAndRookOpponentTest2();
 
-        whiteQueenTest1();
+        // whiteQueenTest1();
 
-        clearBoard();
-        whiteKnightTest();
+        // clearBoard();
+        // whiteKnightTest();
 
-        whiteKingTest1();
+        // whiteKingTest1();
 
-        movePiece();
+        // movePiece();
 
-        autoGraderTestCase1();
+        // autoGraderTestCase1();
 
-        blackPawnMoveUp();
+        // blackPawnMoveUp();
 
-        iteratorTest();
+        // iteratorTest();
+
+        test2();
+        test3();
+        test4();
+        test5();
+        test6();
+        test7();
+        test8();
+        test9();
+
     }
 }
