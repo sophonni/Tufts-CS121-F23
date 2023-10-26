@@ -1,7 +1,8 @@
 public class Assertion {
     /* You'll need to change the return type of the assertThat methods */
-    static Object assertThat(Object o) {
-	throw new UnsupportedOperationException();
+    static ObjectProvidedForChaining assertThat(Object o)
+    {
+        return new ObjectProvidedForChaining(o);
     }
     static Object assertThat(String s) {
 	throw new UnsupportedOperationException();
