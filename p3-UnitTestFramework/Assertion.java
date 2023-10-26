@@ -7,8 +7,8 @@ public class Assertion {
     static StringProvidedForChaining assertThat(String s) {
         return new StringProvidedForChaining(s);
     }
-    static Object assertThat(boolean b) {
-	throw new UnsupportedOperationException();
+    static BoolProvidedForChaining assertThat(boolean b) {
+	return new BoolProvidedForChaining(b);
     }
     static Object assertThat(int i) {
 	throw new UnsupportedOperationException();

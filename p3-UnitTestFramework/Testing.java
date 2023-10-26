@@ -7,6 +7,7 @@ public class Testing
         //testClassTest();
         assertionObjectProvidedTest();
         assertionStringProvidedTest();
+        assertionBoolProvidedTest();
     }
 
     public static void test1()
@@ -71,6 +72,33 @@ public class Testing
         Assertion.assertThat(s5).isEqualTo(s8);
 
         Assertion.assertThat(s1).contains(s6).startsWith("pa").contains(s4);
+    }
+
+    public static void assertionBoolProvidedTest()
+    {
+        boolean b1 = true;
+        boolean b2 = false;
+
+        Assertion.assertThat(b1).isEqualTo(true);
+
+        try
+        {
+            Assertion.assertThat(b1).isEqualTo(false);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Expected: " + e.toString());
+        }
+
+        try
+        {
+            Assertion.assertThat(b1).isFalse();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Expected: " + e.toString());
+        }
+        Assertion.assertThat(b1).isTrue();
     }
 }
 
