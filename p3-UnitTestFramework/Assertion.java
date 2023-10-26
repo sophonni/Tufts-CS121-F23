@@ -10,7 +10,7 @@ public class Assertion {
     static BoolProvidedForChaining assertThat(boolean b) {
 	return new BoolProvidedForChaining(b);
     }
-    static Object assertThat(int i) {
-	throw new UnsupportedOperationException();
+    static IntProvidedForChaining assertThat(int i) {
+	return new IntProvidedForChaining(i);
     }
 }

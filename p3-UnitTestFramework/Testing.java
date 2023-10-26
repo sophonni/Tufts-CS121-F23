@@ -8,6 +8,7 @@ public class Testing
         assertionObjectProvidedTest();
         assertionStringProvidedTest();
         assertionBoolProvidedTest();
+        assertionIntProvidedTest();
     }
 
     public static void test1()
@@ -98,7 +99,51 @@ public class Testing
         {
             System.out.println("Expected: " + e.toString());
         }
-        Assertion.assertThat(b1).isTrue();
+        Assertion.assertThat(b2).isFalse();
+    }
+
+    public static void assertionIntProvidedTest()
+    {
+        Assertion.assertThat(9).isEqualTo(9);
+        try
+        {
+            Assertion.assertThat(9).isEqualTo(-9);
+            
+        }
+        catch (Exception e)
+        {
+            System.out.println("Expected: " + e.toString());
+        }
+        
+        Assertion.assertThat(0).isEqualTo(-0);
+        Assertion.assertThat(9).isEqualTo(Math.abs(-9));
+        
+        try
+        {
+            Assertion.assertThat(9).isLessThan(-9);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Expected: " + e.toString());
+        }
+
+        try
+        {
+            Assertion.assertThat(9).isLessThan(9);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Expected: " + e.toString());
+        }
+
+        try
+        {
+            Assertion.assertThat(9).isGreaterThan(9);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Expected: " + e.toString());
+        }
     }
 }
 
