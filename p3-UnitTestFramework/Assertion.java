@@ -4,8 +4,8 @@ public class Assertion {
     {
         return new ObjectProvidedForChaining(o);
     }
-    static Object assertThat(String s) {
-	throw new UnsupportedOperationException();
+    static StringProvidedForChaining assertThat(String s) {
+        return new StringProvidedForChaining(s);
     }
     static Object assertThat(boolean b) {
 	throw new UnsupportedOperationException();
