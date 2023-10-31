@@ -4,11 +4,12 @@ public class Testing
 {
     public static void main(String[] args)
     {
-        //testClassTest();
-        assertionObjectProvidedTest();
-        assertionStringProvidedTest();
-        assertionBoolProvidedTest();
-        assertionIntProvidedTest();
+        // testClassTest();
+        // assertionObjectProvidedTest();
+        // assertionStringProvidedTest();
+        // assertionBoolProvidedTest();
+        // assertionIntProvidedTest();
+        quickCheckTest();
     }
 
     public static void test1()
@@ -143,6 +144,18 @@ public class Testing
         catch (Exception e)
         {
             System.out.println("Expected: " + e.toString());
+        }
+    }
+
+    public static void quickCheckTest()
+    {
+        Map<String, Object[]> propertyToFailArgListKVP = Unit.quickCheckClass("p3TestClassIntArg");
+        for (String key : propertyToFailArgListKVP.keySet())
+        {
+            for (Object o : propertyToFailArgListKVP.get(key))
+            {
+                System.out.println("Function {" + key + "} fails with {" + o + "}");
+            }
         }
     }
 }

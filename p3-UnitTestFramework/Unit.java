@@ -1,9 +1,6 @@
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
-
 public class Unit {
     public static Map<String, Throwable> testClass(String name) {
         Map<String, Throwable> testCaseAndErrorKVP = new HashMap<>();
@@ -79,13 +76,12 @@ public class Unit {
     }
 
     //TODO: make private
-    public static void handleMethodExecution(Method[] alphabeticalOrdedMethodsToExecute, Map<String, Throwable> testCaseAndErrorKVP, Object instanceOfGivenClass)
+    public static void handleMethodExecutionForTestClass(Method[] alphabeticalOrdedMethodsToExecute, Map<String, Throwable> testCaseAndErrorKVP, Object instanceOfGivenClass)
     {
         Annotation annotationOfCurrMethod = null;
         /* iterate over and invoke each methods */
         for (Method method : alphabeticalOrdedMethodsToExecute)
         {
-            //System.out.println(method.toString());
             /* ensure that methods with annotation 'BeforeClass' and 'AfterClass' only appear on static methods */
             annotationOfCurrMethod  = method.getAnnotation(BeforeClass.class);
             if (annotationOfCurrMethod != null)
@@ -106,11 +102,11 @@ public class Unit {
                     throw new IllegalArgumentException("Error: @AfterClass annotation appears on non-static method '" + method.toString() + "'.");
                 }
             }
-            executeAndStoreResultForMethod(method, instanceOfGivenClass, testCaseAndErrorKVP);
+            executeAndStoreResultForMethodForTestClass(method, instanceOfGivenClass, testCaseAndErrorKVP);
         }
     }
 
-    private static void executeAndStoreResultForMethod(Method method, Object instanceOfGivenClass, Map<String, Throwable> testCaseAndErrorKVP) {
+    private static void executeAndStoreResultForMethodForTestClass(Method method, Object instanceOfGivenClass, Map<String, Throwable> testCaseAndErrorKVP) {
         try
         {
             int lastDotIndex = method.toString().lastIndexOf('.');
@@ -125,7 +121,6 @@ public class Unit {
         catch (Exception e)
         {
             /* add the error or exception if there are any error encounter */
-            //System.out.println("Add exception for: " + method.toString());
             if (method.getAnnotation(Test.class) != null)
             {
                 Throwable originalException = e.getCause();
@@ -158,60 +153,197 @@ public class Unit {
         /* 5th */
         Method[] afterClass = getAllMethodsWithGivenAnnotation(AfterClass.class, allMethodsOfGivenClass, instanceOfGivenClass);
         Method[] afterClassSortedOrder = sortMethodsInAlphabeticalOrder(afterClass, runtimeClassOfGivenClass);
-        
-
-        /* Psuedocode
-            * 1. execute all the before class methods
-            * 2. iterate through all the test cases methods
-            *      - iterate through all the beforeTestMethods and execute all of them
-            *      - execute the current test methods
-            *      - iterate through all the afterTestMethods and execute all of them
-            * 3. iterate through all the afterClassMethods and execute all of them
-        */
-        /* Other important notes
-            * test cases are methods annotated with @Test
-            * execute each methods in alphabetical other
-            * 
-            * if there is ONE method annotated with @BeforeClass, execute this method first
-            * if there are multiple methods annotated with @BeforeClass, execute them in alphabetical order
-            * 
-            * if there is ONE method annotated with @Before, execute this method before any test cases methods
-            * if there are multiple methods annotated with @Before, execute them in alphabetical order
-            * 
-            * if there is ONE method annotated with @AfterClass, execute this method last
-            * if there are multiple methods annotated with @AfterClass, execute them in alphabetical order
-            * 
-            * if there is ONE method annotated with @After, execute this method after any test cases methods
-            * if there are multiple methods annotated with @After, execute them in alphabetical order
-            * 
-            * methods annotated with @BeforeClass and @AfterClass gets executed regardless if there are any test cases methods
-            * 
-            * @BeforeClass and @AfterClass can only appear on methods that are static, testClass throw exception other wise
-            * 
-            * if a method has 2 annotation, throw exception
-            * if a method annoation is not one of these: {@Test, @BeforeClass, @Before, @AfterClass, @After}, throw exception
-            */
 
         /* execute all methods with @BeforeClass Annotation */
-        handleMethodExecution(beforeClassMethodsSortedOrder, testCaseAndErrorKVP, instanceOfGivenClass);
+        handleMethodExecutionForTestClass(beforeClassMethodsSortedOrder, testCaseAndErrorKVP, instanceOfGivenClass);
 
         for (Method testMethod : testMethodsSortedOrder)
         {
             /* execute all methods with @Before Annotation */
-            handleMethodExecution(beforeTestMethodsSortedOrder, testCaseAndErrorKVP, instanceOfGivenClass);
+            handleMethodExecutionForTestClass(beforeTestMethodsSortedOrder, testCaseAndErrorKVP, instanceOfGivenClass);
 
             /* execute current test method with @Test Annotation */
-            executeAndStoreResultForMethod(testMethod, instanceOfGivenClass, testCaseAndErrorKVP);
+            executeAndStoreResultForMethodForTestClass(testMethod, instanceOfGivenClass, testCaseAndErrorKVP);
         
             /* execute all methods with @After Annotation */
-            handleMethodExecution(afterTestMethodsSortedOrder, testCaseAndErrorKVP, instanceOfGivenClass);
+            handleMethodExecutionForTestClass(afterTestMethodsSortedOrder, testCaseAndErrorKVP, instanceOfGivenClass);
         }
 
         /* execute all methods with @AfterClass Annotation */
-        handleMethodExecution(afterClassSortedOrder, testCaseAndErrorKVP, instanceOfGivenClass);
+        handleMethodExecutionForTestClass(afterClassSortedOrder, testCaseAndErrorKVP, instanceOfGivenClass);
     }
 
     public static Map<String, Object[]> quickCheckClass(String name) {
-	throw new UnsupportedOperationException();
+        Map<String, Object[]> propertyToFailArgListKVP = new HashMap<>();
+        try
+        {
+            Class<?> runtimeClassOfGivenClass = Class.forName(name);
+            Constructor<?> constructorOfGivenClass = runtimeClassOfGivenClass.getDeclaredConstructor();
+            Object instanceOfGivenClass = constructorOfGivenClass.newInstance();
+
+            Method[] allMethodsOfGivenClass = runtimeClassOfGivenClass.getMethods();            
+            Method[] propertyMethods = getAllMethodsWithGivenAnnotation(Property.class, allMethodsOfGivenClass, instanceOfGivenClass);
+            Method[] propertyMethodsSortedOrder = sortMethodsInAlphabeticalOrder(propertyMethods, runtimeClassOfGivenClass);
+            handleMethodExecutionForQuickCheckClass(propertyMethodsSortedOrder, propertyToFailArgListKVP, instanceOfGivenClass);
+            
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return propertyToFailArgListKVP;
+    }
+
+    public static void handleMethodExecutionForQuickCheckClass(Method[] alphabeticalOrdedMethodsToExecute, Map<String, Object[]> propertyToFailArgListKVP, Object instanceOfGivenClass)
+    {
+        boolean resultOfFunc = true;
+        Annotation annotationOfCurrMethod = null;
+        for (Method m : alphabeticalOrdedMethodsToExecute)
+        {
+            annotationOfCurrMethod  = m.getAnnotation(Property.class);
+            if (annotationOfCurrMethod != null)
+            {
+                System.out.println("Curr Meth: " + m.getName());
+                Object[] randParams = randomGeneratedParamsToPassToMethod(m, instanceOfGivenClass);
+                try
+                {
+                    resultOfFunc = (boolean)m.invoke(instanceOfGivenClass, randParams);
+                    if (!resultOfFunc)
+                    {
+                        propertyToFailArgListKVP.put(m.getName(), randParams);
+                    }
+                }
+                catch(Exception e)
+                {
+                    propertyToFailArgListKVP.put(m.getName(), randParams);
+                }
+            }
+        }
+    }
+
+    public static Object[] randomGeneratedParamsToPassToMethod(Method method, Object instanceOfGivenClass)
+    {
+
+        /* get parameters of method to be invoke */
+        Parameter[] methodParameters = method.getParameters();
+        Random rand = new Random();
+
+        ArrayList<Object> paramsToPassIn = new ArrayList<Object>();
+        Object generatedParam = null;
+        Class<?> currAnnotation = null;
+
+        /* iterate through each parameter */
+        for (Parameter parameter : methodParameters)
+        {
+            /* get all elements of the annotaion of method to be invoke */
+            Annotation[] paramAnnotations = parameter.getAnnotations();
+
+            for (Annotation annotaion : paramAnnotations)
+            {
+                /* get annotation of current parameter */
+                currAnnotation = annotaion.annotationType();
+                switch(currAnnotation.getSimpleName())
+                {
+                    case "ListLength":
+                        /* generate random number for the length of the list */
+                        ListLength ll = (ListLength) annotaion;
+                        int minLen = ll.min();
+                        int maxLen = ll.max();
+                        int listLen = rand.nextInt(maxLen - minLen + 1) + minLen;
+
+                        /* get a list to store elements */
+                        List<Object> list = new ArrayList<>();
+
+                        /* get annotaion of the parameterize type of the list */
+                        var annotaionType = method.getAnnotatedParameterTypes()[0];
+                        var annotatedParametrizedType = ((AnnotatedParameterizedType)annotaionType).getAnnotatedActualTypeArguments()[0];
+                        Annotation[] parameterizedAnnotations = annotatedParametrizedType.getAnnotations();
+
+                        for (Annotation a : parameterizedAnnotations)
+                        {
+                            for (int j = 0; j < listLen; j++)
+                            {
+                                /* add random generated element into the list */
+                                Object listObj = generateArgumentsBasedOnSimpleAnnotation(a);
+                                list.add(listObj);
+
+                            }
+                        }
+                        /* store parameters to pass to method upon invoking */
+                        paramsToPassIn.add(list);
+                        break;
+                    case "IntRange":
+                    case "StringSet":
+                        /* generate random string or int and store them as parameter to pass to method upon invoking */
+                        generatedParam = generateArgumentsBasedOnSimpleAnnotation(annotaion);
+                        paramsToPassIn.add(generatedParam);
+                        break;
+                    case "ForAll":
+                        // ForAll fa = (ForAll) annotaion;
+                        // int numIteration = fa.times();
+
+                        // if (numIteration > 100)
+                        // {
+                        //     for (int i = 0; i < 100; i++)
+                        //     {
+                        //         paramsToPassIn.add(handleForAll(annotaion, instanceOfGivenClass));
+                        //     }
+                        // }
+                        // else
+                        // {
+                        //     for (int i = 0; i < numIteration; i++)
+                        //     {
+                        //         paramsToPassIn.add(handleForAll(annotaion, instanceOfGivenClass));
+                        //     }
+                        // }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return paramsToPassIn.toArray(new Object[paramsToPassIn.size()]);
+    }
+
+    // private static Object[] handleForAll(Annotation a, Object instanceOfGivenClass)
+    // {
+    //     ForAll fa = (ForAll) a;
+    //     String funcToExecute = fa.name();
+    //     Class<?> givenClass = instanceOfGivenClass.getClass();
+    //     Method[] methods = givenClass.getMethods();
+    //     for (Method m : methods)
+    //     {
+    //         if (m.getName().equals(funcToExecute))
+    //         {
+    //             return randomGeneratedParamsToPassToMethod(m, instanceOfGivenClass);
+    //         }
+    //     }
+    //     return null;
+    // }
+
+    private static Object generateArgumentsBasedOnSimpleAnnotation(Annotation annotationOfParam)
+    {
+        Random rand = new Random();
+        switch(annotationOfParam.annotationType().getSimpleName())
+        {
+            case "IntRange":
+                /* get int range for parameter */
+                IntRange ir = (IntRange) annotationOfParam;
+                int min = ir.min();
+                int max = ir.max();
+    
+                /* generate random number within range */
+                return rand.nextInt(max - min + 1) + min;
+            case "StringSet":
+                /* get the set provided containing all the possible string to use as parameter */
+                StringSet ss = (StringSet) annotationOfParam;
+                String[] setOfStrings = ss.strings();
+    
+                /* get random string from the set */
+                int randomIndexOfStr = rand.nextInt(setOfStrings.length);
+                return setOfStrings[randomIndexOfStr];
+            default:
+                return null;
+        }
     }
 }
