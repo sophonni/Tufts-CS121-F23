@@ -4,17 +4,22 @@ public class Testing
 {
     public static void main(String[] args)
     {
+        test1();
         // testClassTest();
         // assertionObjectProvidedTest();
         // assertionStringProvidedTest();
         // assertionBoolProvidedTest();
         // assertionIntProvidedTest();
-        quickCheckTest();
+        //quickCheckTest();
     }
 
     public static void test1()
     {
-        Unit.testClass("p3TestClass1");
+        Map<String, Throwable> testCaseAndErrorKVP = Unit.testClass("p3TestClass1");
+        for (String key : testCaseAndErrorKVP.keySet())
+        {
+            System.out.println("Key: " + key + "--> " + testCaseAndErrorKVP.get(key));
+        }
     }
 
     //TODO: might need to ensure that functions gets executed in order
@@ -23,11 +28,8 @@ public class Testing
         Map<String, Throwable> testCaseAndErrorKVP = Unit.testClass("p3TestClass2");
         for (String key : testCaseAndErrorKVP.keySet())
         {
-            System.out.println("Key: " + key);
-            System.out.println(testCaseAndErrorKVP.get(key));
+            System.out.println("Key: " + key + "--> " + testCaseAndErrorKVP.get(key));
         }
-
-        //System.out.println("size: " + testCaseAndErrorKVP.size());
     }
 
     public static void assertionObjectProvidedTest()

@@ -10,7 +10,6 @@ public class Unit {
             Constructor<?> constructorOfGivenClass = runtimeClassOfGivenClass.getDeclaredConstructor();
             Object instanceOfGivenClass = constructorOfGivenClass.newInstance();
             processFunctionsAndStoreResultAccordingToSpec(testCaseAndErrorKVP, instanceOfGivenClass);
-            
         }
         catch (Exception e)
         {
@@ -82,6 +81,7 @@ public class Unit {
         /* iterate over and invoke each methods */
         for (Method method : alphabeticalOrdedMethodsToExecute)
         {
+            //System.out.println("Curr Meth: " + method.getName());
             /* ensure that methods with annotation 'BeforeClass' and 'AfterClass' only appear on static methods */
             annotationOfCurrMethod  = method.getAnnotation(BeforeClass.class);
             if (annotationOfCurrMethod != null)
@@ -109,14 +109,20 @@ public class Unit {
     private static void executeAndStoreResultForMethodForTestClass(Method method, Object instanceOfGivenClass, Map<String, Throwable> testCaseAndErrorKVP) {
         try
         {
-            int lastDotIndex = method.toString().lastIndexOf('.');
-            int parentheses = method.toString().indexOf(')');
+            //System.out.println("Curr Metho: " + method.getName());
+            // int lastDotIndex = method.toString().lastIndexOf('.');
+            // int parentheses = method.toString().indexOf(')');
     
-            String functionName = method.toString().substring(lastDotIndex + 1, parentheses + 1);
+            // String functionName = method.toString().substring(lastDotIndex + 1, parentheses + 1);
     
             /* invoke methods and store their error/exception is any */
             method.invoke(instanceOfGivenClass);
-            testCaseAndErrorKVP.put(functionName, null);
+            //System.out.println(method.getName());
+
+            if (method.getAnnotation(Test.class) != null)
+            {
+                testCaseAndErrorKVP.put(method.getName(), null);
+            }
         }
         catch (Exception e)
         {
@@ -124,7 +130,7 @@ public class Unit {
             if (method.getAnnotation(Test.class) != null)
             {
                 Throwable originalException = e.getCause();
-                testCaseAndErrorKVP.put(method.toString(), originalException);
+                testCaseAndErrorKVP.put(method.getName(), originalException);
             }
         }
     }
