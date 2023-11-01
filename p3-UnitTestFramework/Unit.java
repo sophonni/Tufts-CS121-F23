@@ -179,8 +179,11 @@ public class Unit {
         handleMethodExecutionForTestClass(afterClassSortedOrder, testCaseAndErrorKVP, instanceOfGivenClass);
     }
 
+/*********************************************************************************************************************************************/
+
     public static Map<String, Object[]> quickCheckClass(String name) {
         Map<String, Object[]> propertyToFailArgListKVP = new HashMap<>();
+        assert propertyToFailArgListKVP != null;
         try
         {
             Class<?> runtimeClassOfGivenClass = Class.forName(name);
@@ -200,115 +203,152 @@ public class Unit {
         return propertyToFailArgListKVP;
     }
 
-    public static void handleMethodExecutionForQuickCheckClass(Method[] alphabeticalOrdedMethodsToExecute, Map<String, Object[]> propertyToFailArgListKVP, Object instanceOfGivenClass)
-    {
-        boolean resultOfFunc = true;
-        Annotation annotationOfCurrMethod = null;
-        for (Method m : alphabeticalOrdedMethodsToExecute)
+    public static void handleMethodExecutionForQuickCheckClass(Method[] alphabeticalOrderedMethodsToExecute, Map<String, Object[]> propertyToFailArgListKVP, Object instanceOfGivenClass) {
+        for (Method method : alphabeticalOrderedMethodsToExecute)
         {
-            annotationOfCurrMethod  = m.getAnnotation(Property.class);
+            Annotation annotationOfCurrMethod = method.getAnnotation(Property.class);
+    
             if (annotationOfCurrMethod != null)
             {
-                System.out.println("Curr Meth: " + m.getName());
-                Object[] randParams = randomGeneratedParamsToPassToMethod(m, instanceOfGivenClass);
-                try
+                System.out.println("Curr Meth: " + method.getName());
+    
+                Parameter[] methodParameters = method.getParameters();
+                ArrayList<Object> failParams = new ArrayList<>();
+                generateAndInvokeCombinations(method, instanceOfGivenClass, methodParameters, 0, new Object[methodParameters.length], failParams);
+    
+                // Handle the results, e.g., adding to propertyToFailArgListKVP.
+                if (failParams.isEmpty())
                 {
-                    resultOfFunc = (boolean)m.invoke(instanceOfGivenClass, randParams);
-                    if (!resultOfFunc)
-                    {
-                        propertyToFailArgListKVP.put(m.getName(), randParams);
-                    }
-                }
-                catch(Exception e)
+                    propertyToFailArgListKVP.put(method.getName(), null);
+                } else
                 {
-                    propertyToFailArgListKVP.put(m.getName(), randParams);
+                    propertyToFailArgListKVP.put(method.getName(), failParams.toArray());
+                    System.out.println();
                 }
             }
         }
     }
-
-    public static Object[] randomGeneratedParamsToPassToMethod(Method method, Object instanceOfGivenClass)
-    {
-
-        /* get parameters of method to be invoke */
-        Parameter[] methodParameters = method.getParameters();
-        Random rand = new Random();
-
-        ArrayList<Object> paramsToPassIn = new ArrayList<Object>();
-        Object generatedParam = null;
-        Class<?> currAnnotation = null;
-
-        /* iterate through each parameter */
-        for (Parameter parameter : methodParameters)
+    
+    public static boolean generateAndInvokeCombinations(Method method, Object instanceOfGivenClass, Parameter[] methodParameters, int paramIndex, Object[] currentParams, ArrayList<Object> failParams) {
+        if (paramIndex == methodParameters.length)
         {
-            /* get all elements of the annotaion of method to be invoke */
-            Annotation[] paramAnnotations = parameter.getAnnotations();
-
-            for (Annotation annotaion : paramAnnotations)
+            try
             {
-                /* get annotation of current parameter */
-                currAnnotation = annotaion.annotationType();
-                switch(currAnnotation.getSimpleName())
+                /* invoke the method with currentParams */
+                boolean resultOfFunc = (boolean) method.invoke(instanceOfGivenClass, currentParams);
+    
+                /* store parameters that cause the method to fail */
+                if (!resultOfFunc)
                 {
-                    case "ListLength":
-                        /* generate random number for the length of the list */
-                        ListLength ll = (ListLength) annotaion;
-                        int minLen = ll.min();
-                        int maxLen = ll.max();
-                        int listLen = rand.nextInt(maxLen - minLen + 1) + minLen;
+                    for(Object param : currentParams)
+                    {
+                        failParams.add(param);
+                    }
+                    //failParams.add(currentParams.clone());
 
-                        /* get a list to store elements */
-                        List<Object> list = new ArrayList<>();
-
-                        /* get annotaion of the parameterize type of the list */
-                        var annotaionType = method.getAnnotatedParameterTypes()[0];
-                        var annotatedParametrizedType = ((AnnotatedParameterizedType)annotaionType).getAnnotatedActualTypeArguments()[0];
-                        Annotation[] parameterizedAnnotations = annotatedParametrizedType.getAnnotations();
-
-                        for (Annotation a : parameterizedAnnotations)
-                        {
-                            for (int j = 0; j < listLen; j++)
-                            {
-                                /* add random generated element into the list */
-                                Object listObj = generateArgumentsBasedOnSimpleAnnotation(a);
-                                list.add(listObj);
-
-                            }
-                        }
-                        /* store parameters to pass to method upon invoking */
-                        paramsToPassIn.add(list);
-                        break;
-                    case "IntRange":
-                    case "StringSet":
-                        /* generate random string or int and store them as parameter to pass to method upon invoking */
-                        generatedParam = generateArgumentsBasedOnSimpleAnnotation(annotaion);
-                        paramsToPassIn.add(generatedParam);
-                        break;
-                    case "ForAll":
-                        // ForAll fa = (ForAll) annotaion;
-                        // int numIteration = fa.times();
-
-                        // if (numIteration > 100)
-                        // {
-                        //     for (int i = 0; i < 100; i++)
-                        //     {
-                        //         paramsToPassIn.add(handleForAll(annotaion, instanceOfGivenClass));
-                        //     }
-                        // }
-                        // else
-                        // {
-                        //     for (int i = 0; i < numIteration; i++)
-                        //     {
-                        //         paramsToPassIn.add(handleForAll(annotaion, instanceOfGivenClass));
-                        //     }
-                        // }
-                        break;
-                    default:
-                        break;
+                    /* move to a new function */
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                /* store parameters that cause the method to throw exception */
+                for(Object param : currentParams)
+                {
+                    failParams.add(param);
+                }
+                // failParams.add(currentParams.clone());
+    
+                /* move to a new function */
+                return false;
+            }
+            return true;
+        }
+    
+        Parameter parameter = methodParameters[paramIndex];
+        Annotation[] paramAnnotations = parameter.getAnnotations();
+    
+        for (Annotation annotation : paramAnnotations)
+        {
+            /* generate possible values for the current parameter's annotation */
+            Object[] allPossibleParams = generateAllPossibleValuesForAllParams(annotation, method);
+    
+            /* recursively iterate through the possible values */
+            for (Object paramValue : allPossibleParams)
+            {
+                currentParams[paramIndex] = paramValue;
+                boolean success = generateAndInvokeCombinations(method, instanceOfGivenClass, methodParameters, paramIndex + 1, currentParams, failParams);
+                if (!success)
+                {
+                    /* if an exception occurs, move to a new function */
+                    return false;
                 }
             }
         }
-        return paramsToPassIn.toArray(new Object[paramsToPassIn.size()]);
+        return true;
+    }
+    
+    public static Object[] generateAllPossibleValuesForAllParams(Annotation annotaion, Method method)
+    {
+        Object[] allPossibleParams = null;
+        Class<?> currAnnotation = annotaion.annotationType();
+        switch(currAnnotation.getSimpleName())
+        {
+            case "ListLength":
+                /* generate random number for the length of the list */
+                ListLength ll = (ListLength) annotaion;
+                int minLen = ll.min();
+                int maxLen = ll.max();
+
+                /* get a list to store elements */
+                List<Object> list = new ArrayList<>();
+
+                /* get annotaion of the parameterize type of the list */
+                var annotaionType = method.getAnnotatedParameterTypes()[0];
+                var annotatedParametrizedType = ((AnnotatedParameterizedType)annotaionType).getAnnotatedActualTypeArguments()[0];
+                Annotation[] parameterizedAnnotations = annotatedParametrizedType.getAnnotations();
+
+                // for (Annotation a : parameterizedAnnotations)
+                // {
+                //     for (int j = 0; j < listLen; j++)
+                //     {
+                //         /* add random generated element into the list */
+                //         Object listObj = generateAllPossibleArguments(a);
+                //         list.add(listObj);
+
+                //     }
+                // }
+                // /* store parameters to pass to method upon invoking */
+                // paramsToPassIn.add(list);
+                break;
+            case "IntRange":
+            case "StringSet":
+                /* generate random string or int and store them as parameter to pass to method upon invoking */
+                allPossibleParams = generateAllPossibleArguments(annotaion);
+                break;
+            case "ForAll":
+                // ForAll fa = (ForAll) annotaion;
+                // int numIteration = fa.times();
+
+                // if (numIteration > 100)
+                // {
+                //     for (int i = 0; i < 100; i++)
+                //     {
+                //         paramsToPassIn.add(handleForAll(annotaion, instanceOfGivenClass));
+                //     }
+                // }
+                // else
+                // {
+                //     for (int i = 0; i < numIteration; i++)
+                //     {
+                //         paramsToPassIn.add(handleForAll(annotaion, instanceOfGivenClass));
+                //     }
+                // }
+                break;
+            default:
+                break;
+        }
+        return allPossibleParams;
     }
 
     // private static Object[] handleForAll(Annotation a, Object instanceOfGivenClass)
@@ -327,9 +367,10 @@ public class Unit {
     //     return null;
     // }
 
-    private static Object generateArgumentsBasedOnSimpleAnnotation(Annotation annotationOfParam)
+    private static Object[] generateAllPossibleArguments(Annotation annotationOfParam)
     {
-        Random rand = new Random();
+        ArrayList<Object> allPossibleArguments = new ArrayList<Object>();
+        
         switch(annotationOfParam.annotationType().getSimpleName())
         {
             case "IntRange":
@@ -337,17 +378,28 @@ public class Unit {
                 IntRange ir = (IntRange) annotationOfParam;
                 int min = ir.min();
                 int max = ir.max();
+
     
+                if (max < min)
+                {
+                    throw new IllegalArgumentException("Error: Max < Min");
+                }
                 /* generate random number within range */
-                return rand.nextInt(max - min + 1) + min;
+                for (int i = min; i <= max; i++)
+                {
+                    allPossibleArguments.add(i);
+                }
+                return allPossibleArguments.toArray(new Object[allPossibleArguments.size()]);
             case "StringSet":
                 /* get the set provided containing all the possible string to use as parameter */
                 StringSet ss = (StringSet) annotationOfParam;
                 String[] setOfStrings = ss.strings();
     
-                /* get random string from the set */
-                int randomIndexOfStr = rand.nextInt(setOfStrings.length);
-                return setOfStrings[randomIndexOfStr];
+                for (String s : setOfStrings)
+                {
+                    allPossibleArguments.add(s);
+                }
+                return allPossibleArguments.toArray();
             default:
                 return null;
         }

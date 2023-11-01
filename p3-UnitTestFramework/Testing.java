@@ -4,13 +4,13 @@ public class Testing
 {
     public static void main(String[] args)
     {
-        test1();
+        //test1();
         // testClassTest();
         // assertionObjectProvidedTest();
         // assertionStringProvidedTest();
         // assertionBoolProvidedTest();
         // assertionIntProvidedTest();
-        //quickCheckTest();
+        quickCheckTest();
     }
 
     public static void test1()
@@ -152,13 +152,15 @@ public class Testing
     public static void quickCheckTest()
     {
         Map<String, Object[]> propertyToFailArgListKVP = Unit.quickCheckClass("p3TestClassIntArg");
-        for (String key : propertyToFailArgListKVP.keySet())
-        {
-            for (Object o : propertyToFailArgListKVP.get(key))
-            {
-                System.out.println("Function {" + key + "} fails with {" + o + "}");
-            }
-        }
+        System.out.println("Function");
+        // for (String key : propertyToFailArgListKVP.keySet())
+        // {
+        //     Object[] failParams = propertyToFailArgListKVP.get(key);
+        //     for (Object o : failParams)
+        //     {
+        //         System.out.println("Function {" + key + "} fails with {" + o + "}");
+        //     }
+        // }
     }
 }
 
