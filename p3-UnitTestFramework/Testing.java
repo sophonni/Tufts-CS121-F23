@@ -152,7 +152,6 @@ public class Testing
     public static void quickCheckTest()
     {
         Map<String, Object[]> propertyToFailArgListKVP = Unit.quickCheckClass("p3TestClassIntArg");
-        System.out.println("Function");
         // for (String key : propertyToFailArgListKVP.keySet())
         // {
         //     Object[] failParams = propertyToFailArgListKVP.get(key);

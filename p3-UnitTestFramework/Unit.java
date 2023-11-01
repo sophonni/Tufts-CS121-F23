@@ -1,6 +1,8 @@
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
+
+import javax.lang.model.util.ElementScanner14;
 public class Unit {
     public static Map<String, Throwable> testClass(String name) {
         Map<String, Throwable> testCaseAndErrorKVP = new HashMap<>();
@@ -207,7 +209,6 @@ public class Unit {
         for (Method method : alphabeticalOrderedMethodsToExecute)
         {
             Annotation annotationOfCurrMethod = method.getAnnotation(Property.class);
-    
             if (annotationOfCurrMethod != null)
             {
                 System.out.println("Curr Meth: " + method.getName());
@@ -308,18 +309,24 @@ public class Unit {
                 var annotatedParametrizedType = ((AnnotatedParameterizedType)annotaionType).getAnnotatedActualTypeArguments()[0];
                 Annotation[] parameterizedAnnotations = annotatedParametrizedType.getAnnotations();
 
-                // for (Annotation a : parameterizedAnnotations)
-                // {
-                //     for (int j = 0; j < listLen; j++)
-                //     {
-                //         /* add random generated element into the list */
-                //         Object listObj = generateAllPossibleArguments(a);
-                //         list.add(listObj);
+                for (Annotation a : parameterizedAnnotations)
+                {
+                    allPossibleParams = generateAllPossibleArguments(a);
+                }
+                if (minLen < 0)
+                {
+                    throw new IllegalArgumentException("Error: List length can't be less than 0.");
+                }
+                else
+                {
+                    ArrayList<Object[]> allPossLists = new ArrayList<>();
 
-                //     }
-                // }
-                // /* store parameters to pass to method upon invoking */
-                // paramsToPassIn.add(list);
+                    for (int i = 0; i <= maxLen; i++)
+                    {
+                        generateAllPossibleLists(i, allPossibleParams, allPossLists);
+                    }
+                    System.out.println("Size: " + allPossLists.size());
+                }
                 break;
             case "IntRange":
             case "StringSet":
@@ -350,22 +357,46 @@ public class Unit {
         }
         return allPossibleParams;
     }
+    private static void generateAllPossibleLists(int targetListLen, Object[] allPossibleElementsForList, ArrayList<Object[]> allPossLists) {
+        // Use a Set to store unique lists
+        Set<List<Object>> uniqueLists = new HashSet<>();
+        
+        /* list of length 0 */
+        if (targetListLen == 0) {
+            List<Object> listsWithLen0 = new ArrayList<>();
+            uniqueLists.add(listsWithLen0);
+        }
+        /* list of length 1 */
+        else if (targetListLen == 1) {
+            for (Object element : allPossibleElementsForList) {
+                /* create a length 1 list for each element out of all the possible elements */
+                List<Object> listsWithLen1 = new ArrayList<>();
+                listsWithLen1.add(element);
+                uniqueLists.add(listsWithLen1);
+            }
+        } else {
+            /* iterate through the existing lists */
+            for (Object[] onePossList : allPossLists) {
 
-    // private static Object[] handleForAll(Annotation a, Object instanceOfGivenClass)
-    // {
-    //     ForAll fa = (ForAll) a;
-    //     String funcToExecute = fa.name();
-    //     Class<?> givenClass = instanceOfGivenClass.getClass();
-    //     Method[] methods = givenClass.getMethods();
-    //     for (Method m : methods)
-    //     {
-    //         if (m.getName().equals(funcToExecute))
-    //         {
-    //             return randomGeneratedParamsToPassToMethod(m, instanceOfGivenClass);
-    //         }
-    //     }
-    //     return null;
-    // }
+                /* create a new list by adding each possible element to the existing possible list */
+                for (Object element : allPossibleElementsForList) {
+                    List<Object> newList = new ArrayList<>(Arrays.asList(onePossList));
+                    newList.add(element);
+    
+                    if (newList.size() == targetListLen) {
+                        /* if the new list has reached the desired length, add it to uniqueLists */
+                        uniqueLists.add(newList);
+                    }
+                }
+            }
+        }
+        
+        /* add all unique lists to allPossLists */
+        for (List<Object> uniqueList : uniqueLists) {
+            //System.out.println("Here: " + uniqueLists);
+            allPossLists.add(uniqueList.toArray());
+        }
+    }
 
     private static Object[] generateAllPossibleArguments(Annotation annotationOfParam)
     {
