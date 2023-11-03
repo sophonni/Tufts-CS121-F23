@@ -185,7 +185,6 @@ public class Unit {
 
     public static Map<String, Object[]> quickCheckClass(String name) {
         Map<String, Object[]> propertyToFailArgListKVP = new HashMap<>();
-        assert propertyToFailArgListKVP != null;
         try
         {
             Class<?> runtimeClassOfGivenClass = Class.forName(name);
@@ -196,6 +195,7 @@ public class Unit {
             Method[] propertyMethods = getAllMethodsWithGivenAnnotation(Property.class, allMethodsOfGivenClass, instanceOfGivenClass);
             Method[] propertyMethodsSortedOrder = sortMethodsInAlphabeticalOrder(propertyMethods, runtimeClassOfGivenClass);
             handleMethodExecutionForQuickCheckClass(propertyMethodsSortedOrder, propertyToFailArgListKVP, instanceOfGivenClass);
+            System.out.println("Size: " + propertyToFailArgListKVP.size());
             
         }
         catch (Exception e)
@@ -206,9 +206,11 @@ public class Unit {
     }
 
     public static void handleMethodExecutionForQuickCheckClass(Method[] alphabeticalOrderedMethodsToExecute, Map<String, Object[]> propertyToFailArgListKVP, Object instanceOfGivenClass) {
+        Class<?> givenClass = instanceOfGivenClass.getClass();
         for (Method method : alphabeticalOrderedMethodsToExecute)
         {
             List<Object> failParams = new ArrayList<>();
+            List<Object> ForAllExceptions = new ArrayList<>();
             ArrayList<Object[]> allPossLists = new ArrayList<>();
             Annotation annotationOfCurrMethod = method.getAnnotation(Property.class);
             if (annotationOfCurrMethod != null)
@@ -223,7 +225,8 @@ public class Unit {
                     Parameter theOneParam = methodParameters[0];
                     Annotation[] annotations = theOneParam.getAnnotations();
                     Annotation annotaionOfTheOneParam = annotations[0];
-                    Object[] allPossValsForParam = generateAllPossibleValuesForAllParams(annotaionOfTheOneParam, method, allPossLists);
+                    Class<?> annotaionOfTheOneParamClass = annotaionOfTheOneParam.annotationType();
+                    Object[] allPossValsForParam = generateAllPossibleValuesForAllParams(annotaionOfTheOneParam, method, allPossLists, givenClass, instanceOfGivenClass, ForAllExceptions);
                     
                     /* the 1 parameter that is passed in has @ListLength as annotation */
                     if (allPossLists.size() != 0)
@@ -252,12 +255,38 @@ public class Unit {
                                 failParams.add(onePossListToPassIn);
                                 break;
                             }
-
                         }
+                    }
+                    /* the 1 parameter that is passed in has either @ForAll as parameter*/
+                    else if (annotaionOfTheOneParamClass.getSimpleName().equals("ForAll"))
+                    {
+                        if (ForAllExceptions.isEmpty())
+                        {
+                            try
+                            {
+                                boolean resultAfterInvoking = (boolean)method.invoke(instanceOfGivenClass, theOneParam);
+                                if (!resultAfterInvoking)
+                                {
+                                    failParams.add(theOneParam);
+                                    break;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                /* store the current possible list if the method throw an exception */
+                                failParams.add(theOneParam);
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            failParams.add(theOneParam);
+                        }
+
                     }
                     /* the 1 parameter that is passed in has either @Stringset or @Inrange as parameter*/
                     else
-                    {
+                    { 
                         /* iterate through all the possible values */
                         for (Object onePossVal : allPossValsForParam)
                         {
@@ -277,40 +306,46 @@ public class Unit {
                                 failParams.add(onePossVal);
                                 break;
                             }
-
+    
                         }
                     }
                 }
-                // for (Parameter p : methodParameters)
-                // {
-                //     Annotation[] paramAnnotations = p.getAnnotations();
-                //     for (Annotation a : paramAnnotations)
-                //     {
-                //         Class<?> currAnnotation = a.annotationType();
-                //         String s = currAnnotation.getSimpleName();
-                //         if (s.equals("ListLength"))
-                //         {
-                //             System.out.println("Yes");
-                //             ArrayList<Object[]> allPossLists = new ArrayList<>();
-                //             generateAllPossibleValuesForAllParams(a, method, allPossLists);
-                //         }
-                //     }
-                // }
+                else
+                {
+
+                    // for (Parameter p : methodParameters)
+                    // {
+                    //     Annotation[] paramAnnotations = p.getAnnotations();
+                    //     for (Annotation a : paramAnnotations)
+                    //     {
+                    //         Class<?> currAnnotation = a.annotationType();
+                    //         String s = currAnnotation.getSimpleName();
+                    //         if (s.equals("ListLength"))
+                    //         {
+                    //             System.out.println("Yes");
+                    //             ArrayList<Object[]> allPossLists = new ArrayList<>();
+                    //             generateAllPossibleValuesForAllParams(a, method, allPossLists);
+                    //         }
+                    //     }
+                    // }
+                }
 
                 // ArrayList<Object> failParams = new ArrayList<>();
 
                 // //generateAndInvokeCombinations(method, instanceOfGivenClass, methodParameters, failParams, allPossLists);
     
                 // // Handle the results, e.g., adding to propertyToFailArgListKVP.
-                if (failParams.isEmpty())
-                {
-                    propertyToFailArgListKVP.put(method.getName(), null);
-                } else
-                {
-                    propertyToFailArgListKVP.put(method.getName(), failParams.toArray());
-                    //System.out.println();
-                }
                 //propertyToFailArgListKVP.put(method.getName(), failParams.toArray());
+            }
+            if (failParams.isEmpty())
+            {
+                Object[] o = null;
+                propertyToFailArgListKVP.put(method.getName(), o);
+            }
+            else
+            {
+                propertyToFailArgListKVP.put(method.getName(), failParams.toArray());
+                //System.out.println();
             }
         }
     }
@@ -468,7 +503,7 @@ public class Unit {
     //     return true;
     // }
     
-    public static Object[] generateAllPossibleValuesForAllParams(Annotation annotaion, Method method, ArrayList<Object[]> allPossLists)
+    public static Object[] generateAllPossibleValuesForAllParams(Annotation annotaion, Method method, ArrayList<Object[]> allPossLists, Class<?> givenClass, Object instanceOfGivenClass, List<Object> ForAllAnnotationExceptions)
     {
         Object[] paramPossVal = null;
         //ArrayList<Object> paramPossVal = new ArrayList<>();
@@ -480,9 +515,6 @@ public class Unit {
                 ListLength ll = (ListLength) annotaion;
                 int minLen = ll.min();
                 int maxLen = ll.max();
-
-                /* get a list to store elements */
-                List<Object> list = new ArrayList<>();
 
                 /* get annotaion of the parameterize type of the list */
                 var annotaionType = method.getAnnotatedParameterTypes()[0];
@@ -512,9 +544,46 @@ public class Unit {
                 paramPossVal = generateAllPossibleArguments(annotaion);
                 break;
             case "ForAll":
-                // ForAll fa = (ForAll) annotaion;
-                // int numIteration = fa.times();
+                ForAll fa = (ForAll) annotaion;
+                int numIteration = fa.times();
+                String functionsName = fa.name();
 
+                Method methodToGenrateVals = null;                
+                try
+                {
+                    methodToGenrateVals = givenClass.getMethod(functionsName);
+
+                    /* ensure the name of the method provided as arg is non-static */
+                    if (Modifier.isStatic(methodToGenrateVals.getModifiers()))
+                    {
+                        throw new IllegalArgumentException("Error: Provided method to generate values should not be static.");
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    ForAllAnnotationExceptions.add(e);
+                }
+                
+                int totalNumOfMethodCall = (numIteration > 100) ? 100 : numIteration;
+                
+                /* invoke the method that have @ForAll as parameter */
+                for (int i = 1; i <= totalNumOfMethodCall; i++)
+                {
+                    try
+                    {
+                        /* invoke on the method with the provided name to generate a set */
+                        methodToGenrateVals.invoke(instanceOfGivenClass);
+                    }
+                    catch (Exception e)
+                    {
+                        ForAllAnnotationExceptions.add(e);
+                    }
+                }
+                /*
+                 * call the method
+                 * method returns a set
+                 */
                 // if (numIteration > 100)
                 // {
                 //     for (int i = 0; i < 100; i++)
