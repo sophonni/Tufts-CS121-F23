@@ -208,90 +208,270 @@ public class Unit {
     public static void handleMethodExecutionForQuickCheckClass(Method[] alphabeticalOrderedMethodsToExecute, Map<String, Object[]> propertyToFailArgListKVP, Object instanceOfGivenClass) {
         for (Method method : alphabeticalOrderedMethodsToExecute)
         {
+            List<Object> failParams = new ArrayList<>();
+            ArrayList<Object[]> allPossLists = new ArrayList<>();
             Annotation annotationOfCurrMethod = method.getAnnotation(Property.class);
             if (annotationOfCurrMethod != null)
             {
                 System.out.println("Curr Meth: " + method.getName());
     
                 Parameter[] methodParameters = method.getParameters();
-                ArrayList<Object> failParams = new ArrayList<>();
-                generateAndInvokeCombinations(method, instanceOfGivenClass, methodParameters, 0, new Object[methodParameters.length], failParams);
+
+                /* only 1 parameter is passed in */
+                if (methodParameters.length == 1)
+                {
+                    Parameter theOneParam = methodParameters[0];
+                    Annotation[] annotations = theOneParam.getAnnotations();
+                    Annotation annotaionOfTheOneParam = annotations[0];
+                    Object[] allPossValsForParam = generateAllPossibleValuesForAllParams(annotaionOfTheOneParam, method, allPossLists);
+                    
+                    /* the 1 parameter that is passed in has @ListLength as annotation */
+                    if (allPossLists.size() != 0)
+                    {
+                        /* iterate through all the possible lists */
+                        for (Object[] onePossList : allPossLists)
+                        {
+                            /* create a new list using the current possible list, to pass as parameter */
+                            List<Object> onePossListToPassIn = new ArrayList<>(Arrays.asList(onePossList));
+
+                            try
+                            {
+                                /* invoking the current method with the current possible list */
+                                boolean resultAfterInvoking = (boolean)method.invoke(instanceOfGivenClass, onePossListToPassIn);
+                                
+                                /* store the current possible list if the method returns false */
+                                if (!resultAfterInvoking)
+                                {
+                                    failParams.add(onePossListToPassIn);
+                                    break;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                /* store the current possible list if the method throw an exception */
+                                failParams.add(onePossListToPassIn);
+                                break;
+                            }
+
+                        }
+                    }
+                    /* the 1 parameter that is passed in has either @Stringset or @Inrange as parameter*/
+                    else
+                    {
+                        /* iterate through all the possible values */
+                        for (Object onePossVal : allPossValsForParam)
+                        {
+                            try
+                            {
+                                boolean resultAfterInvoking = (boolean)method.invoke(instanceOfGivenClass, onePossVal);
+                                /* store the current possible values if the method returns false */
+                                if (!resultAfterInvoking)
+                                {
+                                    failParams.add(onePossVal);
+                                    break;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                /* store the current possible values if the method throw an exception */
+                                failParams.add(onePossVal);
+                                break;
+                            }
+
+                        }
+                    }
+                }
+                // for (Parameter p : methodParameters)
+                // {
+                //     Annotation[] paramAnnotations = p.getAnnotations();
+                //     for (Annotation a : paramAnnotations)
+                //     {
+                //         Class<?> currAnnotation = a.annotationType();
+                //         String s = currAnnotation.getSimpleName();
+                //         if (s.equals("ListLength"))
+                //         {
+                //             System.out.println("Yes");
+                //             ArrayList<Object[]> allPossLists = new ArrayList<>();
+                //             generateAllPossibleValuesForAllParams(a, method, allPossLists);
+                //         }
+                //     }
+                // }
+
+                // ArrayList<Object> failParams = new ArrayList<>();
+
+                // //generateAndInvokeCombinations(method, instanceOfGivenClass, methodParameters, failParams, allPossLists);
     
-                // Handle the results, e.g., adding to propertyToFailArgListKVP.
+                // // Handle the results, e.g., adding to propertyToFailArgListKVP.
                 if (failParams.isEmpty())
                 {
                     propertyToFailArgListKVP.put(method.getName(), null);
                 } else
                 {
                     propertyToFailArgListKVP.put(method.getName(), failParams.toArray());
-                    System.out.println();
+                    //System.out.println();
                 }
+                //propertyToFailArgListKVP.put(method.getName(), failParams.toArray());
             }
         }
     }
-    
-    public static boolean generateAndInvokeCombinations(Method method, Object instanceOfGivenClass, Parameter[] methodParameters, int paramIndex, Object[] currentParams, ArrayList<Object> failParams) {
-        if (paramIndex == methodParameters.length)
-        {
-            try
-            {
-                /* invoke the method with currentParams */
-                boolean resultOfFunc = (boolean) method.invoke(instanceOfGivenClass, currentParams);
-    
-                /* store parameters that cause the method to fail */
-                if (!resultOfFunc)
-                {
-                    for(Object param : currentParams)
-                    {
-                        failParams.add(param);
-                    }
-                    //failParams.add(currentParams.clone());
+    // public static void generateAndInvokeCombinations(Method method, Object instanceOfGivenClass, Parameter[] methodParameters, ArrayList<Object> failParams, ArrayList<Object[]> allPossLists)
+    // {
+    //     Map<String, Object[]> paramAndTheirListOfPossVal = new HashMap<>();
+    //     for (Parameter parameter : methodParameters)
+    //     {
+    //         Annotation[] paramAnnotations = parameter.getAnnotations();
+    //         for (Annotation annotation : paramAnnotations)
+    //         {
+    //             Object[] currParamsPossVals = generateAllPossibleValuesForAllParams(annotation, method, allPossLists);
+    //             paramAndTheirListOfPossVal.put(parameter.toString(), currParamsPossVals);
+    //         }
+    //     }
 
-                    /* move to a new function */
-                    return false;
-                }
-            }
-            catch (Exception e)
-            {
-                /* store parameters that cause the method to throw exception */
-                for(Object param : currentParams)
-                {
-                    failParams.add(param);
-                }
-                // failParams.add(currentParams.clone());
+    //     // ArrayList paramsToPassIn = new ArrayList<>();
+    //     int i = 0;
+    //     List<Object> paramsToPassIn = new ArrayList<>();
+    //     for (Parameter parameter : methodParameters)
+    //     {
+    //         Object[] listOfPossibleValForCurrParam = paramAndTheirListOfPossVal.get(parameter.toString());
+    //         List<Object> possVal = new ArrayList<>(Arrays.asList(listOfPossibleValForCurrParam));
+
+    //         // List<List<Object>> allPossComb =  generateAllCombinations(methodParameters, paramAndTheirListOfPossVal.get(parameter.toString()));
+    //         // for (List<Object>  : allPossComb)
+    //         // {
+    //         //     for (Object o : l)
+    //         //     {
+    //         //         System.out.println("Here: " + o);
+    //         //     }
+    //         // }
+            
+    //         //System.out.print(allPossComb);
+    //         break;
+    //         // Object[] currParamPossVals = paramAndTheirListOfPossVal.get(parameter.toString());
+    //         // List<Object> currParamPossValsArr = new ArrayList<>(Arrays.asList(currParamPossVals));
+
+    //         // if(allPossLists.size() != 0)
+    //         // {
+    //         //     for (Object valOfParam : currParamPossValsArr)
+    //         //     {
+    //         //         paramsToPassIn.add(valOfParam);
+    //         //     }
+    //         // }
+    //     }
+    // }
+
+    // public static List<List<Object>> generateAllCombinations(Parameter[] parameters, Object[] currParamPossVal) {
+    //     List<List<Object>> combinations = new ArrayList<>();
+    //     generateCombinations(parameters, combinations, new ArrayList<>(), 0, currParamPossVal);
+    //     return combinations;
+    // }
+
+    // private static void generateCombinations(Parameter[] parameters, List<List<Object>> combinations, List<Object> currentCombination, int paramIndex, Object[] currParamPossVal) {
+    //     if (paramIndex == parameters.length) {
+    //         // We have a complete combination
+    //         combinations.add(new ArrayList<>(currentCombination));
+    //     } else {
+    //         Parameter currentParam = parameters[paramIndex];
+    //         for (Object paramValue : currParamPossVal) {
+    //             currentCombination.add(paramValue);
+    //             generateCombinations(parameters, combinations, currentCombination, paramIndex + 1, currParamPossVal);
+    //             currentCombination.remove(currentCombination.size() - 1);
+    //         }
+    //     }
+    // }
+
+    // public static boolean generateAndInvokeCombinations(Method method, Object instanceOfGivenClass, Parameter[] methodParameters, int paramIndex, Object[] currentParams, ArrayList<Object> failParams, ArrayList<Object[]> allPossLists) {
+    //     if (paramIndex == methodParameters.length)
+    //     {
+    //         try
+    //         {
+    //             /* invoke the method with currentParams */
+    //             if (allPossLists != null)
+    //             {
+    //                 for (Object[] possibleList : allPossLists)
+    //                 {
+    //                     boolean resultOfFunc = (boolean) method.invoke(instanceOfGivenClass, currentParams, possibleList);
+    //                     if (!resultOfFunc)
+    //                     {
+    //                         for(Object param : currentParams)
+    //                         {
+    //                             failParams.add(param);
+    //                         }
+    //                         failParams.add(possibleList);
+                            
+    //                         /* move to a new function */
+    //                         return false;
+    //                     }
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 boolean resultOfFunc = (boolean) method.invoke(instanceOfGivenClass, currentParams);
+    //                 /* store parameters that cause the method to fail */
+    //                 if (!resultOfFunc)
+    //                 {
+    //                     for(Object param : currentParams)
+    //                     {
+    //                         failParams.add(param);
+    //                     }
+                        
+    //                     /* move to a new function */
+    //                     return false;
+    //                 }
+    //             }
     
-                /* move to a new function */
-                return false;
-            }
-            return true;
-        }
+    //         }
+    //         catch (Exception e)
+    //         {
+    //             System.out.println("Ex: " + e);
+    //             /* store parameters that cause the method to throw exception */
+    //             for(Object param : currentParams)
+    //             {
+    //                 failParams.add(param);
+    //             }
+    //             // failParams.add(currentParams.clone());
     
-        Parameter parameter = methodParameters[paramIndex];
-        Annotation[] paramAnnotations = parameter.getAnnotations();
+    //             /* move to a new function */
+    //             return false;
+    //         }
+    //         return true;
+    //     }
     
-        for (Annotation annotation : paramAnnotations)
-        {
-            /* generate possible values for the current parameter's annotation */
-            Object[] allPossibleParams = generateAllPossibleValuesForAllParams(annotation, method);
+    //     Parameter parameter = methodParameters[paramIndex];
+    //     Annotation[] paramAnnotations = parameter.getAnnotations();
     
-            /* recursively iterate through the possible values */
-            for (Object paramValue : allPossibleParams)
-            {
-                currentParams[paramIndex] = paramValue;
-                boolean success = generateAndInvokeCombinations(method, instanceOfGivenClass, methodParameters, paramIndex + 1, currentParams, failParams);
-                if (!success)
-                {
-                    /* if an exception occurs, move to a new function */
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    //     for (Annotation annotation : paramAnnotations)
+    //     {
+    //         //ArrayList<Object[]> allPossLists = new ArrayList<>();
+    //         /* generate possible values for the current parameter's annotation */
+    //         Object[] allPossibleParams = generateAllPossibleValuesForAllParams(annotation, method, allPossLists);
     
-    public static Object[] generateAllPossibleValuesForAllParams(Annotation annotaion, Method method)
+    //         /* recursively iterate through the possible values */
+    //         for (Object paramValue : allPossibleParams)
+    //         {
+    //             currentParams[paramIndex] = paramValue;
+    //             boolean success;
+    //             if (allPossLists.size() == 0)
+    //             {
+    //                 success = generateAndInvokeCombinations(method, instanceOfGivenClass, methodParameters, paramIndex + 1, currentParams, failParams, null);
+    //             }
+    //             else
+    //             {
+    //                 success = generateAndInvokeCombinations(method, instanceOfGivenClass, methodParameters, paramIndex + 1, currentParams, failParams, allPossLists);
+    //             }
+    //             if (!success)
+    //             {
+    //                 /* if an exception occurs, move to a new function */
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    //     return true;
+    // }
+    
+    public static Object[] generateAllPossibleValuesForAllParams(Annotation annotaion, Method method, ArrayList<Object[]> allPossLists)
     {
-        Object[] allPossibleParams = null;
+        Object[] paramPossVal = null;
+        //ArrayList<Object> paramPossVal = new ArrayList<>();
         Class<?> currAnnotation = annotaion.annotationType();
         switch(currAnnotation.getSimpleName())
         {
@@ -311,7 +491,7 @@ public class Unit {
 
                 for (Annotation a : parameterizedAnnotations)
                 {
-                    allPossibleParams = generateAllPossibleArguments(a);
+                    paramPossVal = generateAllPossibleArguments(a);
                 }
                 if (minLen < 0)
                 {
@@ -319,11 +499,9 @@ public class Unit {
                 }
                 else
                 {
-                    ArrayList<Object[]> allPossLists = new ArrayList<>();
-
                     for (int i = 0; i <= maxLen; i++)
                     {
-                        generateAllPossibleLists(i, allPossibleParams, allPossLists);
+                        generateAllPossibleLists(i, paramPossVal, allPossLists);
                     }
                     System.out.println("Size: " + allPossLists.size());
                 }
@@ -331,7 +509,7 @@ public class Unit {
             case "IntRange":
             case "StringSet":
                 /* generate random string or int and store them as parameter to pass to method upon invoking */
-                allPossibleParams = generateAllPossibleArguments(annotaion);
+                paramPossVal = generateAllPossibleArguments(annotaion);
                 break;
             case "ForAll":
                 // ForAll fa = (ForAll) annotaion;
@@ -355,10 +533,10 @@ public class Unit {
             default:
                 break;
         }
-        return allPossibleParams;
+        return paramPossVal;
     }
     private static void generateAllPossibleLists(int targetListLen, Object[] allPossibleElementsForList, ArrayList<Object[]> allPossLists) {
-        // Use a Set to store unique lists
+        /* use a Set to store unique lists */
         Set<List<Object>> uniqueLists = new HashSet<>();
         
         /* list of length 0 */

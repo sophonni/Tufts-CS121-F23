@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Testing
@@ -152,14 +153,15 @@ public class Testing
     public static void quickCheckTest()
     {
         Map<String, Object[]> propertyToFailArgListKVP = Unit.quickCheckClass("p3TestClassIntArg");
-        // for (String key : propertyToFailArgListKVP.keySet())
-        // {
-        //     Object[] failParams = propertyToFailArgListKVP.get(key);
-        //     for (Object o : failParams)
-        //     {
-        //         System.out.println("Function {" + key + "} fails with {" + o + "}");
-        //     }
-        // }
+        for (String key : propertyToFailArgListKVP.keySet())
+        {
+            List<Object> onePossListToPassIn = new ArrayList<>(Arrays.asList(propertyToFailArgListKVP.get(key)));
+            System.out.println(onePossListToPassIn);
+            // for (Object o : failParams)
+            // {
+            //     System.out.println("Function {" + key + "} fails with {" + o + "}");
+            // }
+        }
     }
 }
 
