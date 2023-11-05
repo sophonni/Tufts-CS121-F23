@@ -208,7 +208,7 @@ public class Unit {
     public static void handleMethodExecutionForQuickCheckClass(Method[] alphabeticalOrderedMethodsToExecute, Map<String, Object[]> propertyToFailArgListKVP, Object instanceOfGivenClass) {
         Class<?> givenClass = instanceOfGivenClass.getClass();
 
-        Map<String, List<Object>> paramNameAndTheirPossValsKVP = new HashMap<>();
+        Map<String, List<Object>> paramNameAndTheirPossValsKVP = new LinkedHashMap<>();
         for (Method method : alphabeticalOrderedMethodsToExecute)
         {
             List<Object> failParams = new ArrayList<>();
@@ -228,7 +228,7 @@ public class Unit {
                     Annotation[] annotations = theOneParam.getAnnotations();
                     Annotation annotaionOfTheOneParam = annotations[0];
                     Class<?> annotaionOfTheOneParamClass = annotaionOfTheOneParam.annotationType();
-                    Object[] allPossValsForParam = generateAllPossibleValuesForAllParams(annotaionOfTheOneParam, method, allPossLists, givenClass, instanceOfGivenClass, ForAllExceptions);
+                    Object[] allPossValsForParam = generateAllPossibleValuesForCurrParam(annotaionOfTheOneParam, method, allPossLists, givenClass, instanceOfGivenClass, ForAllExceptions);
                     
                     /* the 1 parameter that is passed in has @ListLength as annotation */
                     if (allPossLists.size() != 0)
@@ -332,22 +332,26 @@ public class Unit {
                 /* current method takes in 'n' number of parameter where n > 1 */
                 else
                 {
-                    
                     List<Object> allPossListsList = new ArrayList<>();
                     for (Parameter currParam : methodParameters)
                     {
                         Annotation[] annotations = currParam.getAnnotations();
+                        List<Object> po = new ArrayList<>(Arrays.asList(annotations)); 
+                        //System.out.print("Annotation: " + po);
                         Annotation annotaionOfCurrParam = annotations[0];
                         Class<?> annotaionOfCurrParamClass = annotaionOfCurrParam.annotationType();
-                        Object[] allPossValsForParam = generateAllPossibleValuesForAllParams(annotaionOfCurrParam, method, allPossLists, givenClass, instanceOfGivenClass, ForAllExceptions);
+
+                        /* get all the possible values for the current parameter */
+                        Object[] allPossValsForParam = generateAllPossibleValuesForCurrParam(annotaionOfCurrParam, method, allPossLists, givenClass, instanceOfGivenClass, ForAllExceptions);
                         
                         /* current parameter of the current method is @ListLength */
                         if (annotaionOfCurrParamClass.getSimpleName().equals("ListLength"))
                         {
-                            /* store all the possible combinations of list with different sizes */
+                            /* store all the possible combinations of list with all possible size */
                             paramNameAndTheirPossValsKVP.put(currParam.toString(), allPossListsList);
                             
                         }
+                        /* current parameter of the current method is @ForAll */
                         else if (annotaionOfCurrParamClass.getSimpleName().equals("ForAll"))
                         {
                             List<Object> listOfPossVal = new ArrayList<>(Arrays.asList(allPossValsForParam)); 
@@ -357,65 +361,78 @@ public class Unit {
                         /* current parameter of the current method is either @StringSet or @IntRange */
                         else
                         {
-                            List<Object> listOfPossVal = new ArrayList<>(Arrays.asList(allPossValsForParam)); 
+                            List<Object> listOfPossVal = new ArrayList<>(Arrays.asList(allPossValsForParam));
+                            /* store all the possible values for current parameter */
                             paramNameAndTheirPossValsKVP.put(currParam.toString(), listOfPossVal);
                         }
-                    }                    
+                    }
+                    /* generate all possible combination of parameters */
+                    List<List<Object>> combinations = generateAllCombinations(paramNameAndTheirPossValsKVP);
+
                     /* ensure to only invoke the current method <= 100 times */
-                    List<List<Object>> combinations = generateAllCombinations(paramNameAndTheirPossValsKVP, 100);
                     int maxIteration = combinations.size() > 100 ? 100 : combinations.size();
                     for (int i = 1; i <= maxIteration; i++)
                     {
+                        /* get current combination of parameters */
                         List<Object> combination = combinations.get(i-1);
                         try
                         {
+                            /* invoke the method using the current combination of parameters */
                             boolean resultAfterInvoking = (boolean)method.invoke(instanceOfGivenClass, combination.toArray());
-                            /* store the current possible values if the method fails on the given parameters */
+                           
+                            /* store each parameter's value from the combination of parameters that cause the function to fail */
                             if (!resultAfterInvoking)
                             {
-                                failParams.add(combination.toArray());
+                                for (Object paramVal : combination)
+                                {
+                                    failParams.add(paramVal);
+                                }
                                 break;
                             }
                         }
                         catch (Exception e)
                         {
-                            /* store the current possible values if the method throw an exception */
-                            failParams.add(combination.toArray());
+                            /* store each parameter's value from the combination of parameters that cause the function to throw exception */
+                            for (Object paramVal : combination)
+                            {
+                                failParams.add(paramVal);
+                            }
                             break;
                         }
                     }
                 }
             }
+
+            /* store a mapping of method name to 'null' since it has been exceuted with no failure */
             if (failParams.isEmpty())
             {
                 propertyToFailArgListKVP.put(method.getName(), null);
             }
+
+            /* store a mapping of method name to a list of parameter/s that cause the method to fail or throw exception */
             else
             {
                 propertyToFailArgListKVP.put(method.getName(), failParams.toArray());
-                //System.out.println();
             }
         }
     }
 
-    private static List<List<Object>> generateAllCombinations(Map<String, List<Object>> parameterMap, int maxCombinations)
+    private static List<List<Object>> generateAllCombinations(Map<String, List<Object>> parameterMap)
     {
         List<List<Object>> combinations = new ArrayList<>();
         List<List<Object>> parameterValues = new ArrayList<>(parameterMap.values());
         Object[] currentCombination = new Object[parameterMap.size()];
         int paramIndex = 0;
     
-        generateCombinations(parameterValues, combinations, currentCombination, paramIndex, maxCombinations);
+        /* generate a list of all possible combinations of parameters */
+        generateCombinations(parameterValues, combinations, currentCombination, paramIndex);
+        
+        /* return all possible combinations of parameters */
         return combinations;
     }
     
-    private static void generateCombinations(List<List<Object>> parameters, List<List<Object>> combinations, Object[] currentCombination, int paramIndex, int maxCombinations)
+    private static void generateCombinations(List<List<Object>> parameters, List<List<Object>> combinations, Object[] currentCombination, int paramIndex)
     {
-        // if (combinations.size() >= maxCombinations)
-        // {
-        //     return; /* reached the maximum number of combinations */
-        // }
-    
         if (paramIndex == parameters.size())
         {
             List<Object> possVal = new ArrayList<>(Arrays.asList(currentCombination));
@@ -428,12 +445,12 @@ public class Unit {
             for (Object paramValue : currentParameterValues)
             {
                 currentCombination[paramIndex] = paramValue;
-                generateCombinations(parameters, combinations, currentCombination, paramIndex + 1, maxCombinations);
+                generateCombinations(parameters, combinations, currentCombination, paramIndex + 1);
             }
         }
     }
     
-    public static Object[] generateAllPossibleValuesForAllParams(Annotation annotaion, Method method, ArrayList<Object[]> allPossLists, Class<?> givenClass, Object instanceOfGivenClass, List<Object> ForAllAnnotationExceptions)
+    public static Object[] generateAllPossibleValuesForCurrParam(Annotation annotaion, Method method, ArrayList<Object[]> allPossLists, Class<?> givenClass, Object instanceOfGivenClass, List<Object> ForAllAnnotationExceptions)
     {
         Object[] paramPossVal = null;
         Class<?> currAnnotation = annotaion.annotationType();
