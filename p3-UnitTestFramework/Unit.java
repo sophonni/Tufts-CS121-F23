@@ -357,39 +357,41 @@ public class Unit {
                             }
                         }
                         /* generate all possible combination of parameters */
-                        List<List<Object>> combinations = generateAllCombinations(paramNameAndTheirPossValsKVP);
+                        List<List<Object>> possCombinationsOfParams = generateAllCombinations(paramNameAndTheirPossValsKVP);
     
                         /* ensure to only invoke the current method <= 100 times */
-                        int maxIteration = combinations.size() > 100 ? 100 : combinations.size();
-                        for (int i = 1; i <= maxIteration; i++)
-                        {
-                            /* get current combination of parameters */
-                            List<Object> combination = combinations.get(i-1);
-                            try
-                            {
-                                /* invoke the method using the current combination of parameters */
-                                boolean resultAfterInvoking = (boolean)method.invoke(instanceOfGivenClass, combination.toArray());
+                        int maxIteration = possCombinationsOfParams.size() > 100 ? 100 : possCombinationsOfParams.size();
+                        handleInvokingAndStoringParameterThatCauseFailure(failParams, possCombinationsOfParams, null, maxIteration, instanceOfGivenClass, method);
+
+                        // for (int i = 1; i <= maxIteration; i++)
+                        // {
+                        //     /* get current combination of parameters */
+                        //     List<Object> currCombinationOfParams = possCombinationsOfParams.get(i-1);
+                        //     try
+                        //     {
+                        //         /* invoke the method using the current combination of parameters */
+                        //         boolean resultAfterInvoking = (boolean)method.invoke(instanceOfGivenClass, combination.toArray());
                                
-                                /* store each parameter's value from the combination of parameters that cause the function to fail */
-                                if (!resultAfterInvoking)
-                                {
-                                    for (Object paramVal : combination)
-                                    {
-                                        failParams.add(paramVal);
-                                    }
-                                    break;
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                /* store each parameter's value from the combination of parameters that cause the function to throw exception */
-                                for (Object paramVal : combination)
-                                {
-                                    failParams.add(paramVal);
-                                }
-                                break;
-                            }
-                        }
+                        //         /* store each parameter's value from the combination of parameters that cause the function to fail */
+                        //         if (!resultAfterInvoking)
+                        //         {
+                        //             for (Object paramVal : combination)
+                        //             {
+                        //                 failParams.add(paramVal);
+                        //             }
+                        //             break;
+                        //         }
+                        //     }
+                        //     catch (Exception e)
+                        //     {
+                        //         /* store each parameter's value from the combination of parameters that cause the function to throw exception */
+                        //         for (Object paramVal : combination)
+                        //         {
+                        //             failParams.add(paramVal);
+                        //         }
+                        //         break;
+                        //     }
+                        // }
                     }
                 }
 
@@ -435,6 +437,70 @@ public class Unit {
             List<Object> listOfPossVal = new ArrayList<>(Arrays.asList(allPossValForParam));
             /* store all the possible values for current parameter */
             paramNameAndTheirPossValsKVP.put(param.toString(), listOfPossVal);
+        }
+    }
+
+    private static void handleInvokingAndStoringParameterThatCauseFailure(List<Object> failParams, List<List<Object>> possCombinationsOfParams, Object[] allPossValsForParam, int maxIteration, Object instanceOfGivenClass, Method methodToInvoke)
+    {
+        if (possCombinationsOfParams != null)
+        {
+            for (int i = 1; i <= maxIteration; i++)
+            {
+                /* get current combination of parameters */
+                List<Object> combination = possCombinationsOfParams.get(i-1);
+                try
+                {
+                    /* invoke the method using the current combination of parameters */
+                    boolean resultAfterInvoking = (boolean)methodToInvoke.invoke(instanceOfGivenClass, combination.toArray());
+                    
+                    /* store each parameter's value from the combination of parameters that cause the function to fail */
+                    if (!resultAfterInvoking)
+                    {
+                        for (Object paramVal : combination)
+                        {
+                            failParams.add(paramVal);
+                        }
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    /* store each parameter's value from the combination of parameters that cause the function to throw exception */
+                    for (Object paramVal : combination)
+                    {
+                        failParams.add(paramVal);
+                    }
+                    break;
+                }
+            }
+        }
+        else
+        {
+            int currIteration = 1;
+            for (Object onePossVal : allPossValsForParam)
+            {
+                /* ensure to only invoke the method a maximum of 100 times */
+                if (currIteration <= maxIteration)
+                {
+                    try
+                    {
+                        boolean resultAfterInvoking = (boolean)methodToInvoke.invoke(instanceOfGivenClass, onePossVal);
+                        /* store the current possible values if the method returns false */
+                        if (!resultAfterInvoking)
+                        {
+                            failParams.add(onePossVal);
+                            break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        /* store the current possible values if the method throw an exception */
+                        failParams.add(onePossVal);
+                        break;
+                    }
+                }
+                currIteration++;
+            }
         }
     }
 
