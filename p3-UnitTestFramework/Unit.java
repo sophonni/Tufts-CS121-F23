@@ -302,33 +302,8 @@ public class Unit {
                         /* the 1 parameter that is passed in has either @Stringset or @Inrange as parameter*/
                         else
                         {
-                            int currIteration = 1;
-                            int maxIteration = 100;
-                            /* iterate through all the possible values */
-                            for (Object onePossVal : allPossValsForParam)
-                            {
-                                /* ensure to only invoke the method a maximum of 100 times */
-                                if (currIteration <= maxIteration)
-                                {
-                                    try
-                                    {
-                                        boolean resultAfterInvoking = (boolean)method.invoke(instanceOfGivenClass, onePossVal);
-                                        /* store the current possible values if the method returns false */
-                                        if (!resultAfterInvoking)
-                                        {
-                                            failParams.add(onePossVal);
-                                            break;
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        /* store the current possible values if the method throw an exception */
-                                        failParams.add(onePossVal);
-                                        break;
-                                    }
-                                }
-                                currIteration++;
-                            }
+                            int maxIteration = (allPossValsForParam.length) > 100 ? 100 : allPossValsForParam.length;
+                            handleInvokingAndStoringParameterThatCauseFailure(failParams, null, allPossValsForParam, maxIteration, instanceOfGivenClass, method);
                         }
                     }
                     /* current method takes in 'n' number of parameter where n > 1 */
@@ -362,36 +337,6 @@ public class Unit {
                         /* ensure to only invoke the current method <= 100 times */
                         int maxIteration = possCombinationsOfParams.size() > 100 ? 100 : possCombinationsOfParams.size();
                         handleInvokingAndStoringParameterThatCauseFailure(failParams, possCombinationsOfParams, null, maxIteration, instanceOfGivenClass, method);
-
-                        // for (int i = 1; i <= maxIteration; i++)
-                        // {
-                        //     /* get current combination of parameters */
-                        //     List<Object> currCombinationOfParams = possCombinationsOfParams.get(i-1);
-                        //     try
-                        //     {
-                        //         /* invoke the method using the current combination of parameters */
-                        //         boolean resultAfterInvoking = (boolean)method.invoke(instanceOfGivenClass, combination.toArray());
-                               
-                        //         /* store each parameter's value from the combination of parameters that cause the function to fail */
-                        //         if (!resultAfterInvoking)
-                        //         {
-                        //             for (Object paramVal : combination)
-                        //             {
-                        //                 failParams.add(paramVal);
-                        //             }
-                        //             break;
-                        //         }
-                        //     }
-                        //     catch (Exception e)
-                        //     {
-                        //         /* store each parameter's value from the combination of parameters that cause the function to throw exception */
-                        //         for (Object paramVal : combination)
-                        //         {
-                        //             failParams.add(paramVal);
-                        //         }
-                        //         break;
-                        //     }
-                        // }
                     }
                 }
 
