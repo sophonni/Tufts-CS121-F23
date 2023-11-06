@@ -278,25 +278,12 @@ public class Unit {
                             /* the method with the provided name executed '0 <= n <= 100' times with no exception thrown */
                             if (ForAllExceptions.isEmpty())
                             {
-                                for (Object o : allPossValsForParam)
-                                {
-                                    try
-                                    {
-                                        boolean resultAfterInvoking = (boolean)method.invoke(instanceOfGivenClass, o);
-                                        /* store the current possible values if the method returns false */
-                                        if (!resultAfterInvoking)
-                                        {
-                                            failParams.add(o);
-                                            break;
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        /* store the current possible list if the method throw an exception */
-                                        failParams.add(o);
-                                        break;
-                                    }
-                                }
+                                int maxIteration = (allPossValsForParam.length) > 100 ? 100 : allPossValsForParam.length;
+                                handleInvokingAndStoringParameterThatCauseFailure(failParams, null, allPossValsForParam, maxIteration, instanceOfGivenClass, method);
+                            }
+                            else
+                            {
+                                throw new IllegalArgumentException("Error: Exception encounter upon invoking the method with name provided via parameter");
                             }
                         }
                         /* the 1 parameter that is passed in has either @Stringset or @Inrange as parameter*/
@@ -387,41 +374,45 @@ public class Unit {
 
     private static void handleInvokingAndStoringParameterThatCauseFailure(List<Object> failParams, List<List<Object>> possCombinationsOfParams, Object[] allPossValsForParam, int maxIteration, Object instanceOfGivenClass, Method methodToInvoke)
     {
+        int currIteration = 1;
         if (possCombinationsOfParams != null)
         {
-            for (int i = 1; i <= maxIteration; i++)
+            for (List<Object> combinationOfParams : possCombinationsOfParams)
             {
-                /* get current combination of parameters */
-                List<Object> combination = possCombinationsOfParams.get(i-1);
-                try
+                /* ensure to only invoke the method a maximum of 100 times */
+                if (currIteration <= maxIteration)
                 {
-                    /* invoke the method using the current combination of parameters */
-                    boolean resultAfterInvoking = (boolean)methodToInvoke.invoke(instanceOfGivenClass, combination.toArray());
-                    
-                    /* store each parameter's value from the combination of parameters that cause the function to fail */
-                    if (!resultAfterInvoking)
+                    try
                     {
-                        for (Object paramVal : combination)
+                        /* invoke the method using the current combination of parameters */
+                        boolean resultAfterInvoking = (boolean)methodToInvoke.invoke(instanceOfGivenClass, combinationOfParams.toArray());
+                        
+                        /* store each parameter's value from the combination of parameters that cause the function to fail */
+                        if (!resultAfterInvoking)
+                        {
+                            for (Object paramVal : combinationOfParams)
+                            {
+                                failParams.add(paramVal);
+                            }
+                            break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        /* store each parameter's value from the combination of parameters that cause the function to throw exception */
+                        for (Object paramVal : combinationOfParams)
                         {
                             failParams.add(paramVal);
                         }
                         break;
                     }
                 }
-                catch (Exception e)
-                {
-                    /* store each parameter's value from the combination of parameters that cause the function to throw exception */
-                    for (Object paramVal : combination)
-                    {
-                        failParams.add(paramVal);
-                    }
-                    break;
-                }
+                currIteration++;
             }
         }
         else
         {
-            int currIteration = 1;
+            //int currIteration = 1;
             for (Object onePossVal : allPossValsForParam)
             {
                 /* ensure to only invoke the method a maximum of 100 times */
@@ -455,21 +446,26 @@ public class Unit {
         List<List<Object>> parameterValues = new ArrayList<>(parameterMap.values());
         Object[] currentCombination = new Object[parameterMap.size()];
         int paramIndex = 0;
+        int currIteration = 1;
     
         /* generate a list of all possible combinations of parameters */
-        generateCombinations(parameterValues, combinations, currentCombination, paramIndex);
+        generateCombinations(parameterValues, combinations, currentCombination, paramIndex, currIteration);
         
         /* return all possible combinations of parameters */
         return combinations;
     }
     
-    private static void generateCombinations(List<List<Object>> parameters, List<List<Object>> combinations, Object[] currentCombination, int paramIndex)
+    private static void generateCombinations(List<List<Object>> parameters, List<List<Object>> combinations, Object[] currentCombination, int paramIndex, int currIteration)
     {
         if (paramIndex == parameters.size())
         {
             List<Object> possVal = new ArrayList<>(Arrays.asList(currentCombination));
             /* we have a complete combination */
             combinations.add(possVal);
+            if (currIteration == 100)
+            {
+                return;
+            }
         }
         else
         {
@@ -477,7 +473,7 @@ public class Unit {
             for (Object paramValue : currentParameterValues)
             {
                 currentCombination[paramIndex] = paramValue;
-                generateCombinations(parameters, combinations, currentCombination, paramIndex + 1);
+                generateCombinations(parameters, combinations, currentCombination, paramIndex + 1, currIteration + 1);
             }
         }
     }
