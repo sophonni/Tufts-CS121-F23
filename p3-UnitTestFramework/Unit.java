@@ -245,7 +245,7 @@ public class Unit {
                                 {
                                     /* create a new list using the current possible list, to pass as parameter */
                                     List<Object> onePossListToPassIn = new ArrayList<>(Arrays.asList(onePossList));
-        
+
                                     try
                                     {
                                         /* invoking the current method with the current possible list */
@@ -346,35 +346,14 @@ public class Unit {
                             {
                                 // List<Object> po = new ArrayList<>(Arrays.asList(annotations)); 
                                 //System.out.print("Annotation: " + po);
-    
+
                                 /* get the annotation of the current parameter */
-                                Annotation annotaionOfCurrParam = annotations[0];
-                                Class<?> annotaionOfCurrParamClass = annotaionOfCurrParam.annotationType();
-        
+                                Annotation annotaionOfCurrParam = annotations[0];        
+                                
                                 /* get all the possible values for the current parameter */
                                 Object[] allPossValsForParam = generateAllPossibleValuesForCurrParam(annotaionOfCurrParam, method, allPossLists, givenClass, instanceOfGivenClass, ForAllExceptions);
                                 
-                                /* current parameter of the current method is @ListLength */
-                                if (annotaionOfCurrParamClass.getSimpleName().equals("ListLength"))
-                                {
-                                    /* store all the possible combinations of list with all possible size */
-                                    paramNameAndTheirPossValsKVP.put(currParam.toString(), allPossListsList);
-                                    
-                                }
-                                /* current parameter of the current method is @ForAll */
-                                else if (annotaionOfCurrParamClass.getSimpleName().equals("ForAll"))
-                                {
-                                    List<Object> listOfPossVal = new ArrayList<>(Arrays.asList(allPossValsForParam)); 
-                                    /* store all the possible combinations of object */
-                                    paramNameAndTheirPossValsKVP.put(currParam.toString(), listOfPossVal);
-                                }
-                                /* current parameter of the current method is either @StringSet or @IntRange */
-                                else
-                                {
-                                    List<Object> listOfPossVal = new ArrayList<>(Arrays.asList(allPossValsForParam));
-                                    /* store all the possible values for current parameter */
-                                    paramNameAndTheirPossValsKVP.put(currParam.toString(), listOfPossVal);
-                                }
+                                handleStoringAllPossValsForParameter(currParam, annotaionOfCurrParam, paramNameAndTheirPossValsKVP, allPossValsForParam, allPossListsList);
                             }
                         }
                         /* generate all possible combination of parameters */
@@ -413,7 +392,7 @@ public class Unit {
                         }
                     }
                 }
-    
+
                 /* store a mapping of method name to 'null' since it has been exceuted with no failure */
                 if (failParams.isEmpty())
                 {
@@ -430,6 +409,32 @@ public class Unit {
             {
                 throw new IllegalArgumentException("Error: Method {" + method.getName() + "} should returns a bool.");
             }
+        }
+    }
+
+    private static void handleStoringAllPossValsForParameter(Parameter param, Annotation annotationOfParam, Map<String, List<Object>> paramNameAndTheirPossValsKVP, Object[] allPossValForParam, List<Object> allPossListsList)
+    {
+        Class<?> annotaionOfParamClass = annotationOfParam.annotationType();
+
+        /* current parameter of the current method is @ListLength */
+        if (annotaionOfParamClass.getSimpleName().equals("ListLength"))
+        {
+            /* store all the possible combinations of list with all possible size */
+            paramNameAndTheirPossValsKVP.put(param.toString(), allPossListsList);
+        }
+        /* current parameter of the current method is @ForAll */
+        else if (annotaionOfParamClass.getSimpleName().equals("ForAll"))
+        {
+            List<Object> listOfPossVal = new ArrayList<>(Arrays.asList(allPossValForParam)); 
+            /* store all the possible combinations of object */
+            paramNameAndTheirPossValsKVP.put(param.toString(), listOfPossVal);
+        }
+        /* current parameter of the current method is either @StringSet or @IntRange */
+        else
+        {
+            List<Object> listOfPossVal = new ArrayList<>(Arrays.asList(allPossValForParam));
+            /* store all the possible values for current parameter */
+            paramNameAndTheirPossValsKVP.put(param.toString(), listOfPossVal);
         }
     }
 
@@ -532,7 +537,6 @@ public class Unit {
                 
                 if (ForAllAnnotationExceptions.isEmpty())
                 {
-
                     /* ensure to only invoke the name of the method passed in as parameter <= 100 times */
                     int totalNumOfMethodCall = (numIteration > 100) ? 100 : numIteration;
                     for (int i = 1; i <= totalNumOfMethodCall; i++)
