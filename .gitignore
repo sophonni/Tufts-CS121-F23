@@ -4,6 +4,20 @@
 # README files
 README
 
+# .txt files
 *.txt
 
+# Project 3 Testing Class Files  files
 *p3TestClass*
+
+*.lock
+*.bin
+*.properties
+*.probe
+*.jar
+*.MF
+*.html
+*.css
+*.js
+*.idx
+*.xml
