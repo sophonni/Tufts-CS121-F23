@@ -1,6 +1,7 @@
 package jrails;
 
 import java.util.*;
+import java.lang.reflect.*;
 
 public class JRouter {
     Map<String, String> verbAndPath_to_classAndMethod_Mapping = new LinkedHashMap<String, String>();
@@ -24,7 +25,7 @@ public class JRouter {
             {
                 throw new IllegalArgumentException("Error in {addRoute} function: first character of path {" + path + "} must be {/}.");
             }
-            System.err.println("Verb: " + verbAndpathConcatenation);
+            //System.err.println("Verb: " + verbAndpathConcatenation);
             /* concatenate class type and method's name */
             String classAndMethodConcatenation = clazz.getName() + "#" + method;
             System.err.println("Class: " + classAndMethodConcatenation);
@@ -51,6 +52,44 @@ public class JRouter {
     // Call the appropriate controller method and
     // return the result
     public Html route(String verb, String path, Map<String, String> params) {
-        throw new UnsupportedOperationException();
+        String verbAndpathConcatenation = verb + "#" + path;
+        String classAndMethodConcatenation = this.verbAndPath_to_classAndMethod_Mapping.get(verbAndpathConcatenation);
+        Html html = null;
+        if (classAndMethodConcatenation != null)
+        {
+            try
+            {
+                /* parse for class name and method name */
+                int indexOfFirstPoundSymbol = classAndMethodConcatenation.indexOf("#");
+                String className = classAndMethodConcatenation.substring(0, indexOfFirstPoundSymbol);
+                String methodName = classAndMethodConcatenation.substring(indexOfFirstPoundSymbol + 1, classAndMethodConcatenation.length());
+                System.err.println("Class: " + className);
+                System.err.println("Method: " + methodName);
+    
+                /* get access to the class */
+                Class<?> runtimeClass = Class.forName(className);
+                Constructor<?> constructorOfClass = runtimeClass.getDeclaredConstructor();
+                Object instanceOfClass = constructorOfClass.newInstance();
+
+                //SD TODO: in order for this function to work, whatever method "methodToInvoke" is, we need to implement that
+                /* get the method from the class */
+                Method methodToInvoke = runtimeClass.getMethod(methodName);
+                System.err.println("Method: " + methodToInvoke);
+
+                /* invoke the method */
+                Object[] methodArgs = params.entrySet().toArray();
+                html = (Html) methodToInvoke.invoke(instanceOfClass, methodArgs);
+                return html;
+            }
+            catch (Exception e)
+            {
+                System.err.println("Error in {route} function: " + e);
+            }
+            return html;
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Error in {route}: verb {" + verb + "} with path {" + path +"} route is unknown.");
+        }
     }
 }

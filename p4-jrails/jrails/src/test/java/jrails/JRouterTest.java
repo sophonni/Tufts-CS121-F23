@@ -24,6 +24,16 @@ public class JRouterTest {
         assertThat(jRouter.getRoute("GET", "/"), is("java.lang.String#index"));
     }
 
+    @Test
+    public void addRouteTest6() {
+        Map<String, String> params = new LinkedHashMap<String, String>();
+
+        r.addRoute("GET", "/", BookController.class, "index");
+        Html test = jRouter.route("GET", "/", params);
+        System.err.println("test: " + test);
+    }
+
+
     
     //FAIL TEST CASE
     // @Test
