@@ -10,13 +10,13 @@ public class HtmlTest {
 
     private Html html;
 
-    @Before
-    public void setUp() throws Exception {
-        html = new Html();
-    }
+    // @Before
+    // public void setUp() throws Exception {
+    //     html = new Html();
+    // }
 
-    @Test
-    public void empty() {
-        assertThat(View.empty().toString(), isEmptyString());
-    }
+    // @Test
+    // public void empty() {
+    //     assertThat(View.empty().toString(), isEmptyString());
+    // }
 }

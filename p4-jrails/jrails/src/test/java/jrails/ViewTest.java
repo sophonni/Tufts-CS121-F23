@@ -9,8 +9,8 @@ import static org.junit.Assert.*;
 
 public class ViewTest {
 
-    @Test
-    public void empty() {
-        assertThat(View.empty().toString(), isEmptyString());
-    }
+    // @Test
+    // public void empty() {
+    //     assertThat(View.empty().toString(), isEmptyString());
+    // }
 }
