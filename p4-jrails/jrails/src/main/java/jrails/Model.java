@@ -5,15 +5,17 @@ import java.lang.reflect.*;
 import java.io.*;
 
 public class Model {
-    public static Map<Integer, Map<String, Object>> AllModels = new LinkedHashMap<Integer, Map<String, Object>>();
+    private static Map<Integer, Map<String, Object>> AllModels = new LinkedHashMap<Integer, Map<String, Object>>();
     public static int modelID = 0;
-    private int currModelID = 0;
+    public int currModelID = 0;
     private static String dbFileName = "Book_DB.txt";
     public Model() {
-        /* each model created has a unique ID */
-        currModelID = modelID;
-        AllModels.put(currModelID, null);
-        modelID++;
+        currModelID = 0;
+    }
+
+    public static void TestHelper()
+    {
+        System.out.println("All Books: " + AllModels);
     }
 
     public void save() {
@@ -23,18 +25,32 @@ public class Model {
 
         /* get info of the newly created model and store them */
         Field[] publicFields = runtimeClassOfGivenClass.getFields();
-        getModelInfoAndStore(publicFields);
+        Map<String, Object> infoOfAModel = getModelInfoAndStore(publicFields, runtimeClassOfGivenClass);
+        if (this.currModelID == 0)
+        {
+            modelID++;
+            this.currModelID = modelID;
+            AllModels.put(this.currModelID, infoOfAModel); 
+        }
+        else
+        {
+            /* ensure that the ID of a model exist before modifying the model's info */
+            if (!AllModels.containsKey(this.currModelID))
+            {
+                throw new IllegalArgumentException("Error in {getModelInfoAndStore} function: model with ID {" + this.modelID + "} does not exist in the DB.");
+            }
+            else
+            {
+                AllModels.put(this.currModelID, infoOfAModel);
+            }
+        }
+        //TestHelper();
         storeBookInDB();
-        //System.err.println("Books: " + AllModels);
     }
 
     private void storeBookInDB()
     {
         String modelInfo = null;
-        int currID = 0;
-        System.out.println("Map size: " + AllModels.size());
-        System.out.println("All Books: " + AllModels);
-        System.err.println("ID: " +this.id());
         try
         {
             /* write all added models and their info, to the DB (i.e output file) */
@@ -45,8 +61,6 @@ public class Model {
                 int modelID = model.getKey();
                 Map<String, Object> currModelInfo = model.getValue();
                 modelInfo = "ID: " + modelID;
-                System.out.println("Current model: " + currModelInfo);
-
                 /* iterate through all of the model's info and print it to the DB (i.e output file) */
                 for (Map.Entry<String, Object> infoOfCurrModel : currModelInfo.entrySet())
                 {
@@ -69,7 +83,7 @@ public class Model {
         }
     }
 
-    private void getModelInfoAndStore(Field[] publicFields)
+    private Map<String, Object> getModelInfoAndStore(Field[] publicFields, Class<?> runtimeClassOfGivenClass)
     {
         Map<String, Object> infoOfAModel = new LinkedHashMap<String, Object>();
         String title = null;
@@ -149,16 +163,8 @@ public class Model {
         // System.err.println("title: " + title);
         // System.err.println("author: " + author);
         // System.err.println("num_copies: " + num_copies);
-
-        /* ensure that the ID of a model exist before modifying the model's info */
-        if (!AllModels.containsKey(this.currModelID))
-        {
-            throw new IllegalArgumentException("Error in {getModelInfoAndStore} function: model with ID {" + this.currModelID + "} does not exist in the DB.");
-        }
-        else
-        {
-            AllModels.put(this.currModelID, infoOfAModel);
-        }
+        infoOfAModel.put("Model Type", runtimeClassOfGivenClass);
+        return infoOfAModel;
     }
 
     public int id() {
@@ -166,7 +172,66 @@ public class Model {
     }
 
     public static <T> T find(Class<T> c, int id) {
-        throw new UnsupportedOperationException();
+        Object instanceOfAModel = null;
+    
+        try {
+            Map<String, Object> infoOfAModel = AllModels.get(id);
+            System.err.println("HERE: " + infoOfAModel);
+            
+            /* given ID does not exist in the DB (i.e output file) */
+            if (infoOfAModel == null)
+            {
+                return null;
+            }
+            else
+            {
+                /* get a model with the given ID, from the DB and duplicate (create) a new instance of it */
+                Class<?> aModelRuntimeClass = (Class<?>) infoOfAModel.get("Model Type");
+                Constructor<?> constructorOfGivenClass = aModelRuntimeClass.getDeclaredConstructor();
+                instanceOfAModel = constructorOfGivenClass.newInstance();
+                String setTo = "";
+                /* ensure that the class of the model matches with the given class 'c' */
+                if (c.isInstance(instanceOfAModel))
+                {
+                    /* get all field of the newly duplicated model */
+                    Field[] allFields = aModelRuntimeClass.getFields();
+                    for (Field field : allFields)
+                    {
+                        /* ensure that the field is public before accessing it */
+                        if (Modifier.isPublic(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()))
+                        {
+                            System.err.println("FIELD: " + field);
+                            /* set the static modelID field of the newly duplicated model to the same value of the exist model that was found from the DB */
+                            if (field.getName() == "currModelID")
+                            {
+                                field.set(instanceOfAModel, id);
+                                setTo += ", ID: " + id;
+                            }
+                            else
+                            {
+                                /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
+                                Object valueOfAnInfo = infoOfAModel.get(field.getName());
+                                field.set(instanceOfAModel, valueOfAnInfo);
+                                setTo += ", " + field.getName() + ": " + valueOfAnInfo;
+                            }
+                        }
+                        
+                    }
+                    System.out.println("Set Fields to --> " + setTo);
+                    /* use c.cast to safely cast the instance to the specified type */
+                    T instanceOfAModelClass = c.cast(instanceOfAModel);
+                    return instanceOfAModelClass;
+                }
+                else
+                {
+                    return null;
+                }
+                
+            }
+        } catch (Exception e) {
+            System.err.println("Error in {find} function: " + e);
+            return null; // Or handle the error as needed
+        }
     }
 
     public static <T> List<T> all(Class<T> c) {
