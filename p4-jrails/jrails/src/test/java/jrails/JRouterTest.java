@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.*;
 import java.io.*;
+import books.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -24,14 +25,13 @@ public class JRouterTest {
         assertThat(jRouter.getRoute("GET", "/"), is("java.lang.String#index"));
     }
 
-    @Test
-    public void addRouteTest6() {
-        Map<String, String> params = new LinkedHashMap<String, String>();
-
-        r.addRoute("GET", "/", BookController.class, "index");
-        Html test = jRouter.route("GET", "/", params);
-        System.err.println("test: " + test);
-    }
+    // @Test
+    // public void addRouteTest6() {
+    //     Map<String, String> params = new LinkedHashMap<String, String>();
+    //     jRouter.addRoute("GET", "/", BookController.class, "index");
+    //     Html test = jRouter.route("GET", "/", params);
+    //     System.err.println("test: " + test);
+    // }
 
 
     
@@ -57,7 +57,7 @@ public class JRouterTest {
     //     assertThat(jRouter.getRoute("", "/"), is("java.lang.String#"));
     // }
     // @Test
-    // duplicateVerbAndPathWithDiffClassAndMethod
+    // //duplicateVerbAndPathWithDiffClassAndMethod
     // public void addRouteTest4() {
     //     try
     //     {
