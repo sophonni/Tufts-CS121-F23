@@ -10,7 +10,7 @@ public class Model {
     private int currBookID = 0;
     private static String dbFileName = "Book_DB.txt";
     public Model() {
-        // Increment bookID in the constructor
+        /* each model created has a unique ID */
         currBookID = bookID;
         Books_to_Info_Mapping.put(currBookID, null);
         bookID++;
@@ -32,28 +32,34 @@ public class Model {
     {
         String bookInfo = null;
         int currID = 0;
-        System.err.println("Map size: " + Books_to_Info_Mapping.size());
+        System.out.println("Map size: " + Books_to_Info_Mapping.size());
+        System.out.println("All Books: " + Books_to_Info_Mapping);
+        System.err.println("ID: " +this.id());
         try
         {
+            /* write all added models and their info, to the DB (i.e output file) */
             FileWriter myWriter = new FileWriter(dbFileName);
-            while(currID <= Books_to_Info_Mapping.size() - 1)
+            for (Map.Entry<Integer, Map<String, Object>> book : Books_to_Info_Mapping.entrySet())
             {
-                bookInfo = "ID: " + currID;
-                Map<String, Object> bookInfo_to_valueOfInfo_mapping = Books_to_Info_Mapping.get(currID);
-                System.err.println("HERE: " + bookInfo_to_valueOfInfo_mapping.size());
-                
-                for (Map.Entry<String, Object> entry : bookInfo_to_valueOfInfo_mapping.entrySet())
+                /* key KVP of model's ID and all of its info */
+                int bookID = book.getKey();
+                Map<String, Object> currBookInfo = book.getValue();
+                bookInfo = "ID: " + bookID;
+                System.out.println("Current Book: " + currBookInfo);
+
+                /* iterate through all of the model's info and print it to the DB (i.e output file) */
+                for (Map.Entry<String, Object> infoOfCurrBook : currBookInfo.entrySet())
                 {
-                    String key = entry.getKey();
-                    Object value = entry.getValue();
-            
-                    bookInfo += ", " + key + ": " + value;
+                    /* key KVP of model's info and its value */
+                    String infoKey = infoOfCurrBook.getKey();
+                    Object infoValue = infoOfCurrBook.getValue();
+        
+                    bookInfo += ", " + infoKey + ": " + infoValue;
                 }
+                /* each row of the DB (i.e output file) correspond to a model and its info*/
                 bookInfo += "\n";
                 myWriter.write(bookInfo);
-                currID++;
             }
-            // System.err.println("Book info: " + bookInfo);
             myWriter.close();
         }
         catch (IOException e)
@@ -144,6 +150,7 @@ public class Model {
         // System.err.println("author: " + author);
         // System.err.println("num_copies: " + num_copies);
 
+        /* ensure that the ID of a model exist before modifying the model's info */
         if (!Books_to_Info_Mapping.containsKey(this.currBookID))
         {
             throw new IllegalArgumentException("Error in {getBookInfoAndStore} function: book with ID {" + this.currBookID + "} does not exist in the DB.");
@@ -152,19 +159,6 @@ public class Model {
         {
             Books_to_Info_Mapping.put(this.currBookID, bookInfo_to_valueOfInfo_mapping);
         }
-
-        //System.err.println("After Placed: " + Books_to_Info_Mapping);
-
-        // if (Books_to_Info_Mapping.containsKey(title))
-        // {
-        //     Books_to_Info_Mapping.put(title, bookInfo_to_valueOfInfo_mapping);
-        // }
-        // else
-        // {
-        //     Books_to_Info_Mapping.put(title, bookInfo_to_valueOfInfo_mapping);
-        // }
-        // String bookInfo = "ID: " + this.currBookID + ", Title: " + title + ", Author: " + author + ", Number of Copies: " + num_copies;
-        // storeBookInDB(bookInfo, dbFileName);
     }
 
     public int id() {

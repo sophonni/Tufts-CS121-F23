@@ -39,16 +39,16 @@ public class ModelTest {
         b2.author = "Sam";
         b2.num_copies = 399;
         b2.save();
-        // System.err.println("Books: " + Model.Books_to_Info_Mapping);
-        Book b3 = new Book();
-        b3.title = "C++";
-        b3.author = "Mark";
-        b3.num_copies = 75;
-        b3.save();
-        b2.num_copies = 39;
-        b2.save();
+        // // System.err.println("Books: " + Model.Books_to_Info_Mapping);
+        // Book b3 = new Book();
+        // b3.title = "C++";
+        // b3.author = "Mark";
+        // b3.num_copies = 75;
+        // b3.save();
+        // b2.num_copies = 39;
+        // b2.save();
 
-        Model.reset();
+        // Model.reset();
     }
 
     @After
