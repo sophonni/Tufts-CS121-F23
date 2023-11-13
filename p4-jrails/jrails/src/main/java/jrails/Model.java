@@ -235,12 +235,40 @@ public class Model {
     }
 
     public static <T> List<T> all(Class<T> c) {
-        // Returns a List<element type>
-        throw new UnsupportedOperationException();
+        List<T> allModelsWithTargetClass = new ArrayList<T>();
+        for (Map.Entry<Integer, Map<String, Object>> model : AllModels.entrySet())
+        {
+            int modelID = model.getKey();
+            T instanceOfModel = Model.find(c, modelID);
+            if (instanceOfModel != null)
+            {
+                allModelsWithTargetClass.add(instanceOfModel);
+            }
+        }
+        return allModelsWithTargetClass;
     }
 
     public void destroy() {
-        throw new UnsupportedOperationException();
+        Map<String, Object> infoOfAModel = AllModels.get(this.id());
+        if (infoOfAModel == null)
+        {
+            throw new IllegalArgumentException("Error in {destroy} function: this book with ID {" + this.id() + "} does not exist in the DB.");
+        }
+        else
+        {
+            AllModels.remove(this.id());
+
+            // int nextID = this.id() + 1;
+            // while(AllModels.containsKey(nextID))
+            // {
+            //     int currID = nextID - 1;
+            //     Map<String, Object> nextModel = AllModels.remove(nextID);
+            //     AllModels.put(currID, nextModel);
+            //     nextID++;
+            // }
+            storeBookInDB();
+        }
+        // throw new UnsupportedOperationException();
     }
 
     public static void reset() {

@@ -45,7 +45,16 @@ public class ModelTest {
 
         Class<Book> test = Book.class;
         Model.find(test, 1);
-        System.err.println("ERE");
+
+        Book b3 = new Book();
+        b3.title = "PYTHON";
+        b3.author = "Peter";
+        b3.num_copies = 89;
+        b3.save();
+
+        b2.destroy();
+        b.destroy();
+        b3.destroy();
         // // System.err.println("Books: " + Model.Books_to_Info_Mapping);
         // Book b3 = new Book();
         // b3.title = "C++";
