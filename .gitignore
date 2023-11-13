@@ -15,9 +15,17 @@ README
 *.properties
 *.probe
 *.jar
+*.tar
 *.MF
 *.html
 *.css
 *.js
 *.idx
+*.xml
+*.gradle
+*.md
+*.bat
+*.uniqueId*
+*.uniqueId*
+*.zip
 *.xml

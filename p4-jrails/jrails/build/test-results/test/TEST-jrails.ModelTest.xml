@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="jrails.ModelTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-11-12T22:36:17" hostname="Sophonnis-MacBook-Pro.local" time="0.009">
+<testsuite name="jrails.ModelTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-11-13T00:19:09" hostname="Sophonnis-MacBook-Pro.local" time="0.012">
   <properties/>
-  <testcase name="id1" classname="jrails.ModelTest" time="0.009"/>
-  <system-out><![CDATA[Set Fields to --> , title: Math, author: John, num_copies: 200, ID: 1
+  <testcase name="id1" classname="jrails.ModelTest" time="0.012"/>
+  <system-out><![CDATA[All Books: {1={title=Math, author=John, num_copies=200, Model Type=class books.Book}, 2={title=JAVA, author=Sam, num_copies=399, Model Type=class books.Book}}
+Set Fields to --> , title: Math, author: John, num_copies: 200, ID: 1
 ]]></system-out>
-  <system-err><![CDATA[All Books: {1={title=Math, author=John, num_copies=1, Model Type=class books.Book}}
-All Books: {1={title=Math, author=John, num_copies=200, Model Type=class books.Book}}
-All Books: {1={title=Math, author=John, num_copies=200, Model Type=class books.Book}, 2={title=JAVA, author=Sam, num_copies=399, Model Type=class books.Book}}
-All Books: {1={title=Math, author=John, num_copies=200, Model Type=class books.Book}, 2={title=JAVA, author=Sam, num_copies=399, Model Type=class books.Book}}
-HERE: {title=Math, author=John, num_copies=200, Model Type=class books.Book}
+  <system-err><![CDATA[HERE: {title=Math, author=John, num_copies=200, Model Type=class books.Book}
 FIELD: public java.lang.String books.Book.title
 FIELD: public java.lang.String books.Book.author
 FIELD: public int books.Book.num_copies
