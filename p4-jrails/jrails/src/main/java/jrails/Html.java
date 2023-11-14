@@ -14,94 +14,72 @@ public class Html {
     }
 
     public Html seq(Html h) {
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return new Html(this.text + h.toString());
     }
 
     public Html br() {
-        this.text = this.text + "<br/>";
-        return new Html(this.text);
+        return this.seq(View.br());
         //throw new UnsupportedOperationException();
     }
 
     public Html t(Object o) {
         // Use o.toString() to get the text for this
-        return new Html(o.toString());
+        return this.seq(new Html(o.toString()));
     }
 
     public Html p(Html child) {
-        this.text = this.text + "<p>" + child.toString() + "</p>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.p(child));
     }
 
     public Html div(Html child) {
-        this.text = this.text + "<div>" + child.toString() + "</div>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.div(child));
     }
 
     public Html strong(Html child) {
-        this.text = this.text + "<strong>" + child.toString() + "</strong>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.strong(child));
     }
 
     public Html h1(Html child) {
-        this.text = this.text + "<h1>" + child.toString() + "</h1>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.h1(child));
     }
 
     public Html tr(Html child) {
-        this.text = this.text + "<tr>" + child.toString() + "</tr>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.tr(child));
     }
 
     public Html th(Html child) {
-        this.text = this.text + "<th>" + child.toString() + "</th>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.th(child));
     }
 
     public Html td(Html child) {
-        this.text = this.text + "<td>" + child.toString() + "</td>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.td(child));
     }
 
     public Html table(Html child) {
-        this.text = this.text + "<table>" + child.toString() + "</table>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.table(child));
     }
 
     public Html thead(Html child) {
-        this.text = this.text + "<thead>" + child.toString() + "</thead>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.thead(child));
     }
 
     public Html tbody(Html child) {
-        this.text = this.text + "<tbody>" + child.toString() + "</tbody>";
-        return new Html(this.text);
-        //throw new UnsupportedOperationException();
+        return this.seq(View.tbody(child));
     }
 
     public Html textarea(String name, Html child) {
-        throw new UnsupportedOperationException();
+        return this.seq(View.textarea(name, child));
     }
 
     public Html link_to(String text, String url) {
-        throw new UnsupportedOperationException();
+        return this.seq(View.link_to(text, url));
     }
 
     public Html form(String action, Html child) {
-        throw new UnsupportedOperationException();
+        return this.seq(View.form(action, child));
     }
 
     public Html submit(String value) {
-        throw new UnsupportedOperationException();
+        return this.seq(View.submit(value));
     }
 }
