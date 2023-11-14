@@ -12,3 +12,6 @@ dependencies {
     testImplementation deps.hamcrest
     testImplementation deps.jUnit
 }
+test {
+    testLogging.showStandardStreams = true
+}

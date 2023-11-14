@@ -176,7 +176,7 @@ public class Model {
     
         try {
             Map<String, Object> infoOfAModel = AllModels.get(id);
-            System.err.println("HERE: " + infoOfAModel);
+            //System.err.println("HERE: " + infoOfAModel);
             
             /* given ID does not exist in the DB (i.e output file) */
             if (infoOfAModel == null)
@@ -200,7 +200,7 @@ public class Model {
                         /* ensure that the field is public before accessing it */
                         if (Modifier.isPublic(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()))
                         {
-                            System.err.println("FIELD: " + field);
+                            //System.err.println("FIELD: " + field);
                             /* set the static modelID field of the newly duplicated model to the same value of the exist model that was found from the DB */
                             if (field.getName() == "currModelID")
                             {
@@ -217,7 +217,7 @@ public class Model {
                         }
                         
                     }
-                    System.out.println("Set Fields to --> " + setTo);
+                    //System.out.println("Set Fields to --> " + setTo);
                     /* use c.cast to safely cast the instance to the specified type */
                     T instanceOfAModelClass = c.cast(instanceOfAModel);
                     return instanceOfAModelClass;

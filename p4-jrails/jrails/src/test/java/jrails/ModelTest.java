@@ -40,7 +40,7 @@ public class ModelTest {
         b2.num_copies = 399;
         b2.save();
 
-        Model.TestHelper();
+        //Model.TestHelper();
         
 
         Class<Book> test = Book.class;
