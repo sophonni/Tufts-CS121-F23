@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="jrails.ViewTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-11-14T20:14:31" hostname="Sophonnis-MacBook-Pro.local" time="0.002">
-  <properties/>
-  <testcase name="HtmlTest2" classname="jrails.ViewTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[test: <p>b</p><p>c</p>
-]]></system-err>
-</testsuite>

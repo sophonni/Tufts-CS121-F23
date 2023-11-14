@@ -62,7 +62,7 @@ public class View {
     }
 
     public static Html form(String action, Html child) {
-        return new Html("<form action=\"" + action + "\" accept-charset=\"UTF-8\" method=\"post\">" + child.toString() + "</form");
+        return new Html("<form action=\"" + action + "\" accept-charset=\"UTF-8\" method=\"post\">" + child.toString() + "</form>");
     }
 
     public static Html submit(String value) {
