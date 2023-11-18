@@ -8,6 +8,7 @@ public class Model {
     private static Map<Integer, Map<String, Object>> AllModels = new LinkedHashMap<Integer, Map<String, Object>>();
     public static int modelID = 0;
     public int currModelID = 0;
+    private int lastIDFromDB = 0;
     private static String dbFileName = "Book_DB.txt";
     public Model() {
         currModelID = 0;
@@ -19,7 +20,17 @@ public class Model {
     }
 
     public void save() {
-        
+        // int lastKey = 0;
+        // for (Map.Entry<Integer, Map<String, Object>> entry : AllModels.entrySet()) {
+        //     lastKey = entry.getKey();
+        // }
+        // modelID = lastKey;
+
+        // if (modelID != 0)
+        // {
+        readAndStoreData();
+        // }
+
         /* get the class of the newly created model */
         Class<?> runtimeClassOfGivenClass = this.getClass();
 
@@ -28,9 +39,9 @@ public class Model {
         Map<String, Object> infoOfAModel = getModelInfoAndStore(publicFields, runtimeClassOfGivenClass);
         if (this.currModelID == 0)
         {
-            modelID++;
+            modelID = this.lastIDFromDB + 1;
             this.currModelID = modelID;
-            AllModels.put(this.currModelID, infoOfAModel); 
+            AllModels.put(this.currModelID, infoOfAModel);
         }
         else
         {
@@ -44,16 +55,98 @@ public class Model {
                 AllModels.put(this.currModelID, infoOfAModel);
             }
         }
-        //TestHelper();
-        storeBookInDB();
+        storeBookInDB(this.currModelID);
+        TestHelper();
     }
 
-    private void storeBookInDB()
+    private void readAndStoreData()
     {
-        String modelInfo = null;
         try
         {
+            File file = new File(dbFileName);
+            if(file.exists() && (file.length() != 0))
+            {
+                BufferedReader reader = new BufferedReader(new FileReader(dbFileName));
+                String currLine = reader.readLine();
+
+                Map<String, Object> fieldNameAndToValueKVP = new LinkedHashMap<String, Object>();
+                List<Object> currLineInfo;
+                while (currLine != null)
+                {
+                    currLineInfo = new ArrayList<>();
+                    String currInfoOfCurrLine = "";
+                    for (int i = 0; i < currLine.length(); i++)
+                    {
+                        char currChar = currLine.charAt(i);
+                        //String fieldName = "";
+                        if (currChar != ',' )
+                        {
+                            currInfoOfCurrLine += currChar;
+                            //System.out.println("Curr: " + currInfoOfCurrLine);
+                        }
+                        else
+                        {
+                            //fieldName = currInfoOfCurrLine.substring(0, currInfoOfCurrLine.indexOf(':'));
+                            currInfoOfCurrLine = currInfoOfCurrLine.trim();
+                            currLineInfo.add(currInfoOfCurrLine);
+                            currInfoOfCurrLine = "";
+                            
+                        }
+                    }
+                    /* add the last segment to currLineInfo after the loop ends */
+                    if (!currInfoOfCurrLine.isEmpty()) {
+                        currLineInfo.add(currInfoOfCurrLine);
+                    }
+                    
+                    int id = 0;
+                    Map<String, Object> currLineModel = new LinkedHashMap<String, Object>();
+                    //System.out.println("CurrLine:" + currInfoOfCurrLine);
+                    for (int j = 0; j < currLineInfo.size(); j++)
+                    {
+                        int mainKey;
+                        String subKey = "";
+                        Object modelInfo = null;
+                        String fullInfo = (String)currLineInfo.get(j);
+                        String fieldName = fullInfo.substring(0, fullInfo.indexOf(":"));
+                        Object valueOfField = fullInfo.substring(fullInfo.indexOf(":") + 2, fullInfo.length());
+                        //System.out.println("Full Info:" + fullInfo);
+
+                        if (fieldName.contains("ID"))
+                        {
+                            id = Integer.valueOf((String) valueOfField);
+                            this.lastIDFromDB = id;
+
+                        }
+                        else if (fieldName.contains("Model_Type"))
+                        {
+                            currLineModel.put("Model_Type", valueOfField);
+                        }
+                        else
+                        {
+                            currLineModel.put(fieldName, valueOfField);
+                        }
+                    }
+                    AllModels.put(id, currLineModel);
+                    
+                    currLine = reader.readLine();
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            System.err.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    private void storeBookInDB(int currModelID)
+    {
+        try
+        {
+            String modelInfo = null;
             /* write all added models and their info, to the DB (i.e output file) */
+            BufferedWriter writer = new BufferedWriter(new FileWriter(dbFileName));
+
             FileWriter myWriter = new FileWriter(dbFileName);
             for (Map.Entry<Integer, Map<String, Object>> model : AllModels.entrySet())
             {
@@ -67,6 +160,9 @@ public class Model {
                     /* key KVP of model's info and its value */
                     String infoKey = infoOfCurrModel.getKey();
                     Object infoValue = infoOfCurrModel.getValue();
+                    //System.out.println("VAL: " + infoValue);
+                    // String subStr = (String)infoValue;
+                    // subStr = subStr.substring(1, subStr.length());
         
                     modelInfo += ", " + infoKey + ": " + infoValue;
                 }
@@ -75,6 +171,7 @@ public class Model {
                 myWriter.write(modelInfo);
             }
             myWriter.close();
+
         }
         catch (IOException e)
         {
@@ -163,7 +260,7 @@ public class Model {
         // System.err.println("title: " + title);
         // System.err.println("author: " + author);
         // System.err.println("num_copies: " + num_copies);
-        infoOfAModel.put("Model Type", runtimeClassOfGivenClass);
+        infoOfAModel.put("Model_Type", runtimeClassOfGivenClass);
         return infoOfAModel;
     }
 
@@ -186,7 +283,7 @@ public class Model {
             else
             {
                 /* get a model with the given ID, from the DB and duplicate (create) a new instance of it */
-                Class<?> aModelRuntimeClass = (Class<?>) infoOfAModel.get("Model Type");
+                Class<?> aModelRuntimeClass = (Class<?>) infoOfAModel.get("Model_Type");
                 Constructor<?> constructorOfGivenClass = aModelRuntimeClass.getDeclaredConstructor();
                 instanceOfAModel = constructorOfGivenClass.newInstance();
                 String setTo = "";
@@ -266,7 +363,7 @@ public class Model {
             //     AllModels.put(currID, nextModel);
             //     nextID++;
             // }
-            storeBookInDB();
+            storeBookInDB(this.currModelID);
         }
         // throw new UnsupportedOperationException();
     }
