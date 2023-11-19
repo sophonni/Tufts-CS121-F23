@@ -103,9 +103,6 @@ public class Model {
                     //System.out.println("CurrLine:" + currInfoOfCurrLine);
                     for (int j = 0; j < currLineInfo.size(); j++)
                     {
-                        int mainKey;
-                        String subKey = "";
-                        Object modelInfo = null;
                         String fullInfo = (String)currLineInfo.get(j);
                         String fieldName = fullInfo.substring(0, fullInfo.indexOf(":"));
                         Object valueOfField = fullInfo.substring(fullInfo.indexOf(":") + 2, fullInfo.length());
@@ -123,7 +120,14 @@ public class Model {
                         }
                         else
                         {
-                            currLineModel.put(fieldName, valueOfField);
+                            if (valueOfField.toString().matches("[0-9]+"))
+                            {
+                                currLineModel.put(fieldName, Integer.valueOf((String) valueOfField));
+                            }
+                            else
+                            {
+                                currLineModel.put(fieldName, valueOfField);
+                            }
                         }
                     }
                     AllModels.put(id, currLineModel);
@@ -134,7 +138,7 @@ public class Model {
         }
         catch (IOException e)
         {
-            System.err.println("An error occurred.");
+            System.out.println("An error occurred.");
             e.printStackTrace();
         }
     }
@@ -175,7 +179,7 @@ public class Model {
         }
         catch (IOException e)
         {
-            System.err.println("An error occurred.");
+            System.out.println("An error occurred.");
             e.printStackTrace();
         }
     }
@@ -246,7 +250,7 @@ public class Model {
                     }
                     catch (Exception e)
                     {
-                        System.err.println("Error in {getModelInfoAndStore} function: " + e);
+                        System.out.println("Error in {getModelInfoAndStore} function: " + e);
                     }
                 }
                 else
@@ -255,12 +259,13 @@ public class Model {
                 }
 
             }
-            //System.err.println("Field: " + field.getName());
+            //System.out.println("Field: " + field.getName());
         }
-        // System.err.println("title: " + title);
-        // System.err.println("author: " + author);
-        // System.err.println("num_copies: " + num_copies);
+        // System.out.println("title: " + title);
+        // System.out.println("author: " + author);
+        // System.out.println("num_copies: " + num_copies);
         infoOfAModel.put("Model_Type", runtimeClassOfGivenClass);
+        System.out.println("RUN TIME TYpe: " + runtimeClassOfGivenClass);
         return infoOfAModel;
     }
 
@@ -273,7 +278,7 @@ public class Model {
     
         try {
             Map<String, Object> infoOfAModel = AllModels.get(id);
-            //System.err.println("HERE: " + infoOfAModel);
+            //System.out.println("HERE: " + infoOfAModel);
             
             /* given ID does not exist in the DB (i.e output file) */
             if (infoOfAModel == null)
@@ -283,7 +288,12 @@ public class Model {
             else
             {
                 /* get a model with the given ID, from the DB and duplicate (create) a new instance of it */
-                Class<?> aModelRuntimeClass = (Class<?>) infoOfAModel.get("Model_Type");
+                Object test = infoOfAModel.get("Model_Type");
+                System.out.println("Find ID: " + id + "of ModelType: " + test);
+                String classType = infoOfAModel.get("Model_Type").toString();
+                classType = classType.substring("class ".length());
+                Class<?> aModelRuntimeClass = Class.forName(classType);
+                //Class<?> aModelRuntimeClass = (Class<?>) infoOfAModel.get("Model_Type");
                 Constructor<?> constructorOfGivenClass = aModelRuntimeClass.getDeclaredConstructor();
                 instanceOfAModel = constructorOfGivenClass.newInstance();
                 String setTo = "";
@@ -297,7 +307,7 @@ public class Model {
                         /* ensure that the field is public before accessing it */
                         if (Modifier.isPublic(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()))
                         {
-                            //System.err.println("FIELD: " + field);
+                            //System.out.println("FIELD: " + field);
                             /* set the static modelID field of the newly duplicated model to the same value of the exist model that was found from the DB */
                             if (field.getName() == "currModelID")
                             {
@@ -316,6 +326,7 @@ public class Model {
                     }
                     //System.out.println("Set Fields to --> " + setTo);
                     /* use c.cast to safely cast the instance to the specified type */
+                    System.out.println("Creating: " + instanceOfAModel);
                     T instanceOfAModelClass = c.cast(instanceOfAModel);
                     return instanceOfAModelClass;
                 }
@@ -326,7 +337,7 @@ public class Model {
                 
             }
         } catch (Exception e) {
-            System.err.println("Error in {find} function: " + e);
+            System.out.println("Error in {find} function: " + e);
             return null; // Or handle the error as needed
         }
     }
@@ -377,7 +388,7 @@ public class Model {
         }
         catch (IOException e)
         {
-            System.err.println("An error occurred.");
+            System.out.println("An error occurred.");
             e.printStackTrace();
         }
         AllModels.clear();

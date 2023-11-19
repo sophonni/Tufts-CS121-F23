@@ -81,8 +81,21 @@ public class ModelTest {
         b1.num_copies = 9;
         b1.save();
 
-        Book b2 = Model.find(Book.class, 8);
-        System.out.println(b2);
+        // Book b2 = new Book();
+        // b2.title = "CANE";
+        // b2.author = "Parrot";
+        // b2.num_copies = 7;
+        // b2.save();
+
+        Book b3 = Model.find(Book.class, 1);
+        System.out.println(b3);
+
+        Book b4 = Model.find(Book.class, 2);
+        System.out.println(b4);
+
+        // Book b5= Model.find(Book.class, 3);
+        // System.out.println(b5);
+
 
         // b.destroy();
 
