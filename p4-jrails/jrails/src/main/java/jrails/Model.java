@@ -89,7 +89,8 @@ public class Model {
                         else
                         {
                             //fieldName = currInfoOfCurrLine.substring(0, currInfoOfCurrLine.indexOf(':'));
-                            currInfoOfCurrLine = currInfoOfCurrLine.trim();
+                            //currInfoOfCurrLine = currInfoOfCurrLine.trim();
+                            currInfoOfCurrLine = currInfoOfCurrLine.replaceFirst("^\\s+", "");
                             currLineInfo.add(currInfoOfCurrLine);
                             currInfoOfCurrLine = "";
                             
@@ -103,10 +104,12 @@ public class Model {
                     int id = 0;
                     Map<String, Object> currLineModel = new LinkedHashMap<String, Object>();
                     //System.out.println("CurrLine:" + currInfoOfCurrLine);
+                    System.out.println("STRRR INFO: " + currLineInfo);
                     for (int j = 0; j < currLineInfo.size(); j++)
                     {
                         String fullInfo = (String)currLineInfo.get(j);
                         String fieldName = fullInfo.substring(0, fullInfo.indexOf(":"));
+                        System.out.println("Full Info: " + fullInfo + "OOOOOOOOOOO");
                         Object valueOfField = fullInfo.substring(fullInfo.indexOf(":") + 2, fullInfo.length());
                         //System.out.println("Full Info:" + fullInfo);
 
