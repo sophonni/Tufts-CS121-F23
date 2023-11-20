@@ -20,16 +20,7 @@ public class Model {
     }
 
     public void save() {
-        // int lastKey = 0;
-        // for (Map.Entry<Integer, Map<String, Object>> entry : AllModels.entrySet()) {
-        //     lastKey = entry.getKey();
-        // }
-        // modelID = lastKey;
-
-        // if (modelID != 0)
-        // {
         Model.readAndStoreData();
-        // }
 
         /* get the class of the newly created model */
         Class<?> runtimeClassOfGivenClass = this.getClass();
@@ -80,20 +71,15 @@ public class Model {
                     for (int i = 0; i < currLine.length(); i++)
                     {
                         char currChar = currLine.charAt(i);
-                        //String fieldName = "";
                         if (currChar != ',' )
                         {
                             currInfoOfCurrLine += currChar;
-                            //System.out.println("Curr: " + currInfoOfCurrLine);
                         }
                         else
                         {
-                            //fieldName = currInfoOfCurrLine.substring(0, currInfoOfCurrLine.indexOf(':'));
-                            //currInfoOfCurrLine = currInfoOfCurrLine.trim();
                             currInfoOfCurrLine = currInfoOfCurrLine.replaceFirst("^\\s+", "");
                             currLineInfo.add(currInfoOfCurrLine);
                             currInfoOfCurrLine = "";
-                            
                         }
                     }
                     /* add the last segment to currLineInfo after the loop ends */
@@ -103,15 +89,11 @@ public class Model {
                     
                     int id = 0;
                     Map<String, Object> currLineModel = new LinkedHashMap<String, Object>();
-                    //System.out.println("CurrLine:" + currInfoOfCurrLine);
-                    //System.out.println("STRRR INFO: " + currLineInfo);
                     for (int j = 0; j < currLineInfo.size(); j++)
                     {
                         String fullInfo = (String)currLineInfo.get(j);
                         String fieldName = fullInfo.substring(0, fullInfo.indexOf(":"));
-                        //System.out.println("Full Info: " + fullInfo + "OOOOOOOOOOO");
                         Object valueOfField = fullInfo.substring(fullInfo.indexOf(":") + 2, fullInfo.length());
-                        //System.out.println("Full Info:" + fullInfo);
 
                         if (fieldName.contains("ID"))
                         {
@@ -169,9 +151,6 @@ public class Model {
                     /* key KVP of model's info and its value */
                     String infoKey = infoOfCurrModel.getKey();
                     Object infoValue = infoOfCurrModel.getValue();
-                    //System.out.println("VAL: " + infoValue);
-                    // String subStr = (String)infoValue;
-                    // subStr = subStr.substring(1, subStr.length());
         
                     modelInfo += ", " + infoKey + ": " + infoValue;
                 }
@@ -218,14 +197,6 @@ public class Model {
                                     title = field.get(this).toString();
                                     infoOfAModel.put(field.getName(), title);
                                 }
-                                // /* ensure that the model has title */
-                                // if (title == null || title.isEmpty())
-                                // {
-                                //     throw new IllegalArgumentException("Error in {getModelInfoAndStore} function: {title} can't be null or empty.");
-                                // }
-                                // else
-                                // {
-                                // }
                                 break;
                             case "author":
                                 if(field.get(this) == null)
@@ -237,14 +208,6 @@ public class Model {
                                     author = field.get(this).toString();
                                     infoOfAModel.put(field.getName(), author);
                                 }
-                                // /* ensure that the model has author name */
-                                // if (author == null || author.isEmpty())
-                                // {
-                                //     throw new IllegalArgumentException("Error in {getModelInfoAndStore} function: {author} can't be null or empty.");
-                                // }
-                                // else
-                                // {
-                                // }
                                 break;
                             case "num_copies":
                                 num_copies = field.get(this);
@@ -259,26 +222,18 @@ public class Model {
                                 }
                                 break;
                             case "bookID":
-                                //infoOfAModel.put(field.getName(), modelID);
                                 break;
                             default:
-                                // if (field.get(this) != null || !field.get(this).toString().isEmpty())
-                                // {
-                                    if (field.get(this) == null)
-                                    {
-                                        otherField = "null";
-                                    }
-                                    else
-                                    {
-                                        otherField = field.get(this);
-                                    }
-                                    infoOfAModel.put(field.getName(), otherField);
-                                    break;
-                                // }
-                                // else
-                                // {
-                                //     throw new IllegalArgumentException("Error in {getModelInfoAndStore} function: {}" + field.getName() + "} is null or empty.");
-                                // }
+                                if (field.get(this) == null)
+                                {
+                                    otherField = "null";
+                                }
+                                else
+                                {
+                                    otherField = field.get(this);
+                                }
+                                infoOfAModel.put(field.getName(), otherField);
+                                break;
                         }
                     }
                     catch (Exception e)
@@ -292,13 +247,8 @@ public class Model {
                 }
 
             }
-            //System.out.println("Field: " + field.getName());
         }
-        // System.out.println("title: " + title);
-        // System.out.println("author: " + author);
-        // System.out.println("num_copies: " + num_copies);
         infoOfAModel.put("Model_Type", runtimeClassOfGivenClass);
-        //System.out.println("RUN TIME TYpe: " + runtimeClassOfGivenClass);
         return infoOfAModel;
     }
 
@@ -343,106 +293,94 @@ public class Model {
                         /* ensure that the field is public before accessing it */
                         if (Modifier.isPublic(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()))
                         {
-                            // if (field.isAnnotationPresent(Column.class))
-                            // {
-                            //     if (field.getType() == String.class || field.getType() == int.class || field.getType() == boolean.class)
-                            //     {
-                                    //System.out.println("FIELD: " + field);
-                                    /* set the static modelID field of the newly duplicated model to the same value of the exist model that was found from the DB */
-                                    if (field.getName() == "currModelID")
+                            /* set the static modelID field of the newly duplicated model to the same value of the exist model that was found from the DB */
+                            if (field.getName() == "currModelID")
+                            {
+                                field.set(instanceOfAModel, id);
+                                setTo += ", ID: " + id;
+                            }
+                            else
+                            {
+                                if (field.getType().toString().contains("Object"))
+                                {
+                                    /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
+                                    Object valueOfAnInfo = infoOfAModel.get(field.getName());
+                                    if (valueOfAnInfo == null)
                                     {
-                                        field.set(instanceOfAModel, id);
-                                        setTo += ", ID: " + id;
+                                        field.set(instanceOfAModel, "null");
+                                        setTo += ", " + field.getName() + ": " + "null";
                                     }
                                     else
                                     {
-                                        if (field.getType().toString().contains("Object"))
-                                        {
-                                            /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
-                                            Object valueOfAnInfo = infoOfAModel.get(field.getName());
-                                            if (valueOfAnInfo == null)
-                                            {
-                                                field.set(instanceOfAModel, "null");
-                                                setTo += ", " + field.getName() + ": " + "null";
-                                            }
-                                            else
-                                            {
-                                            field.set(instanceOfAModel, valueOfAnInfo);
-                                            setTo += ", " + field.getName() + ": " + valueOfAnInfo;
-                                            }
-                                        }
-                                        else if (field.getType().toString().contains("String"))
-                                        {
-                                            /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
-                                            Object valueOfAnInfo = infoOfAModel.get(field.getName());
-                                            if (valueOfAnInfo == null)
-                                            {
-                                                field.set(instanceOfAModel, "null");
-                                                setTo += ", " + field.getName() + ": " + "null";
-                                            }
-                                            else
-                                            {
-                                                field.set(instanceOfAModel, valueOfAnInfo.toString());
-                                                setTo += ", " + field.getName() + ": " + valueOfAnInfo;
-                                            }
-                                        }
-                                        else if (field.getType().toString().contains("boolean") || (field.getType().toString().contains("Boolean")))
-                                        {
-                                            /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
-                                            Object valueOfAnInfo = infoOfAModel.get(field.getName());
-                                            if (valueOfAnInfo == null)
-                                            {
-                                                field.set(instanceOfAModel, "null");
-                                                setTo += ", " + field.getName() + ": " + "null";
-                                            }
-                                            else
-                                            {
-                                                field.set(instanceOfAModel, Boolean.valueOf(valueOfAnInfo.toString()));
-                                                setTo += ", " + field.getName() + ": " + valueOfAnInfo;
-                                            }
-                                        }
-                                        else if ((field.getType().toString().contains("int") || (field.getType().toString().contains("Integer"))))
-                                        {
-                                            /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
-                                            Object valueOfAnInfo = infoOfAModel.get(field.getName());
-                                            if (valueOfAnInfo == null)
-                                            {
-                                                field.set(instanceOfAModel, "null");
-                                                setTo += ", " + field.getName() + ": " + "null";
-                                            }
-                                            else
-                                            {
-                                                field.set(instanceOfAModel, Integer.parseInt(valueOfAnInfo.toString()));
-                                                setTo += ", " + field.getName() + ": " + valueOfAnInfo;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
-                                            Object valueOfAnInfo = infoOfAModel.get(field.getName());
-                                            if (valueOfAnInfo == null)
-                                            {
-                                                field.set(instanceOfAModel, "null");
-                                                setTo += ", " + field.getName() + ": " + "null";
-                                            }
-                                            else
-                                            {
-                                                field.set(instanceOfAModel, field.getType().cast(valueOfAnInfo));
-                                                setTo += ", " + field.getName() + ": " + valueOfAnInfo;
-                                            }
-                                        }
+                                    field.set(instanceOfAModel, valueOfAnInfo);
+                                    setTo += ", " + field.getName() + ": " + valueOfAnInfo;
                                     }
-                                // }
-                                // else
-                                // {
-                                //     throw new IllegalArgumentException("Error in {find} function: Field with @Column annotation should be of type Boolean, String, or Integer.");
-                                // }
+                                }
+                                else if (field.getType().toString().contains("String"))
+                                {
+                                    /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
+                                    Object valueOfAnInfo = infoOfAModel.get(field.getName());
+                                    if (valueOfAnInfo == null)
+                                    {
+                                        field.set(instanceOfAModel, "null");
+                                        setTo += ", " + field.getName() + ": " + "null";
+                                    }
+                                    else
+                                    {
+                                        field.set(instanceOfAModel, valueOfAnInfo.toString());
+                                        setTo += ", " + field.getName() + ": " + valueOfAnInfo;
+                                    }
+                                }
+                                else if (field.getType().toString().contains("boolean") || (field.getType().toString().contains("Boolean")))
+                                {
+                                    /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
+                                    Object valueOfAnInfo = infoOfAModel.get(field.getName());
+                                    if (valueOfAnInfo == null)
+                                    {
+                                        field.set(instanceOfAModel, "null");
+                                        setTo += ", " + field.getName() + ": " + "null";
+                                    }
+                                    else
+                                    {
+                                        field.set(instanceOfAModel, Boolean.valueOf(valueOfAnInfo.toString()));
+                                        setTo += ", " + field.getName() + ": " + valueOfAnInfo;
+                                    }
+                                }
+                                else if ((field.getType().toString().contains("int") || (field.getType().toString().contains("Integer"))))
+                                {
+                                    /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
+                                    Object valueOfAnInfo = infoOfAModel.get(field.getName());
+                                    if (valueOfAnInfo == null)
+                                    {
+                                        field.set(instanceOfAModel, "null");
+                                        setTo += ", " + field.getName() + ": " + "null";
+                                    }
+                                    else
+                                    {
+                                        field.set(instanceOfAModel, Integer.parseInt(valueOfAnInfo.toString()));
+                                        setTo += ", " + field.getName() + ": " + valueOfAnInfo;
+                                    }
+                                }
+                                else
+                                {
+                                    /* set all other public fields of the newly duplicated model to the same value of the exist model that was found from the DB */
+                                    Object valueOfAnInfo = infoOfAModel.get(field.getName());
+                                    if (valueOfAnInfo == null)
+                                    {
+                                        field.set(instanceOfAModel, "null");
+                                        setTo += ", " + field.getName() + ": " + "null";
+                                    }
+                                    else
+                                    {
+                                        field.set(instanceOfAModel, field.getType().cast(valueOfAnInfo));
+                                        setTo += ", " + field.getName() + ": " + valueOfAnInfo;
+                                    }
+                                }
+                            }
                         }
                         
                     }
-                    //System.out.println("Set Fields to --> " + setTo);
                     /* use c.cast to safely cast the instance to the specified type */
-                    //System.out.println("Creating: " + instanceOfAModel);
                     T instanceOfAModelClass = c.cast(instanceOfAModel);
                     return instanceOfAModelClass;
                 }
@@ -484,18 +422,8 @@ public class Model {
         else
         {
             AllModels.remove(this.id());
-
-            // int nextID = this.id() + 1;
-            // while(AllModels.containsKey(nextID))
-            // {
-            //     int currID = nextID - 1;
-            //     Map<String, Object> nextModel = AllModels.remove(nextID);
-            //     AllModels.put(currID, nextModel);
-            //     nextID++;
-            // }
             storeBookInDB(this.currModelID);
         }
-        // throw new UnsupportedOperationException();
     }
 
     public static void reset() {
