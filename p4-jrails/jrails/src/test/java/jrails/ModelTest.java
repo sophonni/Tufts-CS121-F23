@@ -141,16 +141,52 @@ public class ModelTest {
     //     Model.reset();
     // }
 
+    // @Test
+    // public void SaveTest2() {
+    //     Book b = new Book();
+    //     b.title = " ";
+    //     b.author = "Jack";
+    //     b.num_copies = 4;
+    //     b.save();
+
+    //     Book b1 = Model.find(Book.class, 1);
+    //     //Model.reset();
+    // }
+
+    // @Test
+    // public void SaveWithTrailingWhiteSpace() {
+    //     Model.reset();
+    //     Book b = new Book();
+    //     b.title = " *(Q*(&))       ";
+    //     b.author = "BOBBY";
+    //     b.num_copies = 0;
+    //     b.save();
+
+    //     Book b1 = Model.find(Book.class, 1);
+    //     Book b2 = new Book();
+    //     b2.title = " *(Q*(&))       ";
+    //     b2.author = "BOBBY";
+    //     b2.num_copies = 0;
+    //     b2.save();
+    //     b2.title = b2.title.trim();
+    //     b2.save();
+
+    //     Book b3 = Model.find(Book.class, 2);
+    //     // Integer i = Model.find(Integer.class, 2);
+    //     // System.out.println("i: " + i);
+    //     //Model.reset();
+    // }
+
     @Test
-    public void SaveTest2() {
+    public void SaveWithNullField() {
+        Model.reset();
         Book b = new Book();
-        b.title = " ";
-        b.author = "Jack";
-        b.num_copies = 4;
+        b.title = null;
+        b.author = "BOBBY";
+        b.num_copies = 0;
         b.save();
 
-        Book b1 = Model.find(Book.class, 1);
-
+        Book b3 = Model.find(Book.class, 1);
         //Model.reset();
     }
 
