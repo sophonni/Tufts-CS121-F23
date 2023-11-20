@@ -8,7 +8,7 @@ public class Model {
     private static Map<Integer, Map<String, Object>> AllModels = new LinkedHashMap<Integer, Map<String, Object>>();
     public static int modelID = 0;
     public int currModelID = 0;
-    private int lastIDFromDB = 0;
+    private static int lastIDFromDB = 0;
     private static String dbFileName = "Book_DB.txt";
     public Model() {
         currModelID = 0;
@@ -28,7 +28,7 @@ public class Model {
 
         // if (modelID != 0)
         // {
-        readAndStoreData();
+        Model.readAndStoreData();
         // }
 
         /* get the class of the newly created model */
@@ -37,6 +37,7 @@ public class Model {
         /* get info of the newly created model and store them */
         Field[] publicFields = runtimeClassOfGivenClass.getFields();
         Map<String, Object> infoOfAModel = getModelInfoAndStore(publicFields, runtimeClassOfGivenClass);
+        System.out.println("ID is: " + this.id());
         if (this.currModelID == 0)
         {
             modelID = this.lastIDFromDB + 1;
@@ -45,6 +46,7 @@ public class Model {
         }
         else
         {
+            System.out.println("Already Exist");
             /* ensure that the ID of a model exist before modifying the model's info */
             if (!AllModels.containsKey(this.currModelID))
             {
@@ -59,7 +61,7 @@ public class Model {
         TestHelper();
     }
 
-    private void readAndStoreData()
+    private static void readAndStoreData()
     {
         try
         {
@@ -111,7 +113,7 @@ public class Model {
                         if (fieldName.contains("ID"))
                         {
                             id = Integer.valueOf((String) valueOfField);
-                            this.lastIDFromDB = id;
+                            lastIDFromDB = id;
 
                         }
                         else if (fieldName.contains("Model_Type"))
@@ -272,15 +274,18 @@ public class Model {
         // System.out.println("author: " + author);
         // System.out.println("num_copies: " + num_copies);
         infoOfAModel.put("Model_Type", runtimeClassOfGivenClass);
-        System.out.println("RUN TIME TYpe: " + runtimeClassOfGivenClass);
+        //System.out.println("RUN TIME TYpe: " + runtimeClassOfGivenClass);
         return infoOfAModel;
     }
 
     public int id() {
+        Model.readAndStoreData();
         return this.currModelID;
     }
 
     public static <T> T find(Class<T> c, int id) {
+        // Model m = new Model();
+        Model.readAndStoreData();
         Object instanceOfAModel = null;
     
         try {
@@ -296,7 +301,7 @@ public class Model {
             {
                 /* get a model with the given ID, from the DB and duplicate (create) a new instance of it */
                 Object test = infoOfAModel.get("Model_Type");
-                System.out.println("Find ID: " + id + "of ModelType: " + test);
+                //System.out.println("Find ID: " + id + "of ModelType: " + test);
                 String classType = infoOfAModel.get("Model_Type").toString();
                 classType = classType.substring("class ".length());
                 Class<?> aModelRuntimeClass = Class.forName(classType);
@@ -364,7 +369,7 @@ public class Model {
                     }
                     //System.out.println("Set Fields to --> " + setTo);
                     /* use c.cast to safely cast the instance to the specified type */
-                    System.out.println("Creating: " + instanceOfAModel);
+                    //System.out.println("Creating: " + instanceOfAModel);
                     T instanceOfAModelClass = c.cast(instanceOfAModel);
                     return instanceOfAModelClass;
                 }
@@ -381,6 +386,8 @@ public class Model {
     }
 
     public static <T> List<T> all(Class<T> c) {
+        // Model m = new Model();
+        Model.readAndStoreData();
         List<T> allModelsWithTargetClass = new ArrayList<T>();
         for (Map.Entry<Integer, Map<String, Object>> model : AllModels.entrySet())
         {
@@ -395,6 +402,7 @@ public class Model {
     }
 
     public void destroy() {
+        Model.readAndStoreData();
         Map<String, Object> infoOfAModel = AllModels.get(this.id());
         if (infoOfAModel == null)
         {
@@ -418,6 +426,7 @@ public class Model {
     }
 
     public static void reset() {
+        AllModels.clear();
         try
         {
             PrintWriter writer = new PrintWriter(dbFileName);

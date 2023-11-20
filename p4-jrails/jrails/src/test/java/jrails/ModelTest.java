@@ -67,40 +67,91 @@ public class ModelTest {
     //     // Model.reset();
     // }
 
+    // @Test
+    // public void SaveTest() {
+    //     Book b = new Book();
+    //     b.title = "FFDD";
+    //     b.author = "Jack";
+    //     b.num_copies = 4;
+    //     b.save();
+
+    //     Book b1 = new Book();
+    //     b1.title = "COP";
+    //     b1.author = "Penguin";
+    //     b1.num_copies = 9;
+    //     b1.save();
+
+    //     // Book b2 = new Book();
+    //     // b2.title = "CANE";
+    //     // b2.author = "Parrot";
+    //     // b2.num_copies = 7;
+    //     // b2.save();
+
+    //     Book b3 = Model.find(Book.class, 1);
+    //     System.out.println(b3);
+
+    //     Book b4 = Model.find(Book.class, 2);
+    //     System.out.println(b4);
+
+    //     // Book b5= Model.find(Book.class, 3);
+    //     // System.out.println(b5);
+
+
+    //     // b.destroy();
+
+    //     //ab.save();
+    //     //Model.reset();
+    // }
+
+    // @Test
+    // public void SaveTest2() {
+    //     Book b = new Book();
+    //     b.title = "FFDD";
+    //     b.author = "Jack";
+    //     b.num_copies = 4;
+    //     //b.save();
+
+    //     Book b1 = new Book();
+    //     b1.title = "COP";
+    //     b1.author = "Penguin";
+    //     b1.num_copies = 9;
+    //     //b1.save();
+
+    //     Book b2 = new Book();
+    //     b2.title = "CONE";
+    //     b2.author = "Polar Bear";
+    //     b2.num_copies = 4;
+    //     // b2.save();
+
+    //     Book b3 = Model.find(Book.class, 1);
+    //     System.out.println("B3 is: " + b3);
+
+    //     Book b4 = Model.find(Book.class, 2);
+    //     System.out.println("B4 is : " + b4);
+
+    //     b4.title = "SALMON";
+    //     b4.title = "Polar Bear";
+    //     b4.num_copies = 5423535;
+    //     // b4.save();
+
+    //     b3.title = "Tiger";
+    //     // b3.save();
+
+    //     Book b5 = Model.find(Book.class, 4);
+    //     Model.reset();
+    // }
+
     @Test
-    public void SaveTest() {
+    public void SaveTest2() {
         Book b = new Book();
-        b.title = "FFDD";
+        b.title = " ";
         b.author = "Jack";
         b.num_copies = 4;
         b.save();
 
-        Book b1 = new Book();
-        b1.title = "COP";
-        b1.author = "Penguin";
-        b1.num_copies = 9;
-        b1.save();
+        Book b1 = Model.find(Book.class, 1);
 
-        // Book b2 = new Book();
-        // b2.title = "CANE";
-        // b2.author = "Parrot";
-        // b2.num_copies = 7;
-        // b2.save();
-
-        Book b3 = Model.find(Book.class, 1);
-        System.out.println(b3);
-
-        Book b4 = Model.find(Book.class, 2);
-        System.out.println(b4);
-
-        // Book b5= Model.find(Book.class, 3);
-        // System.out.println(b5);
-
-
-        // b.destroy();
-
-        //ab.save();
-        // Model.reset();
+        //Model.reset();
     }
 
     // @After

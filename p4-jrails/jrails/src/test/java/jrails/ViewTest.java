@@ -43,7 +43,7 @@ public class ViewTest {
             Html c = new Html("c");
             Html test = a.p(b).p(c);
             
-            System.err.println("test: " + test);
+            //System.err.println("test: " + test);
             
         }
         catch (Exception e)
