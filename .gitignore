@@ -10,7 +10,6 @@ README
 # Project 3 Testing Class Files  files
 *p3TestClass*
 
-.gradle/
 *.lock
 *.bin
 *.properties

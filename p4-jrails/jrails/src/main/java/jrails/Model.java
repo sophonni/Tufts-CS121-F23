@@ -185,56 +185,15 @@ public class Model {
                 {
                     try
                     {
-                        switch(field.getName())
+                        if (field.get(this) == null)
                         {
-                            case "title":
-                                if(field.get(this) == null)
-                                {
-                                    infoOfAModel.put(field.getName(), "null");
-                                }
-                                else
-                                {
-                                    title = field.get(this).toString();
-                                    infoOfAModel.put(field.getName(), title);
-                                }
-                                break;
-                            case "author":
-                                if(field.get(this) == null)
-                                {
-                                    infoOfAModel.put(field.getName(), "null");
-                                }
-                                else
-                                {
-                                    author = field.get(this).toString();
-                                    infoOfAModel.put(field.getName(), author);
-                                }
-                                break;
-                            case "num_copies":
-                                num_copies = field.get(this);
-                                /* ensure that the model doesn't have negative number of copies */
-                                if ((int)num_copies < 0)
-                                {
-                                    throw new IllegalArgumentException("Error in {getModelInfoAndStore} function: {num_copies} can't be negative.");
-                                }
-                                else
-                                {
-                                    infoOfAModel.put(field.getName(), num_copies);
-                                }
-                                break;
-                            case "bookID":
-                                break;
-                            default:
-                                if (field.get(this) == null)
-                                {
-                                    otherField = "null";
-                                }
-                                else
-                                {
-                                    otherField = field.get(this);
-                                }
-                                infoOfAModel.put(field.getName(), otherField);
-                                break;
+                            otherField = "null";
                         }
+                        else
+                        {
+                            otherField = field.get(this);
+                        }
+                        infoOfAModel.put(field.getName(), otherField);
                     }
                     catch (Exception e)
                     {
@@ -258,13 +217,11 @@ public class Model {
     }
 
     public static <T> T find(Class<T> c, int id) {
-        // Model m = new Model();
         Model.readAndStoreData();
         Object instanceOfAModel = null;
     
         try {
             Map<String, Object> infoOfAModel = AllModels.get(id);
-            //System.out.println("HERE: " + infoOfAModel);
             
             /* given ID does not exist in the DB (i.e output file) */
             if (infoOfAModel == null)
@@ -275,11 +232,9 @@ public class Model {
             {
                 /* get a model with the given ID, from the DB and duplicate (create) a new instance of it */
                 Object test = infoOfAModel.get("Model_Type");
-                //System.out.println("Find ID: " + id + "of ModelType: " + test);
                 String classType = infoOfAModel.get("Model_Type").toString();
                 classType = classType.substring("class ".length());
                 Class<?> aModelRuntimeClass = Class.forName(classType);
-                //Class<?> aModelRuntimeClass = (Class<?>) infoOfAModel.get("Model_Type");
                 Constructor<?> constructorOfGivenClass = aModelRuntimeClass.getDeclaredConstructor();
                 instanceOfAModel = constructorOfGivenClass.newInstance();
                 String setTo = "";
@@ -397,7 +352,6 @@ public class Model {
     }
 
     public static <T> List<T> all(Class<T> c) {
-        // Model m = new Model();
         Model.readAndStoreData();
         List<T> allModelsWithTargetClass = new ArrayList<T>();
         for (Map.Entry<Integer, Map<String, Object>> model : AllModels.entrySet())
