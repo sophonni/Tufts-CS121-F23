@@ -58,7 +58,7 @@ public class Tests {
     silverStations.add("scone");
     mbta.addLine("silverLine", silverStations);
 
-    /* duplicate stations test */
+    /* duplicate stations for a line test */
     try
     {
       List<String> orangeStations = new LinkedList<>();
@@ -74,7 +74,6 @@ public class Tests {
     {
       System.out.println("Expected Exception: " + e);
     }
-    mbta.PrintLineHelper();
   }
 
   @Test public void mbtaAddJourneyTest()
@@ -89,7 +88,7 @@ public class Tests {
     johnJourney1.add("rust");
     mbta.addJourney("John", johnJourney1);
 
-    /* same name with different journey test */
+    /* duplicate person test */
     try
     {
       List<String> johnJourney2 = new LinkedList<>();
@@ -105,6 +104,5 @@ public class Tests {
     {
       System.out.println("Expected Exception: " + e);
     }
-    mbta.PrintLineHelper();
   }
 }

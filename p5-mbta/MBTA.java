@@ -2,7 +2,7 @@ import java.util.*;
 
 public class MBTA {
   Map<String, LinkedHashSet<String>> createdLines = new HashMap<>();
-  Map<String, LinkedHashSet<String>> createdPassengerJourney = new HashMap<>();
+  Map<String, LinkedList<String>> createdPassengerJourney = new HashMap<>();
   // Creates an initially empty simulation
   public MBTA() { }
 
@@ -31,24 +31,14 @@ public class MBTA {
 
   // Adds a new planned journey to the simulation
   public void addJourney(String name, List<String> stations) {
-    LinkedHashSet<String> nonDuplicateStations = new LinkedHashSet<String>(stations);
-
-    /* ensure that given list of stations does not contains duplicate */
-    if (nonDuplicateStations.size() != stations.size())
+    /* only create new journey for the passenger if name doesn't already exist */
+    if (!createdPassengerJourney.containsKey(name))
     {
-      throw new IllegalArgumentException("Error in {addJourney}: Given list of stations contains duplicate.");
+      this.createdPassengerJourney.put(name, new LinkedList<String>(stations));
     }
     else
     {
-      /* only create new journey for the passenger if name doesn't already exist */
-      if (!createdLines.containsKey(name))
-      {
-        this.createdLines.put(name, nonDuplicateStations);
-      }
-      else
-      {
-        throw new IllegalArgumentException("Error is {addJourney}: Journey with the name {" + name + "} already exist.");
-      }
+      throw new IllegalArgumentException("Error is {addJourney}: Journey with the name {" + name + "} already exist.");
     }
   }
 
