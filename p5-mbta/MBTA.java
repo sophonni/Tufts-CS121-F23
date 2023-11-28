@@ -1,14 +1,17 @@
+import com.google.gson.*;
+import java.io.*;
+import java.time.format.SignStyle;
 import java.util.*;
 
 public class MBTA {
-  Map<String, LinkedHashSet<String>> createdLines = new HashMap<>();
-  Map<String, LinkedList<String>> createdPassengerJourney = new HashMap<>();
+  private Map<String, LinkedList<String>> trainLine = new HashMap<>();
+  private Map<String, LinkedList<String>> passengerJourney = new HashMap<>();
   // Creates an initially empty simulation
   public MBTA() { }
 
   // Adds a new transit line with given name and stations
   public void addLine(String name, List<String> stations) {
-    LinkedHashSet<String> nonDuplicateStations = new LinkedHashSet<String>(stations);
+    LinkedHashSet<String> nonDuplicateStations = new LinkedHashSet<>(stations);
 
     /* ensure that given list of stations does not contains duplicate */
     if (nonDuplicateStations.size() != stations.size())
@@ -18,9 +21,9 @@ public class MBTA {
     else
     {
       /* only create new line if name doesn't already exist */
-      if (!createdLines.containsKey(name))
+      if (!trainLine.containsKey(name))
       {
-        this.createdLines.put(name, nonDuplicateStations);
+        this.trainLine.put(name, new LinkedList<>(stations));
       }
       else
       {
@@ -32,9 +35,9 @@ public class MBTA {
   // Adds a new planned journey to the simulation
   public void addJourney(String name, List<String> stations) {
     /* only create new journey for the passenger if name doesn't already exist */
-    if (!createdPassengerJourney.containsKey(name))
+    if (!passengerJourney.containsKey(name))
     {
-      this.createdPassengerJourney.put(name, new LinkedList<String>(stations));
+      this.passengerJourney.put(name, new LinkedList<String>(stations));
     }
     else
     {
@@ -54,22 +57,45 @@ public class MBTA {
 
   // reset to an empty simulation
   public void reset() {
-    this.createdLines.clear();
-    this.createdPassengerJourney.clear();
+    this.trainLine.clear();
+    this.passengerJourney.clear();
   }
 
   // adds simulation configuration from a file
   public void loadConfig(String filename) {
-    throw new UnsupportedOperationException();
+    Gson gson = new Gson();
+
+    try (Reader reader = new FileReader(filename)) {
+
+      MBTAData mbtaData = gson.fromJson(reader, MBTAData.class);
+
+      /* accessing trainLine from JSON config and storing in a HashMap */
+      Map<String, LinkedList<String>> trainLinesFromConfig = mbtaData.getLines();
+      for (String key : trainLinesFromConfig.keySet())
+      {
+        this.addLine(key, trainLinesFromConfig.get(key));
+      }
+      
+      /* accessing trips from JSON config and storing in a HashMap */
+      Map<String, LinkedList<String>> tripesFromConfig = mbtaData.getTrips();
+      for (String key : tripesFromConfig.keySet())
+      {
+        this.addJourney(key, tripesFromConfig.get(key));
+      }
+    }
+    catch (Exception e)
+    {
+      throw new IllegalArgumentException("Error is {loadConfig}: Unable to parse JSON file.");
+    }
   }
 
-  public void PrintLineHelper()
+  public void PrintLines()
   {
-    System.out.println("Lines Map: " + this.createdLines);
+      System.out.println("Lines: " + this.trainLine);
   }
 
-  public void PrintJourneyHelper()
+  public void PrintJournies()
   {
-    System.out.println("Journey Map: " + this.createdPassengerJourney);
+    System.out.println("Trips: " + this.passengerJourney);
   }
 }
