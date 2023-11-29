@@ -7,8 +7,11 @@ public class MBTA {
   public Map<String, LinkedList<String>> trainLine = new HashMap<>();
   public Map<String, LinkedList<String>> passengerJourney = new HashMap<>();
 
+  /* first element of the LinkedList represents the current station the train is at */
   public Map<String, LinkedList<String>> trainForwardStations = new HashMap<>();
   public Map<String, LinkedList<String>> trainBackwardStations = new HashMap<>();
+
+  public Map<String, LinkedList<String>> trainToBoardPassengers = new HashMap<>();
 
   // Creates an initially empty simulation
   public MBTA() { }
