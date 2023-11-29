@@ -4,8 +4,12 @@ import java.time.format.SignStyle;
 import java.util.*;
 
 public class MBTA {
-  private Map<String, LinkedList<String>> trainLine = new HashMap<>();
-  private Map<String, LinkedList<String>> passengerJourney = new HashMap<>();
+  public Map<String, LinkedList<String>> trainLine = new HashMap<>();
+  public Map<String, LinkedList<String>> passengerJourney = new HashMap<>();
+
+  public Map<String, LinkedList<String>> trainForwardStations = new HashMap<>();
+  public Map<String, LinkedList<String>> trainBackwardStations = new HashMap<>();
+
   // Creates an initially empty simulation
   public MBTA() { }
 
@@ -87,11 +91,55 @@ public class MBTA {
     {
       throw new IllegalArgumentException("Error is {loadConfig}: Unable to parse JSON file.");
     }
+
+    /* store trains and their initial station */
+    for (String key : this.trainLine.keySet())
+    {
+      this.trainForwardStations.put(key, this.trainLine.get(key));
+    }
+  }
+
+  public void moveTrainForward(Train t, Station currStation)
+  {
+    /* remove currStation from the map for forward movement and add the front of the map for backward movement */
+    LinkedList<String> forwardStations = this.trainForwardStations.get(t.toString());
+    forwardStations.remove(currStation.toString());
+    
+    LinkedList<String> backwardStations = null;
+    if (!this.trainBackwardStations.containsKey(t.toString()))
+    {
+      backwardStations = new LinkedList<>();
+    }
+    else
+    {
+      backwardStations = this.trainBackwardStations.get(t.toString());
+    }
+    backwardStations.addFirst(currStation.toString());    
+    this.trainBackwardStations.put(t.toString(), backwardStations);
+  }
+  
+  public void moveTrainBackward(Train t, Station currStation)
+  {
+    /* remove currStation from the map for backward movement and add the front of the map for forward movement */
+    LinkedList<String> backwardStations = this.trainBackwardStations.get(t.toString());
+    backwardStations.remove(currStation.toString());
+
+    LinkedList<String> forwardStations = null;
+    if (!this.trainForwardStations.containsKey(t.toString()))
+    {
+      forwardStations = new LinkedList<>();
+    }
+    else
+    {
+      forwardStations = this.trainForwardStations.get(t.toString());
+    }
+    forwardStations.addFirst(currStation.toString());
+    this.trainForwardStations.put(t.toString(), forwardStations);
   }
 
   public void PrintLines()
   {
-      System.out.println("Lines: " + this.trainLine);
+    System.out.println("Lines: " + this.trainLine);
   }
 
   public void PrintJournies()

@@ -21,6 +21,62 @@ public class MoveEvent implements Event {
     return List.of(t.toString(), s1.toString(), s2.toString());
   }
   public void replayAndCheck(MBTA mbta) {
-    throw new UnsupportedOperationException();
+    Map<String, LinkedList<String>> trainLine = mbta.trainLine;
+    LinkedList<String> lineStations = trainLine.get(this.t.toString());
+
+    /* ensure that the two stations exist in the line */
+    if (!lineStations.contains(this.s1.toString()) || !lineStations.contains(this.s2.toString()))
+    {
+      throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck}: Train can't move from station {" + s1.toString() + "} to station {" + s2.toString() + "}.");
+    }
+    else
+    {
+      if (mbta.trainBackwardStations.get(t.toString()) == null || (mbta.trainBackwardStations.get(t.toString()).size() != mbta.trainLine.get(t.toString()).size()))
+      {
+        System.out.println("Moving Forward");
+        int s1Index = lineStations.indexOf(this.s1.toString());
+        int s2Index = lineStations.indexOf(this.s2.toString());
+        /* ensure that the two stations are adjacent */
+        if ((s2Index - s1Index) != 1)
+        {
+          throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingForward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "}.");
+        }
+        else
+        {
+          /* move train forward */
+          mbta.moveTrainForward(this.t, s1);
+        }
+        
+        /* starts moving train backward */
+        if (mbta.trainForwardStations.get(this.t.toString()).size() == 1)
+        {
+          mbta.moveTrainForward(this.t, s2);
+          mbta.trainLine.put(this.t.toString(), mbta.trainBackwardStations.get(t.toString()));
+        }
+      }
+      else
+      {
+        System.out.println("Moving Backward");
+        int s1Index = lineStations.indexOf(this.s1.toString());
+        int s2Index = lineStations.indexOf(this.s2.toString());
+        /* ensure that the two stations are adjacent */
+        if ((s2Index - s1Index) != 1)
+        {
+          throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingBackward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "}.");
+        }
+        else
+        {
+          /* move train backward */
+          mbta.moveTrainBackward(this.t, s1);
+        }
+
+        /* starts moving train forward */
+        if (mbta.trainBackwardStations.get(this.t.toString()).size() == 1)
+        {
+          mbta.moveTrainBackward(this.t, s2);
+          mbta.trainLine.put(this.t.toString(), mbta.trainForwardStations.get(t.toString()));
+        }
+      }
+    }
   }
 }
