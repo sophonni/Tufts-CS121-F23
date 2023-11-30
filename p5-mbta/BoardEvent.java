@@ -52,8 +52,6 @@ public class BoardEvent implements Event {
               {
                 throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Journey to station {" + this.s + "} for passenger {" + this.p.toString() + "} has not yet been initialized.");
               }
-              boardPassengers.add(this.p);
-              mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
             }
             else
             {

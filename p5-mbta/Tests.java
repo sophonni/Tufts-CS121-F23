@@ -389,6 +389,89 @@ public class Tests {
   //   me2.replayAndCheck(mbta);
   // }
 
+  // @Test public void passengerBoardingAndDeboardAtPrevStationTest()
+  // {
+  //   MBTA mbta = new MBTA();
+
+  //   mbta.addLine("d", List.of("J", "K", "L", "M", "N"));
+  //   Passenger bob = Passenger.make("Bob");
+
+  //   mbta.addJourney("Bob", List.of("L", "J"));
+    
+  //   MoveEvent me1 = new MoveEvent(Train.make("d"), Station.make("J"), Station.make("K"));
+  //   me1.replayAndCheck(mbta);
+
+  //   MoveEvent me2 = new MoveEvent(Train.make("d"), Station.make("K"), Station.make("L"));
+  //   me2.replayAndCheck(mbta);
+
+  //   BoardEvent be1 = new BoardEvent(bob, Train.make("d"), Station.make("L"));
+  //   be1.replayAndCheck(mbta);
+
+  //   MoveEvent me3 = new MoveEvent(Train.make("d"), Station.make("L"), Station.make("M"));
+  //   me3.replayAndCheck(mbta);
+
+  //   /* deboard at wrong station test */
+  //   // try
+  //   // {
+  //   //   DeboardEvent db1 = new DeboardEvent(bob, Train.make("d"), Station.make("M"));
+  //   //   db1.replayAndCheck(mbta);
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }
+
+  //   /* try moving trian backward before reaching the end test */
+  //   // try
+  //   // {
+  //   //   MoveEvent me4 = new MoveEvent(Train.make("d"), Station.make("M"), Station.make("L"));
+  //   //   me4.replayAndCheck(mbta);
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }
+
+  //   MoveEvent me5 = new MoveEvent(Train.make("d"), Station.make("M"), Station.make("N"));
+  //   me5.replayAndCheck(mbta);
+
+  //   MoveEvent me6 = new MoveEvent(Train.make("d"), Station.make("N"), Station.make("M"));
+  //   me6.replayAndCheck(mbta);
+
+  //   /* deboard at wrong station test */
+  //   // try
+  //   // {
+  //   //   DeboardEvent db2 = new DeboardEvent(bob, Train.make("d"), Station.make("M"));
+  //   //   db2.replayAndCheck(mbta);
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }
+
+  //   // try
+  //   // {
+  //   //   DeboardEvent db3 = new DeboardEvent(bob, Train.make("d"), Station.make("M"));
+  //   //   db3.replayAndCheck(mbta);
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }
+
+  //   MoveEvent me7 = new MoveEvent(Train.make("d"), Station.make("M"), Station.make("L"));
+  //   me7.replayAndCheck(mbta);
+
+  //   MoveEvent me8 = new MoveEvent(Train.make("d"), Station.make("L"), Station.make("K"));
+  //   me8.replayAndCheck(mbta);
+
+  //   MoveEvent me9 = new MoveEvent(Train.make("d"), Station.make("K"), Station.make("J"));
+  //   me9.replayAndCheck(mbta);
+
+  //   DeboardEvent db4 = new DeboardEvent(bob, Train.make("d"), Station.make("J"));
+  //   db4.replayAndCheck(mbta);
+  // }
+
   //////////////////////OTHER PEOPLE TEST CASES////////////////////////////////
   // @Test public void others1() {
   //   MBTA mbta = new MBTA();
