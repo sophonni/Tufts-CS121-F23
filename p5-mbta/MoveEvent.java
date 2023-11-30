@@ -29,7 +29,7 @@ public class MoveEvent implements Event {
       LinkedList<String> lineStations = trainLine.get(this.t.toString());
   
       /* ensure that the two stations exist in the line */
-      if (!lineStations.contains(this.s1.toString()) || !lineStations.contains(this.s2.toString()))
+      if (!lineStations.contains(this.s1.toString()) || !lineStations.contains(this.s2.toString()) || this.s1 == null || this.s2 == null)
       {
         throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck}: Train can't move from station {" + s1.toString() + "} to station {" + s2.toString() + "}.");
       }
@@ -37,6 +37,7 @@ public class MoveEvent implements Event {
       {
         if (mbta.trainBackwardStations.get(t.toString()) == null || (mbta.trainBackwardStations.get(t.toString()).size() != mbta.trainLine.get(t.toString()).size()))
         {
+          mbta.isTrainMovingForward = true;
           System.out.println("Moving Forward");
           int s1Index = lineStations.indexOf(this.s1.toString());
           int s2Index = lineStations.indexOf(this.s2.toString());
@@ -56,10 +57,12 @@ public class MoveEvent implements Event {
           {
             mbta.moveTrainForward(this.t, s2);
             mbta.trainLine.put(this.t.toString(), mbta.trainBackwardStations.get(t.toString()));
+            mbta.isTrainMovingForward = false;
           }
         }
         else
         {
+          mbta.isTrainMovingForward = false;
           System.out.println("Moving Backward");
           int s1Index = lineStations.indexOf(this.s1.toString());
           int s2Index = lineStations.indexOf(this.s2.toString());
@@ -79,6 +82,7 @@ public class MoveEvent implements Event {
           {
             mbta.moveTrainBackward(this.t, s2);
             mbta.trainLine.put(this.t.toString(), mbta.trainForwardStations.get(t.toString()));
+            mbta.isTrainMovingForward = true;
           }
         }
       }

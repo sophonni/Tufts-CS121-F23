@@ -11,7 +11,9 @@ public class MBTA {
   public Map<String, LinkedList<String>> trainForwardStations = new HashMap<>();
   public Map<String, LinkedList<String>> trainBackwardStations = new HashMap<>();
 
-  public Map<String, LinkedList<String>> trainToBoardPassengers = new HashMap<>();
+  public Map<String, LinkedList<Passenger>> trainToBoardedPassengers = new HashMap<>();
+
+  public boolean isTrainMovingForward = true;
 
   // Creates an initially empty simulation
   public MBTA() { }

@@ -115,10 +115,102 @@ public class Tests {
   //   mbta.PrintJournies();
   // }
 
-  @Test public void moveRedTrainForwardAndBackTest()
+  // @Test public void moveRedTrainForwardAndBackTest()
+  // {
+  //   MBTA mbta = new MBTA();
+  //   mbta.loadConfig("sample.json");
+
+  //   Train t = Train.make("red");
+  //   Station s1 = Station.make("Davis");
+  //   Station s2 = Station.make("Harvard");
+  //   Station s3 = Station.make("Kendall");
+  //   Station s4 = Station.make("Park");
+  //   Station s5 = Station.make("Downtown Crossing");
+  //   Station s6 = Station.make("South Station");
+  //   Station s7 = Station.make("Broadway");
+  //   Station s8 = Station.make("Andrew");
+  //   Station s9 = Station.make("JFK");
+
+  //   /* moving forward */
+  //   MoveEvent moveEvent1 = new MoveEvent(t, s1, s2);
+  //   MoveEvent moveEvent2 = new MoveEvent(t, s2, s3);
+  //   MoveEvent moveEvent3 = new MoveEvent(t, s3, s4);
+  //   MoveEvent moveEvent4 = new MoveEvent(t, s4, s5);
+  //   MoveEvent moveEvent5 = new MoveEvent(t, s5, s6);
+  //   MoveEvent moveEvent6 = new MoveEvent(t, s6, s7);
+
+  //   moveEvent1.replayAndCheck(mbta);
+  //   moveEvent2.replayAndCheck(mbta);
+  //   moveEvent3.replayAndCheck(mbta);
+  //   moveEvent4.replayAndCheck(mbta);
+  //   moveEvent5.replayAndCheck(mbta);
+  //   moveEvent6.replayAndCheck(mbta);
+    
+  //   /* move train backward while forward moving is not yet complete test*/
+  //   // try
+  //   // {
+  //   //   MoveEvent moveEvent9 = new MoveEvent(t, s7, s6);
+  //   //   moveEvent9.replayAndCheck(mbta);
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("EXPECTED EXCEPTION: " + e);
+  //   // }
+  //   MoveEvent moveEvent7 = new MoveEvent(t, s7, s8);
+  //   MoveEvent moveEvent8 = new MoveEvent(t, s8, s9);
+  //   moveEvent7.replayAndCheck(mbta);
+  //   moveEvent8.replayAndCheck(mbta);
+    
+  //   /* moving backward */
+  //   MoveEvent moveEvent10 = new MoveEvent(t, s9, s8);
+  //   moveEvent10.replayAndCheck(mbta);
+
+  //   MoveEvent moveEvent11 = new MoveEvent(t, s8, s7);
+  //   moveEvent11.replayAndCheck(mbta);
+
+  //   MoveEvent moveEvent12 = new MoveEvent(t, s7, s6);
+  //   moveEvent12.replayAndCheck(mbta);
+
+  //   MoveEvent moveEvent13 = new MoveEvent(t, s6, s5);
+  //   moveEvent13.replayAndCheck(mbta);
+
+  //   MoveEvent moveEvent14 = new MoveEvent(t, s5, s4);
+  //   moveEvent14.replayAndCheck(mbta);
+
+  //   MoveEvent moveEvent15 = new MoveEvent(t, s4, s3);
+  //   moveEvent15.replayAndCheck(mbta);
+
+  //   MoveEvent moveEvent16 = new MoveEvent(t, s3, s2);
+  //   moveEvent16.replayAndCheck(mbta);
+
+  //   MoveEvent moveEvent17 = new MoveEvent(t, s2, s1);
+  //   moveEvent17.replayAndCheck(mbta);
+    
+  //   /* moving forward */
+  //   MoveEvent moveEvent18 = new MoveEvent(t, s1, s2);
+  //   moveEvent18.replayAndCheck(mbta);
+    
+  //   System.out.println("Lines Before: " + mbta.trainLine);
+  //   MoveEvent moveEvent19 = new MoveEvent(t, s2, s3);
+  //   moveEvent19.replayAndCheck(mbta);
+  //   System.out.println("Lines After: " + mbta.trainLine);
+  //   /* unidentified station name test */
+  //   // Station s4 = Station.make("Turkey");
+  //   // try
+  //   // {
+  //   //   MoveEvent moveEvent3 = new MoveEvent(t, s3, s4);
+  //   //   moveEvent3.replayAndCheck(mbta);
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }    
+  // }
+
+  @Test public void passengerBoardingTest()
   {
     MBTA mbta = new MBTA();
-    mbta.loadConfig("sample.json");
+    //mbta.loadConfig("sample.json");
 
     Train t = Train.make("red");
     Station s1 = Station.make("Davis");
@@ -131,81 +223,61 @@ public class Tests {
     Station s8 = Station.make("Andrew");
     Station s9 = Station.make("JFK");
 
-    /* moving forward */
+    Passenger p1 = Passenger.make("John");
+    BoardEvent be1 = new BoardEvent(p1, t, s1);
+    be1.replayAndCheck(mbta);
+      
+    /* non-unique passenger test */
     MoveEvent moveEvent1 = new MoveEvent(t, s1, s2);
-    MoveEvent moveEvent2 = new MoveEvent(t, s2, s3);
-    MoveEvent moveEvent3 = new MoveEvent(t, s3, s4);
-    MoveEvent moveEvent4 = new MoveEvent(t, s4, s5);
-    MoveEvent moveEvent5 = new MoveEvent(t, s5, s6);
-    MoveEvent moveEvent6 = new MoveEvent(t, s6, s7);
-
     moveEvent1.replayAndCheck(mbta);
-    moveEvent2.replayAndCheck(mbta);
-    moveEvent3.replayAndCheck(mbta);
-    moveEvent4.replayAndCheck(mbta);
-    moveEvent5.replayAndCheck(mbta);
-    moveEvent6.replayAndCheck(mbta);
-    
-    /* move train backward while forward moving is not yet complete test*/
+    Passenger p2 = Passenger.make("Jake");
+    BoardEvent be2 = new BoardEvent(p2, t, s2);
+    be2.replayAndCheck(mbta);
+
+    /* same passenger board from station differ from current station test */
     // try
     // {
-    //   MoveEvent moveEvent9 = new MoveEvent(t, s7, s6);
-    //   moveEvent9.replayAndCheck(mbta);
-    // }
-    // catch (Exception e)
-    // {
-    //   System.out.println("EXPECTED EXCEPTION: " + e);
-    // }
-    MoveEvent moveEvent7 = new MoveEvent(t, s7, s8);
-    MoveEvent moveEvent8 = new MoveEvent(t, s8, s9);
-    moveEvent7.replayAndCheck(mbta);
-    moveEvent8.replayAndCheck(mbta);
-    
-    /* moving backward */
-    MoveEvent moveEvent10 = new MoveEvent(t, s9, s8);
-    moveEvent10.replayAndCheck(mbta);
-
-    MoveEvent moveEvent11 = new MoveEvent(t, s8, s7);
-    moveEvent11.replayAndCheck(mbta);
-
-    MoveEvent moveEvent12 = new MoveEvent(t, s7, s6);
-    moveEvent12.replayAndCheck(mbta);
-
-    MoveEvent moveEvent13 = new MoveEvent(t, s6, s5);
-    moveEvent13.replayAndCheck(mbta);
-
-    MoveEvent moveEvent14 = new MoveEvent(t, s5, s4);
-    moveEvent14.replayAndCheck(mbta);
-
-    MoveEvent moveEvent15 = new MoveEvent(t, s4, s3);
-    moveEvent15.replayAndCheck(mbta);
-
-    MoveEvent moveEvent16 = new MoveEvent(t, s3, s2);
-    moveEvent16.replayAndCheck(mbta);
-
-    MoveEvent moveEvent17 = new MoveEvent(t, s2, s1);
-    moveEvent17.replayAndCheck(mbta);
-    
-    /* moving forward */
-    MoveEvent moveEvent18 = new MoveEvent(t, s1, s2);
-    moveEvent18.replayAndCheck(mbta);
-    
-    System.out.println("Lines Before: " + mbta.trainLine);
-    MoveEvent moveEvent19 = new MoveEvent(t, s2, s3);
-    moveEvent19.replayAndCheck(mbta);
-    System.out.println("Lines After: " + mbta.trainLine);
-    /* unidentified station name test */
-    // Station s4 = Station.make("Turkey");
-    // try
-    // {
-    //   MoveEvent moveEvent3 = new MoveEvent(t, s3, s4);
-    //   moveEvent3.replayAndCheck(mbta);
+    //   Passenger p3 = Passenger.make("John");
+    //   BoardEvent be3 = new BoardEvent(p3, t, s1);
+    //   be3.replayAndCheck(mbta);
     // }
     // catch (Exception e)
     // {
     //   System.out.println("Expected Exception: " + e);
-    // }    
+    // }
+    
+
+    /* same passenger boarding the train twice test */
+    // try
+    // {
+    //   BoardEvent be4 = new BoardEvent(p1, t, s1);
+    //   be2.replayAndCheck(mbta);
+    // }
+    // catch (Exception e)
+    // {
+    //   System.out.println("Expected Exception: " + e);
+    // }
+    System.out.println("Boarded People: " + mbta.trainToBoardedPassengers);
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // @Test public void loadConfigAndBoardAndDeboardingPassengerTest() {
   //   Passenger John = Passenger.make("John");

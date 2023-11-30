@@ -23,7 +23,66 @@ public class BoardEvent implements Event {
   public void replayAndCheck(MBTA mbta) {
     /*
      * passenger 'p' board onto train 't' at station 's'
+     * 
+     * ensure that passeneger exist
+     * ensure that trains exist
+     * ensure that the given 's' exist and in the LL of the 't' line
      */
-    throw new UnsupportedOperationException();
+    Map<String, LinkedList<String>> trainLine = mbta.trainLine;
+    /* ensure that the train exist */
+    if (trainLine.containsKey(this.t.toString()) || this.t != null)
+    {
+      LinkedList<String> lineStations = trainLine.get(this.t.toString());
+      /* ensure the train line has stations */
+      if (lineStations != null)
+      {
+        /* ensure that the train stations contains the station the passenger is boarding from */
+        if (lineStations.contains(this.s.toString()))
+        {
+          /* ensure that the current station of the train is the station the passenger is boarding from */
+          if (lineStations.getFirst().equals(this.s.toString()))
+          {
+            LinkedList<Passenger> boardPassengers = mbta.trainToBoardedPassengers.get(this.t.toString());
+
+            /* create a new list to store boarded passenger if there doesn't already exist a list */
+            if (boardPassengers == null)
+            {
+              boardPassengers = new LinkedList<>();
+              boardPassengers.add(this.p);
+              mbta.trainToBoardedPassengers.put(this.t.toString(), boardPassengers);
+            }
+            else
+            {
+              /* ensure that all passengers from all station that is willing to board the train have uniqe name e.g if John board red train from station1, John cannot board red train from any other stations */
+              if (!boardPassengers.contains(this.p))
+              {
+                boardPassengers.add(this.p);
+                mbta.trainToBoardedPassengers.put(this.t.toString(), boardPassengers);
+              }
+              else
+              {
+                throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Passenger {" + this.p.toString() + "} has already boarded the Train {" + this.t.toString() + "}.");
+              }
+            }
+          }
+          else
+          {
+            throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Unable to board from station {" +this.s.toString() + "} as current station of the train is {" + lineStations.getFirst() + "}.");
+          }
+        }
+        else
+        {
+          throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Train {" + this.t + "} does not contains the station {" + this.s.toString() + "}.");
+        }
+      }
+      else
+      {
+        throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Unable to board onto Train {" + this.t.toString() + "}.");
+      }
+    }
+    else
+    {
+      throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Train {" + this.t.toString() + "} does not exist.");
+    }
   }
 }
