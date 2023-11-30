@@ -21,28 +21,28 @@ public class BoardEvent implements Event {
     return List.of(p.toString(), t.toString(), s.toString());
   }
   public void replayAndCheck(MBTA mbta) {
-    Map<String, LinkedList<String>> trainLine = mbta.trainLine;
+    Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
     /* ensure that the train exist */
-    if (trainLine.containsKey(this.t.toString()) || this.t != null)
+    if (trainLine.containsKey(this.t) || this.t != null)
     {
-      LinkedList<String> lineStations = trainLine.get(this.t.toString());
+      LinkedList<Station> lineStations = trainLine.get(this.t);
       /* ensure the train line has stations */
       if (lineStations != null)
       {
         /* ensure that the train stations contains the station the passenger is boarding from */
-        if (lineStations.contains(this.s.toString()))
+        if (lineStations.contains(this.s))
         {
           /* ensure that the current station of the train is the station the passenger is boarding from */
-          if (lineStations.getFirst().equals(this.s.toString()))
+          if (lineStations.getFirst().equals(this.s))
           {
-            LinkedList<Passenger> boardPassengers = mbta.trainToBoardedPassengers.get(this.t.toString());
+            LinkedList<Passenger> boardPassengers = mbta.trainToBoardedPassengers.get(this.t);
 
             /* create a new list to store boarded passenger if there doesn't already exist a list */
             if (boardPassengers == null)
             {
               boardPassengers = new LinkedList<>();
               boardPassengers.add(this.p);
-              mbta.trainToBoardedPassengers.put(this.t.toString(), boardPassengers);
+              mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
             }
             else
             {
@@ -50,7 +50,7 @@ public class BoardEvent implements Event {
               if (!boardPassengers.contains(this.p))
               {
                 boardPassengers.add(this.p);
-                mbta.trainToBoardedPassengers.put(this.t.toString(), boardPassengers);
+                mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
               }
               else
               {

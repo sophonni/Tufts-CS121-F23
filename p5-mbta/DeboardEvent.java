@@ -26,21 +26,21 @@ public class DeboardEvent implements Event {
      * 
      */
 
-     Map<String, LinkedList<String>> trainLine = mbta.trainLine;
+     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
     /* ensure that the train exist */
-    if (trainLine.containsKey(this.t.toString()) || this.t != null)
+    if (trainLine.containsKey(this.t) || this.t != null)
     {
-      LinkedList<String> lineStations = trainLine.get(this.t.toString());
+      LinkedList<Station> lineStations = trainLine.get(this.t);
       /* ensure the train line has stations */
       if (lineStations != null)
       {
         /* ensure that the train stations contains the station the passenger is deboarding at */
-        if (lineStations.contains(this.s.toString()))
+        if (lineStations.contains(this.s))
         {
           /* ensure that the current station of the train is the station the passenger deboarding at */
-          if (lineStations.getFirst().equals(this.s.toString()))
+          if (lineStations.getFirst().equals(this.s))
           {
-            LinkedList<Passenger> boardPassengers = mbta.trainToBoardedPassengers.get(this.t.toString());
+            LinkedList<Passenger> boardPassengers = mbta.trainToBoardedPassengers.get(this.t);
 
             /* create a new list to store boarded passenger if there doesn't already exist a list */
             if (!boardPassengers.isEmpty())
@@ -53,7 +53,7 @@ public class DeboardEvent implements Event {
               else
               {
                 boardPassengers.remove(boardPassengers.indexOf(this.p));
-                mbta.trainToBoardedPassengers.put(this.t.toString(), boardPassengers);
+                mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
               }
             }
           }
@@ -64,7 +64,7 @@ public class DeboardEvent implements Event {
         }
         else
         {
-          throw new IllegalArgumentException("Error in {DeboardEvent#replayAndCheck}: Train {" + this.t + "} does not contains the station {" + this.s.toString() + "}.");
+          throw new IllegalArgumentException("Error in {DeboardEvent#replayAndCheck}: Train {" + this.t.toString() + "} does not contains the station {" + this.s.toString() + "}.");
         }
       }
       else

@@ -4,14 +4,14 @@ import java.time.format.SignStyle;
 import java.util.*;
 
 public class MBTA {
-  public Map<String, LinkedList<String>> trainLine = new HashMap<>();
-  public Map<String, LinkedList<String>> passengerJourney = new HashMap<>();
+  public Map<Train, LinkedList<Station>> trainAndStationsKVP = new HashMap<>();
+  public Map<Passenger, LinkedList<Station>> passengerAndStationsKVP = new HashMap<>();
 
   /* first element of the LinkedList represents the current station the train is at */
-  public Map<String, LinkedList<String>> trainForwardStations = new HashMap<>();
-  public Map<String, LinkedList<String>> trainBackwardStations = new HashMap<>();
+  public Map<Train, LinkedList<Station>> trainForwardStations = new HashMap<>();
+  public Map<Train, LinkedList<Station>> trainBackwardStations = new HashMap<>();
 
-  public Map<String, LinkedList<Passenger>> trainToBoardedPassengers = new HashMap<>();
+  public Map<Train, LinkedList<Passenger>> trainToBoardedPassengers = new HashMap<>();
 
   public boolean isTrainMovingForward = true;
 
@@ -29,29 +29,29 @@ public class MBTA {
     }
     else
     {
-      /* only create new line if name doesn't already exist */
-      if (!trainLine.containsKey(name))
+      /* make train and stations from given parameters and store */
+      Train train = Train.make(name);
+      LinkedList<Station> trainStationList = new LinkedList<>();
+      for (String s : stations)
       {
-        this.trainLine.put(name, new LinkedList<>(stations));
+        Station newStation = Station.make(s);
+        trainStationList.add(newStation);
       }
-      else
-      {
-        throw new IllegalArgumentException("Error in {addLine}: Line with the name {" + name + "} already exist.");
-      }
+      this.trainAndStationsKVP.put(train, trainStationList);
     }
   }
 
   // Adds a new planned journey to the simulation
   public void addJourney(String name, List<String> stations) {
-    /* only create new journey for the passenger if name doesn't already exist */
-    if (!passengerJourney.containsKey(name))
+    /* make passenger and stations from given parameters and store */
+    Passenger passenger = Passenger.make(name);
+    LinkedList<Station> passengerStationList = new LinkedList<>();
+    for (String s : stations)
     {
-      this.passengerJourney.put(name, new LinkedList<String>(stations));
+      Station passengerStation = Station.make(s);
+      passengerStationList.add(passengerStation);
     }
-    else
-    {
-      throw new IllegalArgumentException("Error is {addJourney}: Journey with the name {" + name + "} already exist.");
-    }
+    this.passengerAndStationsKVP.put(passenger, passengerStationList);
   }
 
   // Return normally if initial simulation conditions are satisfied, otherwise
@@ -66,8 +66,8 @@ public class MBTA {
 
   // reset to an empty simulation
   public void reset() {
-    this.trainLine.clear();
-    this.passengerJourney.clear();
+    this.trainAndStationsKVP.clear();
+    this.passengerAndStationsKVP.clear();
   }
 
   // adds simulation configuration from a file
@@ -98,57 +98,58 @@ public class MBTA {
     }
 
     /* store trains and their initial station */
-    for (String key : this.trainLine.keySet())
+    for (Train t : this.trainAndStationsKVP.keySet())
     {
-      this.trainForwardStations.put(key, this.trainLine.get(key));
+      this.trainForwardStations.put(t, this.trainAndStationsKVP.get(t));
     }
   }
 
   public void moveTrainForward(Train t, Station currStation)
   {
     /* remove currStation from the map for forward movement and add the front of the map for backward movement */
-    LinkedList<String> forwardStations = this.trainForwardStations.get(t.toString());
-    forwardStations.remove(currStation.toString());
+    LinkedList<Station> forwardStations = this.trainAndStationsKVP.get(t);
+    forwardStations.remove(currStation);
     
-    LinkedList<String> backwardStations = null;
-    if (!this.trainBackwardStations.containsKey(t.toString()))
+    LinkedList<Station> backwardStations = null;
+    if (!this.trainBackwardStations.containsKey(t))
     {
       backwardStations = new LinkedList<>();
     }
     else
     {
-      backwardStations = this.trainBackwardStations.get(t.toString());
+      backwardStations = this.trainBackwardStations.get(t);
     }
-    backwardStations.addFirst(currStation.toString());    
-    this.trainBackwardStations.put(t.toString(), backwardStations);
+    System.out.println("HERE");
+    backwardStations.addFirst(currStation);    
+    this.trainBackwardStations.put(t, backwardStations);
   }
   
   public void moveTrainBackward(Train t, Station currStation)
   {
     /* remove currStation from the map for backward movement and add the front of the map for forward movement */
-    LinkedList<String> backwardStations = this.trainBackwardStations.get(t.toString());
-    backwardStations.remove(currStation.toString());
+    LinkedList<Station> backwardStations = this.trainBackwardStations.get(t);
+    backwardStations.remove(currStation);
 
-    LinkedList<String> forwardStations = null;
-    if (!this.trainForwardStations.containsKey(t.toString()))
+    LinkedList<Station> forwardStations = null;
+    if (!this.trainForwardStations.containsKey(t))
     {
       forwardStations = new LinkedList<>();
     }
     else
     {
-      forwardStations = this.trainForwardStations.get(t.toString());
+      forwardStations = this.trainForwardStations.get(t);
     }
-    forwardStations.addFirst(currStation.toString());
-    this.trainForwardStations.put(t.toString(), forwardStations);
+    forwardStations.addFirst(currStation);
+    this.trainForwardStations.put(t, forwardStations);
   }
 
   public void PrintLines()
   {
-    System.out.println("Lines: " + this.trainLine);
+    System.out.println("Lines: " + this.trainAndStationsKVP);
   }
 
   public void PrintJournies()
   {
-    System.out.println("Trips: " + this.passengerJourney);
+    System.out.println("Trips: " + this.passengerAndStationsKVP);
   }
 }

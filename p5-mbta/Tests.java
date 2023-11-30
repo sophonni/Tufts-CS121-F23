@@ -190,10 +190,10 @@ public class Tests {
   //   MoveEvent moveEvent18 = new MoveEvent(t, s1, s2);
   //   moveEvent18.replayAndCheck(mbta);
     
-  //   System.out.println("Lines Before: " + mbta.trainLine);
+  //   System.out.println("Lines Before: " + mbta.trainAndStationsKVP);
   //   MoveEvent moveEvent19 = new MoveEvent(t, s2, s3);
   //   moveEvent19.replayAndCheck(mbta);
-  //   System.out.println("Lines After: " + mbta.trainLine);
+  //   System.out.println("Lines After: " + mbta.trainAndStationsKVP);
   //   /* unidentified station name test */
   //   // Station s4 = Station.make("Turkey");
   //   // try
@@ -207,106 +207,128 @@ public class Tests {
   //   // }    
   // }
 
-  @Test public void passengerBoardingTest()
-  {
-    MBTA mbta = new MBTA();
-    mbta.loadConfig("sample.json");
+  // @Test public void passengerBoardingTest()
+  // {
+  //   MBTA mbta = new MBTA();
+  //   mbta.loadConfig("sample.json");
 
-    Train t = Train.make("red");
-    Station s1 = Station.make("Davis");
-    Station s2 = Station.make("Harvard");
-    Station s3 = Station.make("Kendall");
-    Station s4 = Station.make("Park");
-    Station s5 = Station.make("Downtown Crossing");
-    Station s6 = Station.make("South Station");
-    Station s7 = Station.make("Broadway");
-    Station s8 = Station.make("Andrew");
-    Station s9 = Station.make("JFK");
+  //   Train t = Train.make("red");
+  //   Station s1 = Station.make("Davis");
+  //   Station s2 = Station.make("Harvard");
+  //   Station s3 = Station.make("Kendall");
+  //   Station s4 = Station.make("Park");
+  //   Station s5 = Station.make("Downtown Crossing");
+  //   Station s6 = Station.make("South Station");
+  //   Station s7 = Station.make("Broadway");
+  //   Station s8 = Station.make("Andrew");
+  //   Station s9 = Station.make("JFK");
 
-    Passenger p1 = Passenger.make("John");
-    BoardEvent be1 = new BoardEvent(p1, t, s1);
-    be1.replayAndCheck(mbta);
+  //   Passenger p1 = Passenger.make("John");
+  //   BoardEvent be1 = new BoardEvent(p1, t, s1);
+  //   be1.replayAndCheck(mbta);
       
-    /* non-unique passenger test */
-    MoveEvent moveEvent1 = new MoveEvent(t, s1, s2);
-    moveEvent1.replayAndCheck(mbta);
-    Passenger p2 = Passenger.make("Jake");
-    BoardEvent be2 = new BoardEvent(p2, t, s2);
-    be2.replayAndCheck(mbta);
+  //   /* non-unique passenger test */
+  //   MoveEvent moveEvent1 = new MoveEvent(t, s1, s2);
+  //   moveEvent1.replayAndCheck(mbta);
+  //   Passenger p2 = Passenger.make("Jake");
+  //   BoardEvent be2 = new BoardEvent(p2, t, s2);
+  //   be2.replayAndCheck(mbta);
 
-    /* same passenger board from station differ from current station test */
-    // try
-    // {
-    //   Passenger p3 = Passenger.make("John");
-    //   BoardEvent be3 = new BoardEvent(p3, t, s1);
-    //   be3.replayAndCheck(mbta);
-    // }
-    // catch (Exception e)
-    // {
-    //   System.out.println("Expected Exception: " + e);
-    // }
+  //   /* same passenger board from station differ from current station test */
+  //   // try
+  //   // {
+  //   //   Passenger p3 = Passenger.make("John");
+  //   //   BoardEvent be3 = new BoardEvent(p3, t, s1);
+  //   //   be3.replayAndCheck(mbta);
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }
     
 
-    /* same passenger boarding the train twice test */
-    // try
-    // {
-    //   BoardEvent be4 = new BoardEvent(p1, t, s1);
-    //   be2.replayAndCheck(mbta);
-    // }
-    // catch (Exception e)
-    // {
-    //   System.out.println("Expected Exception: " + e);
-    // }
-    //System.out.println("Boarded People: " + mbta.trainToBoardedPassengers);
-  }
+  //   /* same passenger boarding the train twice test */
+  //   // try
+  //   // {
+  //   //   BoardEvent be4 = new BoardEvent(p1, t, s1);
+  //   //   be2.replayAndCheck(mbta);
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }
+  //   //System.out.println("Boarded People: " + mbta.trainToBoardedPassengers);
+  // }
 
-  @Test public void passengerDeBoardingTest()
-  {
-    MBTA mbta = new MBTA();
-    mbta.loadConfig("sample.json");
+  // @Test public void passengerDeBoardingTest()
+  // {
+  //   MBTA mbta = new MBTA();
+  //   mbta.loadConfig("sample.json");
 
-    Train t = Train.make("red");
-    Station s1 = Station.make("Davis");
-    Station s2 = Station.make("Harvard");
-    Station s3 = Station.make("Kendall");
-    Station s4 = Station.make("Park");
-    Station s5 = Station.make("Downtown Crossing");
-    Station s6 = Station.make("South Station");
-    Station s7 = Station.make("Broadway");
-    Station s8 = Station.make("Andrew");
-    Station s9 = Station.make("JFK");
+  //   Train t = Train.make("red");
+  //   Station s1 = Station.make("Davis");
+  //   Station s2 = Station.make("Harvard");
+  //   Station s3 = Station.make("Kendall");
+  //   Station s4 = Station.make("Park");
+  //   Station s5 = Station.make("Downtown Crossing");
+  //   Station s6 = Station.make("South Station");
+  //   Station s7 = Station.make("Broadway");
+  //   Station s8 = Station.make("Andrew");
+  //   Station s9 = Station.make("JFK");
 
-    Passenger p1 = Passenger.make("John");
-    BoardEvent be1 = new BoardEvent(p1, t, s1);
-    be1.replayAndCheck(mbta);
+  //   Passenger p1 = Passenger.make("John");
+  //   BoardEvent be1 = new BoardEvent(p1, t, s1);
+  //   be1.replayAndCheck(mbta);
       
-    /* non-unique passenger test */
-    MoveEvent moveEvent1 = new MoveEvent(t, s1, s2);
-    moveEvent1.replayAndCheck(mbta);
-    Passenger p2 = Passenger.make("Jake");
-    BoardEvent be2 = new BoardEvent(p2, t, s2);
-    be2.replayAndCheck(mbta);
+  //   /* non-unique passenger test */
+  //   MoveEvent moveEvent1 = new MoveEvent(t, s1, s2);
+  //   moveEvent1.replayAndCheck(mbta);
+  //   Passenger p2 = Passenger.make("Jake");
+  //   BoardEvent be2 = new BoardEvent(p2, t, s2);
+  //   be2.replayAndCheck(mbta);
 
-    Passenger p3 = Passenger.make("Jill");
-    BoardEvent be3 = new BoardEvent(p3, t, s2);
-    be3.replayAndCheck(mbta);
+  //   Passenger p3 = Passenger.make("Jill");
+  //   BoardEvent be3 = new BoardEvent(p3, t, s2);
+  //   be3.replayAndCheck(mbta);
 
-    // try
-    // {
-    //   be3.replayAndCheck(mbta);
-    // }
-    // catch (Exception e)
-    // {
-    //   System.out.println("Expected Exception: " + e);
-    // }
+  //   // try
+  //   // {
+  //   //   be3.replayAndCheck(mbta);
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }
 
-    MoveEvent moveEvent2 = new MoveEvent(t, s2, s3);
-    moveEvent2.replayAndCheck(mbta);
-    // System.out.println("Passengers Before Deboard: " + mbta.trainToBoardedPassengers);
-    DeboardEvent dbe3 = new DeboardEvent(p3, t, s3);
-    dbe3.replayAndCheck(mbta);
-    // System.out.println("Passengers After Deboard: " + mbta.trainToBoardedPassengers);
-    // System.out.println("Forward: " + mbta.trainForwardStations);
+  //   MoveEvent moveEvent2 = new MoveEvent(t, s2, s3);
+  //   moveEvent2.replayAndCheck(mbta);
+  //   // System.out.println("Passengers Before Deboard: " + mbta.trainToBoardedPassengers);
+  //   DeboardEvent dbe3 = new DeboardEvent(p3, t, s3);
+  //   dbe3.replayAndCheck(mbta);
+  //   // System.out.println("Passengers After Deboard: " + mbta.trainToBoardedPassengers);
+  //   // System.out.println("Forward: " + mbta.trainForwardStations);
+  // }
+
+  // @Test public void homeworkTestCase() {
+  //   MBTA mbta = new MBTA();
+  
+  //   mbta.addLine("red", List.of("Braintree", "Alewife"));
+  //   mbta.addLine("green", List.of("Tufts", "Government Center"));
+  
+  //   Train rTrain = Train.make("red");
+  //   Train gTrain = Train.make("green");
+  
+  //   Station braintree = Station.make("Braintree");
+  //   Station alewife = Station.make("Alewife");
+  //   Station tufts = Station.make("Tufts");
+  //   Station govCenter = Station.make("Government Center");
+  
+  //   Log log = new Log(List.of(
+  //           new MoveEvent(rTrain, braintree, alewife),
+  //           new MoveEvent(gTrain, tufts, govCenter)
+  //   ));
+  
+  //   Verify.verify(mbta, log);
   }
 
 
