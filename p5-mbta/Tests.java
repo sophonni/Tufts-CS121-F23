@@ -309,26 +309,80 @@ public class Tests {
   //   // System.out.println("Forward: " + mbta.trainForwardStations);
   // }
 
-  // @Test public void homeworkTestCase() {
-  //   MBTA mbta = new MBTA();
+  //////////////////////OTHER PEOPLE TEST CASES////////////////////////////////
+  @Test public void others1() {
+    MBTA mbta = new MBTA();
   
-  //   mbta.addLine("red", List.of("Braintree", "Alewife"));
-  //   mbta.addLine("green", List.of("Tufts", "Government Center"));
+    mbta.addLine("red", List.of("Braintree", "Alewife"));
+    mbta.addLine("green", List.of("Tufts", "Government Center"));
   
-  //   Train rTrain = Train.make("red");
-  //   Train gTrain = Train.make("green");
+    Train rTrain = Train.make("red");
+    Train gTrain = Train.make("green");
   
-  //   Station braintree = Station.make("Braintree");
-  //   Station alewife = Station.make("Alewife");
-  //   Station tufts = Station.make("Tufts");
-  //   Station govCenter = Station.make("Government Center");
+    Station braintree = Station.make("Braintree");
+    Station alewife = Station.make("Alewife");
+    Station tufts = Station.make("Tufts");
+    Station govCenter = Station.make("Government Center");
   
-  //   Log log = new Log(List.of(
-  //           new MoveEvent(rTrain, braintree, alewife),
-  //           new MoveEvent(gTrain, tufts, govCenter)
-  //   ));
+    Log log = new Log(List.of(
+            new MoveEvent(rTrain, braintree, alewife),
+            new MoveEvent(gTrain, tufts, govCenter)
+    ));
   
-  //   Verify.verify(mbta, log);
+    Verify.verify(mbta, log);
+  }
+
+  @Test public void others2() {
+    MBTA sim = new MBTA();
+    Train red = Train.make("red");
+    Station stop1 = Station.make("stop1");
+    Station stop2 = Station.make("stop2");
+    Station stop3 = Station.make("stop3");
+    Passenger p1 = Passenger.make("p1");
+
+    sim.addLine("red", List.of("stop1", "stop2", "stop3"));
+    sim.addJourney("p1", List.of("stop1", "stop5"));
+
+    List<Event> events = new LinkedList<>();
+    events.add(new BoardEvent(p1, red, stop1));
+    events.add(new MoveEvent(red, stop1, stop2));
+    events.add(new MoveEvent(red, stop2, stop3));
+    events.add(new DeboardEvent(p1, red, stop3));
+
+    Log log = new Log(events);
+    Verify.verify(sim, log);
+  }
+
+  @Test public void others3() {
+    MBTA test_mbta = new MBTA();
+    Log log= new Log();
+    Train red_line= Train.make("Red");
+    Passenger test_passenger = Passenger.make("test");
+    Station station_1 = Station.make("Davis");
+    Station station_2 =Station.make("Harvard");
+    test_mbta.addLine("test", List.of("Davis", "Harvard"));
+    test_mbta.addJourney("test", List.of("Davis", "Harvard"));
+  }
+  @Test public void testInvalidBoarding() {
+    // Setup
+    MBTA mbta = new MBTA();
+    Station stationA = Station.make("StationA");
+    Station stationB = Station.make("StationB");
+    Train trainA = Train.make("TrainA");
+    Passenger passengerX = Passenger.make("PassengerX");
+
+    mbta.addLine("LineA", List.of("StationA", "StationB"));
+    mbta.addJourney("PassengerX", List.of("StationA", "StationB", "StationA"));
+
+    Log log = new Log(List.of(
+            new BoardEvent(passengerX, trainA, stationA),
+            new MoveEvent(trainA, stationA, stationB),
+            new DeboardEvent(passengerX, trainA, stationB),
+            new MoveEvent(trainA, stationB, stationA),
+            new BoardEvent(passengerX, trainA, stationB)  // This should fail
+    ));
+
+    Verify.verify(mbta, log);
   }
 
 

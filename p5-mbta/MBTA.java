@@ -37,6 +37,7 @@ public class MBTA {
         Station newStation = Station.make(s);
         trainStationList.add(newStation);
       }
+      this.trainForwardStations.put(train, trainStationList);
       this.trainAndStationsKVP.put(train, trainStationList);
     }
   }
@@ -57,11 +58,39 @@ public class MBTA {
   // Return normally if initial simulation conditions are satisfied, otherwise
   // raises an exception
   public void checkStart() {
+    for (Train t : this.trainAndStationsKVP.keySet())
+    {
+      LinkedList<Station> initialStationsLayout = this.trainAndStationsKVP.get(t);
+      Station firstStation = initialStationsLayout.getFirst();
+
+      LinkedList<Station> movingForwardStartStations = this.trainForwardStations.get(t);
+      Station startStation = movingForwardStartStations.getFirst();
+
+      if (!firstStation.equals(startStation))
+      {
+        throw new IllegalArgumentException("Error in MBTA#checkStart: First station is {" + firstStation.toString() + "} while train starts at station {" + startStation.toString() + "}.");
+      }
+    }
+    return;
   }
 
   // Return normally if final simulation conditions are satisfied, otherwise
   // raises an exception
   public void checkEnd() {
+    for (Train t : this.trainAndStationsKVP.keySet())
+    {
+      LinkedList<Station> initialStationsLayout = this.trainAndStationsKVP.get(t);
+      Station lastStation = initialStationsLayout.getLast();
+
+      LinkedList<Station> movingBackwardStartStations = this.trainBackwardStations.get(t);
+      Station endStation = movingBackwardStartStations.getLast();
+
+      if (!lastStation.equals(endStation))
+      {
+        throw new IllegalArgumentException("Error in MBTA#checkStart: Last station is {" + lastStation.toString() + "} while train ends at station {" + endStation.toString() + "}.");
+      }
+    }
+    return;
   }
 
   // reset to an empty simulation
@@ -119,7 +148,6 @@ public class MBTA {
     {
       backwardStations = this.trainBackwardStations.get(t);
     }
-    System.out.println("HERE");
     backwardStations.addFirst(currStation);    
     this.trainBackwardStations.put(t, backwardStations);
   }
