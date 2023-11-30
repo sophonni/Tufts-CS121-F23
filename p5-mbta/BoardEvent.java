@@ -21,13 +21,6 @@ public class BoardEvent implements Event {
     return List.of(p.toString(), t.toString(), s.toString());
   }
   public void replayAndCheck(MBTA mbta) {
-    /*
-     * passenger 'p' board onto train 't' at station 's'
-     * 
-     * ensure that passeneger exist
-     * ensure that trains exist
-     * ensure that the given 's' exist and in the LL of the 't' line
-     */
     Map<String, LinkedList<String>> trainLine = mbta.trainLine;
     /* ensure that the train exist */
     if (trainLine.containsKey(this.t.toString()) || this.t != null)

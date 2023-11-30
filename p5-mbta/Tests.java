@@ -210,7 +210,7 @@ public class Tests {
   @Test public void passengerBoardingTest()
   {
     MBTA mbta = new MBTA();
-    //mbta.loadConfig("sample.json");
+    mbta.loadConfig("sample.json");
 
     Train t = Train.make("red");
     Station s1 = Station.make("Davis");
@@ -257,9 +257,57 @@ public class Tests {
     // {
     //   System.out.println("Expected Exception: " + e);
     // }
-    System.out.println("Boarded People: " + mbta.trainToBoardedPassengers);
+    //System.out.println("Boarded People: " + mbta.trainToBoardedPassengers);
   }
 
+  @Test public void passengerDeBoardingTest()
+  {
+    MBTA mbta = new MBTA();
+    mbta.loadConfig("sample.json");
+
+    Train t = Train.make("red");
+    Station s1 = Station.make("Davis");
+    Station s2 = Station.make("Harvard");
+    Station s3 = Station.make("Kendall");
+    Station s4 = Station.make("Park");
+    Station s5 = Station.make("Downtown Crossing");
+    Station s6 = Station.make("South Station");
+    Station s7 = Station.make("Broadway");
+    Station s8 = Station.make("Andrew");
+    Station s9 = Station.make("JFK");
+
+    Passenger p1 = Passenger.make("John");
+    BoardEvent be1 = new BoardEvent(p1, t, s1);
+    be1.replayAndCheck(mbta);
+      
+    /* non-unique passenger test */
+    MoveEvent moveEvent1 = new MoveEvent(t, s1, s2);
+    moveEvent1.replayAndCheck(mbta);
+    Passenger p2 = Passenger.make("Jake");
+    BoardEvent be2 = new BoardEvent(p2, t, s2);
+    be2.replayAndCheck(mbta);
+
+    Passenger p3 = Passenger.make("Jill");
+    BoardEvent be3 = new BoardEvent(p3, t, s2);
+    be3.replayAndCheck(mbta);
+
+    // try
+    // {
+    //   be3.replayAndCheck(mbta);
+    // }
+    // catch (Exception e)
+    // {
+    //   System.out.println("Expected Exception: " + e);
+    // }
+
+    MoveEvent moveEvent2 = new MoveEvent(t, s2, s3);
+    moveEvent2.replayAndCheck(mbta);
+    // System.out.println("Passengers Before Deboard: " + mbta.trainToBoardedPassengers);
+    DeboardEvent dbe3 = new DeboardEvent(p3, t, s3);
+    dbe3.replayAndCheck(mbta);
+    // System.out.println("Passengers After Deboard: " + mbta.trainToBoardedPassengers);
+    // System.out.println("Forward: " + mbta.trainForwardStations);
+  }
 
 
 
