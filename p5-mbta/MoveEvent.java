@@ -57,7 +57,7 @@ public class MoveEvent implements Event {
           {
             mbta.moveTrainForward(this.t, s2);
             mbta.trainAndStationsKVP.put(this.t, mbta.trainBackwardStations.get(t));
-            mbta.isTrainMovingForward = false;
+            // mbta.isTrainMovingForward = false;
           }
         }
         else
@@ -82,7 +82,7 @@ public class MoveEvent implements Event {
           {
             mbta.moveTrainBackward(this.t, s2);
             mbta.trainAndStationsKVP.put(this.t, mbta.trainForwardStations.get(t));
-            mbta.isTrainMovingForward = true;
+            // mbta.isTrainMovingForward = true;
           }
         }
       }

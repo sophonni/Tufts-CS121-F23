@@ -41,6 +41,17 @@ public class BoardEvent implements Event {
             if (boardPassengers == null)
             {
               boardPassengers = new LinkedList<>();
+              LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
+              /* ensure that the journey to the given station for the given passenger has been initialize */
+              if (givenPassengerJourney.contains(this.s))
+              {
+                boardPassengers.add(this.p);
+                mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
+              }
+              else
+              {
+                throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Journey to station {" + this.s + "} for passenger {" + this.p.toString() + "} has not yet been initialized.");
+              }
               boardPassengers.add(this.p);
               mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
             }
@@ -49,8 +60,17 @@ public class BoardEvent implements Event {
               /* ensure that all passengers from all station that is willing to board the train have uniqe name e.g if John board red train from station1, John cannot board red train from any other stations */
               if (!boardPassengers.contains(this.p))
               {
-                boardPassengers.add(this.p);
-                mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
+                LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
+                /* ensure that the journey to the given station for the given passenger has been initialize */
+                if (givenPassengerJourney.contains(this.s))
+                {
+                  boardPassengers.add(this.p);
+                  mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
+                }
+                else
+                {
+                  throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Journey to station {" + this.s + "} for passenger {" + this.p.toString() + "} has not yet been initialized.");
+                }
               }
               else
               {
