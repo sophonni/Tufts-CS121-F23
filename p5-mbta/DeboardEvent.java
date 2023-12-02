@@ -22,7 +22,7 @@ public class DeboardEvent implements Event {
   }
   public void replayAndCheck(MBTA mbta) {
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
-    System.out.println("Lines: " + trainLine);
+    System.out.println("Lines Deboard: " + trainLine);
     /* ensure that the train exist */
     if (trainLine.containsKey(this.t) || this.t != null)
     {
@@ -33,6 +33,7 @@ public class DeboardEvent implements Event {
         /* ensure that the train stations contains the station the passenger is deboarding at */
         if (lineStations.contains(this.s))
         {
+          /* ensure that the current station of the train matches with the station the passenger want to get off at */
           if (lineStations.getFirst().equals(this.s))
           {
             LinkedList<Passenger> boardPassengers = mbta.trainToBoardedPassengers.get(this.t);
@@ -51,7 +52,19 @@ public class DeboardEvent implements Event {
                 /* ensure that the journey to the given station for the given passenger has been initialize */
                 if (givenPassengerJourney.contains(this.s))
                 {
-                  boardPassengers.remove(boardPassengers.indexOf(this.p));
+                  if (mbta.passengerAndStationsKVP.get(this.p) != null || !mbta.passengerAndStationsKVP.get(this.p).isEmpty())
+                  {
+                    givenPassengerJourney.remove(this.s);
+                    mbta.passengerAndStationsKVP.put(this.p, givenPassengerJourney);
+                  }
+
+                  /* remove passenger from the map of boarded passenger if there journey is complete */
+                  if (mbta.passengerAndStationsKVP.get(this.p) == null || mbta.passengerAndStationsKVP.get(this.p).isEmpty())
+                  {
+                    System.out.println("Remove Pass: " + this.p);
+                    mbta.lastStationOfLastDeboardPassenger = Station.make(this.s.toString());
+                    boardPassengers.remove(boardPassengers.indexOf(this.p));
+                  }
                   mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
                 }
                 else

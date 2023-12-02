@@ -472,6 +472,154 @@ public class Tests {
   //   db4.replayAndCheck(mbta);
   // }
 
+  // @Test public void checkStartCheckEndTest()
+  // {
+  //  MBTA mbta = new MBTA();
+  //  mbta.loadConfig("sample.json");
+
+  //   Train red = Train.make("red");
+  //   Train orange = Train.make("orange");
+  //   Train green = Train.make("green");
+  //   Train blue = Train.make("blue");
+
+  //   Station s1 = Station.make("Davis");
+  //   Station s2 = Station.make("Harvard");
+  //   Station s3 = Station.make("Kendall");
+  //   Station s4 = Station.make("Park");
+  //   Station s5 = Station.make("Downtown Crossing");
+  //   Station s6 = Station.make("South Station");
+  //   Station s7 = Station.make("Broadway");
+  //   Station s8 = Station.make("Andrew");
+  //   Station s9 = Station.make("JFK");
+
+  //   Passenger Bob = Passenger.make("Bob");
+  //   Passenger Alice = Passenger.make("Alice");
+  //   Passenger Carol = Passenger.make("Carol");
+  //   Passenger John = Passenger.make("John");
+
+  //   mbta.addJourney("John", List.of(s1.toString(), s2.toString(), s3.toString()));
+  //   BoardEvent be1 = new BoardEvent(John, red, s1);
+  //   be1.replayAndCheck(mbta);
+
+  //   MoveEvent me1 = new MoveEvent(red, s1, s2);
+  //   me1.replayAndCheck(mbta);
+
+  //   DeboardEvent db1 = new DeboardEvent(John, red, s2);
+  //   db1.replayAndCheck(mbta);
+
+  //   // System.out.println("Boarded People: " + mbta.trainToBoardedPassengers);
+
+  //   // try
+  //   // {
+  //   //   mbta.checkEnd();
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }
+
+  //   MoveEvent me2 = new MoveEvent(red, s2, s3);
+  //   me2.replayAndCheck(mbta);
+
+  //   DeboardEvent db2 = new DeboardEvent(John, red, s3);
+  //   db2.replayAndCheck(mbta);
+
+  //   MoveEvent me3 = new MoveEvent(red, s3, s4);
+  //   me3.replayAndCheck(mbta);
+
+  //   /* train move to next station after train is empty test */
+  //   // try
+  //   // {
+  //   //   mbta.checkEnd();
+  //   // }
+  //   // catch (Exception e)
+  //   // {
+  //   //   System.out.println("Expected Exception: " + e);
+  //   // }
+  // }
+
+  @Test public void checkEndTest()
+  {
+
+    MBTA mbta = new MBTA();
+    Passenger Alice = Passenger.make("Alice");
+    Passenger Bob = Passenger.make("Bob");
+
+    Train a = Train.make("a");
+    Station A = Station.make("A");
+    Station B = Station.make("B");
+    Station C = Station.make("C");
+
+    Train d = Train.make("d");
+    Station J = Station.make("J");
+    Station K = Station.make("K");
+    Station L = Station.make("L");
+
+    mbta.addLine("a", List.of("A", "B", "C"));
+    mbta.addLine("d", List.of("J", "K", "L"));
+
+    mbta.addJourney("Alice", List.of("A", "B"));
+    mbta.addJourney("Bob", List.of("J", "L"));
+    mbta.checkStart();
+
+    //Passenger Alice boards a at A
+    BoardEvent AliceBe = new BoardEvent(Alice, a, A);
+    AliceBe.replayAndCheck(mbta);
+
+    //Passenger Bob boards d at J
+    BoardEvent BobBe = new BoardEvent(Bob, d, J);
+    BobBe.replayAndCheck(mbta);
+
+    //Train a moves from A to B
+    MoveEvent me1 = new MoveEvent(a, A, B);
+    me1.replayAndCheck(mbta);
+
+    //Passenger Alice deboards a at B
+    DeboardEvent AliceDe = new DeboardEvent(Alice, a, B);
+    AliceDe.replayAndCheck(mbta);
+
+    //Train a moves from B to C
+    MoveEvent me2 = new MoveEvent(a, B, C);
+    me2.replayAndCheck(mbta);
+
+    //Train d moves from J to K
+    MoveEvent me3 = new MoveEvent(d, J, K);
+    me3.replayAndCheck(mbta);
+
+    //Train d moves from K to L
+    MoveEvent me4 = new MoveEvent(d, K, L);
+    me4.replayAndCheck(mbta);
+
+    // //Passenger Bob deboards d at L
+    DeboardEvent BobDe = new DeboardEvent(Bob, d, L);
+    BobDe.replayAndCheck(mbta);
+    mbta.checkEnd();
+    
+
+    System.out.println("Board Passenger: " + mbta.trainToBoardedPassengers);
+
+    System.out.println("Lines Test: " + mbta.trainAndStationsKVP);
+    System.out.println("Jouney: " + mbta.passengerAndStationsKVP);
+
+
+  }
+
+  // @Test public void checkStartAfterLoadConfig()
+  // {
+  //   MBTA mbta = new MBTA();
+  //   mbta.loadConfig("sample.json");
+  //   mbta.checkStart();
+  // }
+
+
+
+
+
+
+
+
+
+
   //////////////////////OTHER PEOPLE TEST CASES////////////////////////////////
   // @Test public void others1() {
   //   MBTA mbta = new MBTA();

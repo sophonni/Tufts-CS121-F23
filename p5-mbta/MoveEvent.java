@@ -38,7 +38,6 @@ public class MoveEvent implements Event {
         if (mbta.trainBackwardStations.get(t) == null || (mbta.trainBackwardStations.get(t).size() != mbta.trainAndStationsKVP.get(t).size()))
         {
           mbta.isTrainMovingForward = true;
-          System.out.println("Moving Forward");
           int s1Index = lineStations.indexOf(this.s1);
           int s2Index = lineStations.indexOf(this.s2);
           /* ensure that the two stations are adjacent */
@@ -48,6 +47,7 @@ public class MoveEvent implements Event {
           }
           else
           {
+            System.out.println("Moving Forward to: " + this.s2);
             /* move train forward */
             mbta.moveTrainForward(this.t, s1);
           }

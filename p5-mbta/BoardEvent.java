@@ -46,6 +46,9 @@ public class BoardEvent implements Event {
               if (givenPassengerJourney.contains(this.s))
               {
                 boardPassengers.add(this.p);
+                
+                /* remove the station they boarded from, from their journey */
+                givenPassengerJourney.remove(this.s);
                 mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
               }
               else
