@@ -50,6 +50,7 @@ public class BoardEvent implements Event {
                 /* remove the station they boarded from, from their journey */
                 givenPassengerJourney.remove(this.s);
                 mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
+                mbta.trainAndIfPassengerHasBeenBoarded.put(this.t, true);
               }
               else
               {

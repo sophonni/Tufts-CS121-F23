@@ -11,13 +11,16 @@ public class MBTA {
   public Map<Train, LinkedList<Station>> trainForwardStations = new HashMap<>();
   public Map<Train, LinkedList<Station>> trainBackwardStations = new HashMap<>();
 
+  /* use to keep track on passengers and the train they boarded */
   public Map<Train, LinkedList<Passenger>> trainToBoardedPassengers = new HashMap<>();
 
+  /* original layout of lines and journeys from config file */
   private Map<Train, LinkedList<Station>> originalTrainAndStationKVP = new HashMap<>();
 
   public boolean isTrainMovingForward = true;
 
-  public Station lastStationOfLastDeboardPassenger = null;
+  /* use to keep track on whether or not trains have passengers to drop off */
+  public Map<Train, Boolean> trainAndIfPassengerHasBeenBoarded = new HashMap<>();
 
   // Creates an initially empty simulation
   public MBTA() { }
@@ -108,18 +111,32 @@ public class MBTA {
         System.out.println("YES EMPTY");
         // System.out.println("Curr Station: " + this.trainAndStationsKVP.get(t).getFirst());
         // System.out.println("Last Station: " + this.lastStationOfLastDeboardPassenger);
-        // if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.lastStationOfLastDeboardPassenger))
-        // {
-        //   throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Stop at station {" + this.trainAndStationsKVP.get(t).getFirst() + "} while last paseenger got off at station {" + this.lastStationOfLastDeboardPassenger.toString() + "}.");
-        // }
+
+        /* ensure that there are passenger/s how have boarded the train 't' */
+        if (this.trainAndIfPassengerHasBeenBoarded.get(t) != null)
+        {
+          /* get(t) can't returns false b/c is get(t) returns a non-null object, that means it's true */
+          if (!this.trainAndIfPassengerHasBeenBoarded.get(t))
+          {
+            if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.originalTrainAndStationKVP.get(t).getFirst()))
+            {
+              throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Stop at station {" + this.trainAndStationsKVP.get(t).getFirst() + "} while train is empty.");
+            }
+          }
+        }
+
+        /* train should not move from its initial station when there's no passsenger to board or deboard */
+        else
+        {
+          if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.originalTrainAndStationKVP.get(t).getFirst()))
+          {
+            throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Train move to station {" + this.trainAndStationsKVP.get(t).getFirst() + "} while train is empty.");
+          }
+        }
       }
       else
       {
-        System.out.println("NO EMPTY");
-        if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.lastStationOfLastDeboardPassenger))
-        {
-          throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> train {" + t.toString() + "} ends before all passengers have been deboarded.");
-        }
+        throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> train {" + t.toString() + "} ends before all passengers have been deboarded.");
       }
     }
     return;

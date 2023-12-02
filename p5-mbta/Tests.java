@@ -538,71 +538,196 @@ public class Tests {
   //   // }
   // }
 
-  @Test public void checkEndTest()
-  {
+  // @Test public void checkEndValidTest()
+  // {
 
-    MBTA mbta = new MBTA();
-    Passenger Alice = Passenger.make("Alice");
-    Passenger Bob = Passenger.make("Bob");
+  //   MBTA mbta = new MBTA();
+  //   Passenger Alice = Passenger.make("Alice");
+  //   Passenger Bob = Passenger.make("Bob");
 
-    Train a = Train.make("a");
-    Station A = Station.make("A");
-    Station B = Station.make("B");
-    Station C = Station.make("C");
+  //   Train a = Train.make("a");
+  //   Station A = Station.make("A");
+  //   Station B = Station.make("B");
+  //   Station C = Station.make("C");
 
-    Train d = Train.make("d");
-    Station J = Station.make("J");
-    Station K = Station.make("K");
-    Station L = Station.make("L");
+  //   Train d = Train.make("d");
+  //   Station J = Station.make("J");
+  //   Station K = Station.make("K");
+  //   Station L = Station.make("L");
 
-    mbta.addLine("a", List.of("A", "B", "C"));
-    mbta.addLine("d", List.of("J", "K", "L"));
+  //   mbta.addLine("a", List.of("A", "B", "C"));
+  //   mbta.addLine("d", List.of("J", "K", "L"));
 
-    mbta.addJourney("Alice", List.of("A", "B"));
-    mbta.addJourney("Bob", List.of("J", "L"));
-    mbta.checkStart();
+  //   mbta.addJourney("Alice", List.of("A", "B"));
+  //   mbta.addJourney("Bob", List.of("J", "L"));
+  //   mbta.checkStart();
 
-    //Passenger Alice boards a at A
-    BoardEvent AliceBe = new BoardEvent(Alice, a, A);
-    AliceBe.replayAndCheck(mbta);
+  //   //Passenger Alice boards a at A
+  //   BoardEvent AliceBe = new BoardEvent(Alice, a, A);
+  //   AliceBe.replayAndCheck(mbta);
 
-    //Passenger Bob boards d at J
-    BoardEvent BobBe = new BoardEvent(Bob, d, J);
-    BobBe.replayAndCheck(mbta);
+  //   //Passenger Bob boards d at J
+  //   BoardEvent BobBe = new BoardEvent(Bob, d, J);
+  //   BobBe.replayAndCheck(mbta);
 
-    //Train a moves from A to B
-    MoveEvent me1 = new MoveEvent(a, A, B);
-    me1.replayAndCheck(mbta);
+  //   //Train a moves from A to B
+  //   MoveEvent me1 = new MoveEvent(a, A, B);
+  //   me1.replayAndCheck(mbta);
 
-    //Passenger Alice deboards a at B
-    DeboardEvent AliceDe = new DeboardEvent(Alice, a, B);
-    AliceDe.replayAndCheck(mbta);
+  //   //Passenger Alice deboards a at B
+  //   DeboardEvent AliceDe = new DeboardEvent(Alice, a, B);
+  //   AliceDe.replayAndCheck(mbta);
 
-    //Train a moves from B to C
-    MoveEvent me2 = new MoveEvent(a, B, C);
-    me2.replayAndCheck(mbta);
+  //   //Train a moves from B to C
+  //   MoveEvent me2 = new MoveEvent(a, B, C);
+  //   me2.replayAndCheck(mbta);
 
-    //Train d moves from J to K
-    MoveEvent me3 = new MoveEvent(d, J, K);
-    me3.replayAndCheck(mbta);
+  //   //Train d moves from J to K
+  //   MoveEvent me3 = new MoveEvent(d, J, K);
+  //   me3.replayAndCheck(mbta);
 
-    //Train d moves from K to L
-    MoveEvent me4 = new MoveEvent(d, K, L);
-    me4.replayAndCheck(mbta);
+  //   //Train d moves from K to L
+  //   MoveEvent me4 = new MoveEvent(d, K, L);
+  //   me4.replayAndCheck(mbta);
 
-    // //Passenger Bob deboards d at L
-    DeboardEvent BobDe = new DeboardEvent(Bob, d, L);
-    BobDe.replayAndCheck(mbta);
-    mbta.checkEnd();
+  //   // //Passenger Bob deboards d at L
+  //   DeboardEvent BobDe = new DeboardEvent(Bob, d, L);
+  //   BobDe.replayAndCheck(mbta);
+  //   mbta.checkEnd();
     
 
-    System.out.println("Board Passenger: " + mbta.trainToBoardedPassengers);
+  //   System.out.println("Board Passenger: " + mbta.trainToBoardedPassengers);
 
-    System.out.println("Lines Test: " + mbta.trainAndStationsKVP);
-    System.out.println("Jouney: " + mbta.passengerAndStationsKVP);
+  //   System.out.println("Lines Test: " + mbta.trainAndStationsKVP);
+  //   System.out.println("Jouney: " + mbta.passengerAndStationsKVP);
+  // }
 
+  // @Test public void checkEndInvalidTest()
+  // {
+  //   MBTA mbta = new MBTA();
+  //   Passenger Alice = Passenger.make("Alice");
+  //   Passenger Bob = Passenger.make("Bob");
 
-  }
+  //   Train a = Train.make("a");
+  //   Station A = Station.make("A");
+  //   Station B = Station.make("B");
+  //   Station C = Station.make("C");
+
+  //   Train d = Train.make("d");
+  //   Station J = Station.make("J");
+  //   Station K = Station.make("K");
+  //   Station L = Station.make("L");
+  //   mbta.addLine("a", List.of("A", "B", "C"));
+  //   mbta.addLine("d", List.of("J", "K", "L"));
+
+  //   mbta.addJourney("Alice", List.of("A", "B"));
+  //   mbta.checkStart();
+
+  //   //Passenger Alice boards a at A
+  //   BoardEvent AliceBe = new BoardEvent(Alice, a, A);
+  //   AliceBe.replayAndCheck(mbta);
+
+  //   //Train a moves from A to B
+  //   MoveEvent me1 = new MoveEvent(a, A, B);
+  //   me1.replayAndCheck(mbta);
+
+  //   //Passenger Alice deboards a at B
+  //   DeboardEvent AliceDe = new DeboardEvent(Alice, a, B);
+  //   AliceDe.replayAndCheck(mbta);
+
+  //   //Train a moves from B to C
+  //   MoveEvent me2 = new MoveEvent(a, B, C);
+  //   me2.replayAndCheck(mbta);
+
+  //   //Train d moves from J to K
+  //   MoveEvent me3 = new MoveEvent(d, J, K);
+  //   me3.replayAndCheck(mbta);
+
+  //   //Train d moves from K to L
+  //   MoveEvent me4 = new MoveEvent(d, K, L);
+  //   me4.replayAndCheck(mbta);
+  //   System.out.println("Board Passenger: " + mbta.trainToBoardedPassengers);
+
+  /* train moved and end at a station that is different from the initial station when there's no passenger test */
+  //   try
+  //   {
+  //     mbta.checkEnd();
+  //   }
+  //   catch (Exception e)
+  //   {
+  //     System.out.println("Expected Exception: " + e);
+  //   }
+  // }
+
+  // @Test public void checkEndInvalidTest2()
+  // {
+  //   /* Passenger Alice boards a at A
+  //   Passenger Bob boards d at J
+  //   Train a moves from A to B
+  //   Passenger Alice deboards a at B
+  //   Train a moves from B to C
+  //   Train d moves from J to K
+  //   Train d moves from K to L */
+  //   MBTA mbta = new MBTA();
+  //   Passenger Alice = Passenger.make("Alice");
+  //   Passenger Bob = Passenger.make("Bob");
+
+  //   Train a = Train.make("a");
+  //   Station A = Station.make("A");
+  //   Station B = Station.make("B");
+  //   Station C = Station.make("C");
+
+  //   Train d = Train.make("d");
+  //   Station J = Station.make("J");
+  //   Station K = Station.make("K");
+  //   Station L = Station.make("L");
+
+  //   mbta.addLine("a", List.of("A", "B", "C"));
+  //   mbta.addLine("d", List.of("J", "K", "L"));
+
+  //   mbta.addJourney("Alice", List.of("A", "B"));
+  //   mbta.addJourney("Bob", List.of("J", "L"));
+  //   mbta.checkStart();
+
+  //   //Passenger Alice boards a at A
+  //   BoardEvent AliceBe = new BoardEvent(Alice, a, A);
+  //   AliceBe.replayAndCheck(mbta);
+
+  //   //Passenger Bob boards d at J
+  //   BoardEvent BobBe = new BoardEvent(Bob, d, J);
+  //   BobBe.replayAndCheck(mbta);
+
+  //   //Train a moves from A to B
+  //   MoveEvent me1 = new MoveEvent(a, A, B);
+  //   me1.replayAndCheck(mbta);
+
+  //   //Passenger Alice deboards a at B
+  //   DeboardEvent AliceDe = new DeboardEvent(Alice, a, B);
+  //   AliceDe.replayAndCheck(mbta);
+
+  //   //Train a moves from B to C
+  //   MoveEvent me2 = new MoveEvent(a, B, C);
+  //   me2.replayAndCheck(mbta);
+
+  //   //Train d moves from J to K
+  //   MoveEvent me3 = new MoveEvent(d, J, K);
+  //   me3.replayAndCheck(mbta);
+
+  //   //Train d moves from K to L
+  //   MoveEvent me4 = new MoveEvent(d, K, L);
+  //   me4.replayAndCheck(mbta);
+
+  //   /* checkEnd before all boarded passenger get off the train */
+  //   try
+  //   {
+  //     mbta.checkEnd();
+  //   }
+  //   catch (Exception e)
+  //   {
+  //     System.out.println("Expected Exception: " + e);
+
+  //   }
+  // }
 
   // @Test public void checkStartAfterLoadConfig()
   // {

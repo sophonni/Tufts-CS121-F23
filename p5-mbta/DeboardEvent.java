@@ -62,7 +62,6 @@ public class DeboardEvent implements Event {
                   if (mbta.passengerAndStationsKVP.get(this.p) == null || mbta.passengerAndStationsKVP.get(this.p).isEmpty())
                   {
                     System.out.println("Remove Pass: " + this.p);
-                    mbta.lastStationOfLastDeboardPassenger = Station.make(this.s.toString());
                     boardPassengers.remove(boardPassengers.indexOf(this.p));
                   }
                   mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
