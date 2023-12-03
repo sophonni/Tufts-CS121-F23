@@ -52,17 +52,22 @@ public class DeboardEvent implements Event {
               else
               {
                 LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
+                System.out.println("DeBoard#Pass is: " + this.p);
+                System.out.println("DeBoard#Pass and Station: " + givenPassengerJourney);
                 /* ensure that the journey to the given station for the given passenger has been initialize */
                 if (givenPassengerJourney.contains(this.s))
                 {
-                  if (mbta.passengerAndStationsKVP.get(this.p) != null || !mbta.passengerAndStationsKVP.get(this.p).isEmpty())
-                  {
-                    givenPassengerJourney.remove(this.s);
-                    mbta.passengerAndStationsKVP.put(this.p, givenPassengerJourney);
-                  }
-
-                  /* remove passenger from the map of boarded passenger if there journey is complete */
-                  if (mbta.passengerAndStationsKVP.get(this.p) == null || mbta.passengerAndStationsKVP.get(this.p).isEmpty())
+                  // if (mbta.passengerAndStationsKVP.get(this.p) != null || !mbta.passengerAndStationsKVP.get(this.p).isEmpty())
+                  // {
+                    //   mbta.passengerAndStationsKVP.put(this.p, givenPassengerJourney);
+                    // }
+                    
+                    if (mbta.passengerAndStationsKVP.get(this.p).size() == 1)
+                    {
+                      givenPassengerJourney.remove(this.s);
+                    }
+                    /* remove passenger from the map of boarded passenger if there journey is complete */
+                  if (mbta.trainToBoardedPassengers.get(this.t) == null || mbta.passengerAndStationsKVP.get(this.p).isEmpty())
                   {
                     System.out.println("Remove Pass: " + this.p);
                     boardPassengers.remove(boardPassengers.indexOf(this.p));

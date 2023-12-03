@@ -46,8 +46,8 @@ public class BoardEvent implements Event {
             {
               boardPassengers = new LinkedList<>();
               LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
-              System.out.println("Pass is: " + this.p);
-              System.out.println("Pass and Station: " + givenPassengerJourney);
+              System.out.println("Board#Pass is: " + this.p);
+              System.out.println("Board#Pass and Station: " + givenPassengerJourney);
               /* ensure that the journey to the given station for the given passenger has been initialize */
               if (givenPassengerJourney.contains(this.s))
               {

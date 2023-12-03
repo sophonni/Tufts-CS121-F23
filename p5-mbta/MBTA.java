@@ -113,6 +113,7 @@ public class MBTA {
       // System.out.println("Curr Train: " + t);
       // System.out.println("Board Passenger: " + this.trainToBoardedPassengers);
       // System.out.println("Curr Train Line: " + this.trainAndStationsKVP);
+      System.out.println("Train to Boarded Pass: " + this.trainToBoardedPassengers);
       if(this.trainToBoardedPassengers.get(t) == null || this.trainToBoardedPassengers.get(t).isEmpty())
       {
         System.out.println("YES EMPTY");

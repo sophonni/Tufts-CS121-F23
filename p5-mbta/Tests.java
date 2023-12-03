@@ -1087,7 +1087,43 @@ public class Tests {
     orangeMe4.replayAndCheck(mbta);
 
     System.out.println("Line: " + mbta.trainAndStationsKVP);
+  }
 
+  @Test public void autograderCheckEndTest()
+  {
+    MBTA mbta = new MBTA();
+    mbta.loadConfig("sample.json");
+    Train red = Train.make("red");
+    Train orange = Train.make("orange");
+    Train green = Train.make("green");
+    Train blue = Train.make("blue");
+
+    Station s1 = Station.make("Davis");
+    Station s2 = Station.make("Harvard");
+    Station s3 = Station.make("Kendall");
+    Station s4 = Station.make("Park");
+    Station s5 = Station.make("Downtown Crossing");
+    Station s6 = Station.make("South Station");
+    Station s7 = Station.make("Broadway");
+    Station s8 = Station.make("Andrew");
+    Station s9 = Station.make("JFK");
+
+    Passenger Bob = Passenger.make("Bob");
+    Passenger Alice = Passenger.make("Alice");
+    Passenger Carol = Passenger.make("Carol");
+    Passenger John = Passenger.make("John");
+
+    BoardEvent be1 = new BoardEvent(Alice, red, s1);
+    be1.replayAndCheck(mbta);
+
+    MoveEvent me1 = new MoveEvent(red, s1, s2);
+    me1.replayAndCheck(mbta);
+    MoveEvent me2 = new MoveEvent(red, s2, s3);
+    me2.replayAndCheck(mbta);
+
+    DeboardEvent dbe1 = new DeboardEvent(Alice, red, s3);
+    dbe1.replayAndCheck(mbta);
+    mbta.checkEnd();
   }
 
 
