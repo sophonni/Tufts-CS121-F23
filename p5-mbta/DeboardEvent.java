@@ -21,8 +21,11 @@ public class DeboardEvent implements Event {
     return List.of(p.toString(), t.toString(), s.toString());
   }
   public void replayAndCheck(MBTA mbta) {
+    System.out.println("DEboard#: " + this.toString());
+    System.out.println("DEboard#TrainAndStations: " + mbta.trainAndStationsKVP);
+    System.out.println("DEboard#PassengersAndJourney: " + mbta.passengerAndStationsKVP);
+    System.out.println("DEboard#BoardedPassengers: " + mbta.trainToBoardedPassengers);
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
-    System.out.println("Lines Deboard: " + trainLine);
     /* ensure that the train exist */
     if (trainLine.containsKey(this.t) || this.t != null)
     {

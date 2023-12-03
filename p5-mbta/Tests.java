@@ -661,13 +661,6 @@ public class Tests {
 
   // @Test public void checkEndInvalidTest2()
   // {
-  //   /* Passenger Alice boards a at A
-  //   Passenger Bob boards d at J
-  //   Train a moves from A to B
-  //   Passenger Alice deboards a at B
-  //   Train a moves from B to C
-  //   Train d moves from J to K
-  //   Train d moves from K to L */
   //   MBTA mbta = new MBTA();
   //   Passenger Alice = Passenger.make("Alice");
   //   Passenger Bob = Passenger.make("Bob");
@@ -737,6 +730,157 @@ public class Tests {
   // }
 
 
+  // @Test public void trainAtSameStationTest()
+  // {
+  //   MBTA mbta = new MBTA();
+  //   Passenger Alice = Passenger.make("Alice");
+  //   Passenger Bob = Passenger.make("Bob");
+
+  //   Train a = Train.make("a");
+  //   Station A = Station.make("A");
+  //   Station B = Station.make("B");
+  //   Station C = Station.make("C");
+
+  //   Train d = Train.make("d");
+  //   Station J = Station.make("J");
+  //   Station B2 = Station.make("B");
+  //   Station L = Station.make("L");
+
+  //   mbta.addLine("a", List.of("A", "B", "C"));
+  //   mbta.addLine("d", List.of("J", "B", "L"));
+
+  //   mbta.addJourney("Alice", List.of("A", "B"));
+  //   mbta.addJourney("Bob", List.of("J", "L"));
+  //   mbta.checkStart();
+
+  //   MoveEvent me1 = new MoveEvent(a, A, B);
+  //   me1.replayAndCheck(mbta);
+
+  //   /* train can't move to a station that is occupied by another train test */
+  //   try
+  //   {
+  //     MoveEvent me2 = new MoveEvent(d, J, B2);
+  //     me2.replayAndCheck(mbta);
+  //   }
+  //   catch (Exception e)
+  //   {
+  //     System.out.println("Expected Exception: " + e);
+  //   }
+  // }
+
+  // @Test public void moveTrainTest()
+  // {
+  //   MBTA mbta = new MBTA();
+  //   Passenger Alice = Passenger.make("Alice");
+  //   Passenger Bob = Passenger.make("Bob");
+
+  //   Train a = Train.make("a");
+  //   Station A = Station.make("A");
+  //   Station B = Station.make("B");
+  //   Station C = Station.make("C");
+  //   mbta.addLine("a", List.of("A", "B", "C"));
+
+  //   /* start moving from station that is not the current station of the train test */
+  //   try
+  //   {
+  //     MoveEvent me1 = new MoveEvent(a, B, C);
+  //     me1.replayAndCheck(mbta);
+  //   }
+  //   catch (Exception e)
+  //   {
+  //     System.out.println("Expected Exception: " + e);
+  //   }
+  // }
+
+  // @Test public void moveTrainTest2()
+  // {
+  //   MBTA mbta = new MBTA();
+  //   Passenger Alice = Passenger.make("Alice");
+  //   Passenger Bob = Passenger.make("Bob");
+
+  //   Train a = Train.make("a");
+  //   Station A = Station.make("A");
+  //   Station B = Station.make("B");
+  //   mbta.addLine("a", List.of("A", "B"));
+
+  //   /* start moving from station that is not the current station of the train test */
+  //   try
+  //   {
+  //     MoveEvent me1 = new MoveEvent(a, B, A);
+  //     me1.replayAndCheck(mbta);
+  //   }
+  //   catch (Exception e)
+  //   {
+  //     System.out.println("Expected Exception: " + e);
+  //   }
+  // }
+
+  // @Test public void moveTrainTest3()
+  // {
+  //   MBTA mbta = new MBTA();
+
+  //   Station A = Station.make("A");
+  //   Station B = Station.make("B");
+  //   Train a = Train.make("a");
+  //   mbta.addLine("a", List.of("A", "B"));
+    
+  //   Station C = Station.make("C");
+  //   Station B1 = Station.make("B");
+  //   Train d = Train.make("d");
+  //   mbta.addLine("d", List.of("C", "B"));
+
+  //   MoveEvent me1 = new MoveEvent(a, A, B);
+  //   me1.replayAndCheck(mbta);
+
+  //   try
+  //   {
+  //     MoveEvent me2 = new MoveEvent(d, C, B1);
+  //     me2.replayAndCheck(mbta);
+  //   }
+  //   catch (Exception e)
+  //   {
+  //     System.out.println("Expected Exception: " + e);
+  //   }
+  // }
+
+  @Test public void autoGraderLogIsValidTest()
+  {
+    MBTA mbta = new MBTA();
+    mbta.loadConfig("sample2.json");
+
+    Train green = Train.make("green");
+
+    Station Tufts = Station.make("Tufts");
+    Station EastSommerville = Station.make("East Sommerville");
+    Station Lechmere = Station.make("Lechmere");
+    Station NorthStation = Station.make("North Station");
+    Station GovCen = Station.make("Government Center");
+    Station BluePass = Station.make("BLUE_PASS");
+    Station Park = Station.make("Park");
+    Station Boyston = Station.make("Boylston");
+    Station Arlington = Station.make("Arlington");
+    Station Copley = Station.make("Copley");
+
+    MoveEvent me1 = new MoveEvent(green, Tufts, EastSommerville);
+    me1.replayAndCheck(mbta);
+
+    MoveEvent me2 = new MoveEvent(green, EastSommerville, Lechmere);
+    me2.replayAndCheck(mbta);
+
+    MoveEvent me3 = new MoveEvent(green, Lechmere, NorthStation);
+    me3.replayAndCheck(mbta);
+
+    MoveEvent me4 = new MoveEvent(green, NorthStation, GovCen);
+    me4.replayAndCheck(mbta);
+
+    MoveEvent me5 = new MoveEvent(green, GovCen, BluePass);
+    me5.replayAndCheck(mbta);
+
+    MoveEvent me6 = new MoveEvent(green, BluePass, Park);
+    me6.replayAndCheck(mbta);
+
+    System.out.println("Line: " + mbta.trainAndStationsKVP);
+  }
 
 
 

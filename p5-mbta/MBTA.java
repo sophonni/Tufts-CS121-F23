@@ -15,7 +15,7 @@ public class MBTA {
   public Map<Train, LinkedList<Passenger>> trainToBoardedPassengers = new HashMap<>();
 
   /* original layout of lines and journeys from config file */
-  private Map<Train, LinkedList<Station>> originalTrainAndStationKVP = new HashMap<>();
+  public Map<Train, LinkedList<Station>> originalTrainAndStationKVP = new HashMap<>();
 
   public boolean isTrainMovingForward = true;
 
@@ -172,7 +172,7 @@ public class MBTA {
     }
     catch (Exception e)
     {
-      throw new IllegalArgumentException("Error is {loadConfig}: Unable to parse JSON file.");
+      throw new IllegalArgumentException("Error in {loadConfig}: Unable to parse JSON file.");
     }
 
     /* store trains and their initial station */
@@ -184,6 +184,21 @@ public class MBTA {
 
   public void moveTrainForward(Train t, Station currStation)
   {
+    // Station stationToMoveTowards = this.trainAndStationsKVP.get(t).get(this.trainAndStationsKVP.get(t).indexOf(currStation) + 1);
+    // Station otherTrainCurrStation = null;
+    // for (Train currTrain : this.trainAndStationsKVP.keySet())
+    // {
+    //   /* ensure that there's no train at the station that train 't' wants to move to : SD TODO : NEED TO DO A THREAD WAIT HERE : THROW EXCEPTION FOR NOW */
+    //   if (!currTrain.equals(t))
+    //   {
+    //     otherTrainCurrStation = this.trainAndStationsKVP.get(currTrain).getFirst();
+    //     if (otherTrainCurrStation.equals(stationToMoveTowards))
+    //     {
+    //       throw new IllegalArgumentException("Error in MBTA#moveTrainForward: Train {" + t.toString() + "} can't move to station {" + stationToMoveTowards.toString() + "} b/c train {" + currTrain.toString() + "} is at station {" + stationToMoveTowards.toString() + "}.");
+    //     }
+    //   }
+    // }
+
     /* remove currStation from the map for forward movement and add the front of the map for backward movement */
     LinkedList<Station> forwardStations = this.trainAndStationsKVP.get(t);
     forwardStations.remove(currStation);
@@ -203,6 +218,20 @@ public class MBTA {
   
   public void moveTrainBackward(Train t, Station currStation)
   {
+    // Station stationToMoveTowards = this.trainAndStationsKVP.get(t).get(this.trainAndStationsKVP.get(t).indexOf(currStation) + 1);
+    // Station otherTrainCurrStation = null;
+    // for (Train currTrain : this.trainAndStationsKVP.keySet())
+    // {
+    //   /* ensure that there's no train at the station that train 't' wants to move to : SD TODO : NEED TO DO A THREAD WAIT HERE : THROW EXCEPTION FOR NOW */
+    //   if (!currTrain.equals(t))
+    //   {
+    //     otherTrainCurrStation = this.trainAndStationsKVP.get(currTrain).getFirst();
+    //     if (otherTrainCurrStation.equals(stationToMoveTowards))
+    //     {
+    //       throw new IllegalArgumentException("Error in MBTA#moveTrainForward: Train {" + t.toString() + "} can't move to station {" + stationToMoveTowards.toString() + "} b/c train {" + currTrain.toString() + "} is at station {" + stationToMoveTowards.toString() + "}.");
+    //     }
+    //   }
+    // }
     /* remove currStation from the map for backward movement and add the front of the map for forward movement */
     LinkedList<Station> backwardStations = this.trainBackwardStations.get(t);
     backwardStations.remove(currStation);

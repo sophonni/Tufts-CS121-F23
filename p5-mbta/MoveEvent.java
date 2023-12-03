@@ -21,7 +21,22 @@ public class MoveEvent implements Event {
     return List.of(t.toString(), s1.toString(), s2.toString());
   }
   public void replayAndCheck(MBTA mbta) {
+    System.out.println("Move#: " + this.toString());
+    System.out.println("Move#TrainAndStations: " + mbta.trainAndStationsKVP);
+    System.out.println("Move#PassengersAndJourney: " + mbta.passengerAndStationsKVP);
+    System.out.println("Move#BoardedPassengers: " + mbta.trainToBoardedPassengers);
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
+
+    for (Train currTrain : trainLine.keySet())
+    {
+      if (!currTrain.equals(this.t))
+      {
+        if (mbta.trainAndStationsKVP.get(currTrain).getFirst().equals(s2))
+        {
+          throw new IllegalArgumentException("Error in MoveEvent#replayAndCheck: Train {" + this.t.toString() + "} can't move to station {" + this.s2.toString() + "} b/c train {" + currTrain.toString() + "} is at station {" + this.s2.toString() + "}.");
+        }
+      }
+    }
 
     /* ensure that the train exist */
     if (trainLine.containsKey(this.t))
@@ -35,7 +50,11 @@ public class MoveEvent implements Event {
       }
       else
       {
-        if (mbta.trainBackwardStations.get(t) == null || (mbta.trainBackwardStations.get(t).size() != mbta.trainAndStationsKVP.get(t).size()))
+        if (!mbta.trainAndStationsKVP.get(t).getFirst().equals(this.s1))
+        {
+          throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingForward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "} because current station is {" + mbta.trainAndStationsKVP.get(this.t).getFirst().toString() + "}.");
+        }
+        else if (mbta.trainBackwardStations.get(t) == null || (mbta.trainBackwardStations.get(t).size() != mbta.originalTrainAndStationKVP.get(t).size()))
         {
           mbta.isTrainMovingForward = true;
           int s1Index = lineStations.indexOf(this.s1);
@@ -51,7 +70,6 @@ public class MoveEvent implements Event {
             /* move train forward */
             mbta.moveTrainForward(this.t, s1);
           }
-          
           /* starts moving train backward */
           if (mbta.trainForwardStations.get(this.t).size() == 1)
           {
