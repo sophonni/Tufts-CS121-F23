@@ -1126,6 +1126,42 @@ public class Tests {
     mbta.checkEnd();
   }
 
+  @Test public void boardAndDeboardRightAway()
+  {
+    MBTA mbta = new MBTA();
+    mbta.loadConfig("sample.json");
+
+    Train red = Train.make("red");
+    Train orange = Train.make("orange");
+    Train green = Train.make("green");
+    Train blue = Train.make("blue");
+
+    Station s1 = Station.make("Davis");
+    Station s2 = Station.make("Harvard");
+    Station s3 = Station.make("Kendall");
+    Station s4 = Station.make("Park");
+    Station s5 = Station.make("Downtown Crossing");
+    Station s6 = Station.make("South Station");
+    Station s7 = Station.make("Broadway");
+    Station s8 = Station.make("Andrew");
+    Station s9 = Station.make("JFK");
+
+    Passenger John = Passenger.make("John");
+
+    BoardEvent be1 = new BoardEvent(John, red, s1);
+    be1.replayAndCheck(mbta);
+
+    MoveEvent me1 = new MoveEvent(red, s1, s2);
+    me1.replayAndCheck(mbta);
+
+
+    DeboardEvent DeBe1 = new DeboardEvent(John, red, s2);
+    DeBe1.replayAndCheck(mbta);
+
+    BoardEvent be2 = new BoardEvent(John, red, s2);
+    be2.replayAndCheck(mbta);
+  }
+
 
 
 

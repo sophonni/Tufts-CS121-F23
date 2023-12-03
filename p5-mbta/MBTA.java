@@ -120,20 +120,20 @@ public class MBTA {
         // System.out.println("Curr Station: " + this.trainAndStationsKVP.get(t).getFirst());
         // System.out.println("Last Station: " + this.lastStationOfLastDeboardPassenger);
 
-        /* ensure that there are passenger/s how have boarded the train 't' */
+        /* ensure that there are passenger/s that have boarded the train 't' */
         if (this.trainAndIfPassengerHasBeenBoarded.get(t) != null)
         {
-          /* get(t) can't returns false b/c is get(t) returns a non-null object, that means it's true */
-          if (!this.trainAndIfPassengerHasBeenBoarded.get(t))
-          {
-            if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.originalTrainAndStationKVP.get(t).getFirst()))
-            {
-              throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Stop at station {" + this.trainAndStationsKVP.get(t).getFirst() + "} while train is empty.");
-            }
-          }
+          /* get(t) can't returns false b/c if get(t) returns a non-null object, that means it's true */
+          // if (!this.trainAndIfPassengerHasBeenBoarded.get(t))
+          // {
+          //   if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.originalTrainAndStationKVP.get(t).getFirst()))
+          //   {
+          //     throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Stop at station {" + this.trainAndStationsKVP.get(t).getFirst() + "} while train is empty.");
+          //   }
+          // }
         }
 
-        /* train should not move from its initial station when there's no passsenger to board or deboard */
+        // /* train should not move from its initial station when there's no passsenger to board or deboard */
         else
         {
           if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.originalTrainAndStationKVP.get(t).getFirst()))
