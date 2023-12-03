@@ -27,6 +27,9 @@ public class MoveEvent implements Event {
     System.out.println("Move#BoardedPassengers: " + mbta.trainToBoardedPassengers);
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
 
+    System.out.println("Forward List: " + mbta.trainForwardStations);
+    System.out.println("Backward List: " + mbta.trainBackwardStations);
+
     for (Train currTrain : trainLine.keySet())
     {
       if (!currTrain.equals(this.t))
@@ -54,8 +57,9 @@ public class MoveEvent implements Event {
         {
           throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingForward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "} because current station is {" + mbta.trainAndStationsKVP.get(this.t).getFirst().toString() + "}.");
         }
-        else if (mbta.trainBackwardStations.get(t) == null || (mbta.trainBackwardStations.get(t).size() != mbta.originalTrainAndStationKVP.get(t).size()))
+        else if (mbta.trainForwardStations.get(t) != null && mbta.isTrainMovingForward)
         {
+          System.out.println("MOVING FORWARD");
           mbta.isTrainMovingForward = true;
           int s1Index = lineStations.indexOf(this.s1);
           int s2Index = lineStations.indexOf(this.s2);
@@ -75,13 +79,13 @@ public class MoveEvent implements Event {
           {
             mbta.moveTrainForward(this.t, s2);
             mbta.trainAndStationsKVP.put(this.t, mbta.trainBackwardStations.get(t));
-            // mbta.isTrainMovingForward = false;
+            mbta.isTrainMovingForward = false;
           }
         }
-        else
+        else if (mbta.trainBackwardStations.get(t) != null && !mbta.isTrainMovingForward)
         {
+          System.out.println("MOVING BACKWARD");
           mbta.isTrainMovingForward = false;
-          System.out.println("Moving Backward");
           int s1Index = lineStations.indexOf(this.s1);
           int s2Index = lineStations.indexOf(this.s2);
           /* ensure that the two stations are adjacent */
@@ -100,7 +104,7 @@ public class MoveEvent implements Event {
           {
             mbta.moveTrainBackward(this.t, s2);
             mbta.trainAndStationsKVP.put(this.t, mbta.trainForwardStations.get(t));
-            // mbta.isTrainMovingForward = true;
+            mbta.isTrainMovingForward = true;
           }
         }
       }
