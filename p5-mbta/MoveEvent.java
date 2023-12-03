@@ -57,12 +57,14 @@ public class MoveEvent implements Event {
         {
           throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingForward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "} because current station is {" + mbta.trainAndStationsKVP.get(this.t).getFirst().toString() + "}.");
         }
-        else if (mbta.trainForwardStations.get(t) != null && mbta.isTrainMovingForward)
+        else if (mbta.trainForwardStations.get(t) != null && mbta.trainAndIfItsMovingForward.get(this.t))
         {
           System.out.println("MOVING FORWARD");
           mbta.isTrainMovingForward = true;
+          mbta.trainAndIfItsMovingForward.put(this.t, true);
           int s1Index = lineStations.indexOf(this.s1);
           int s2Index = lineStations.indexOf(this.s2);
+          System.out.println("S2 - S2: " + (s2Index - s1Index));
           /* ensure that the two stations are adjacent */
           if ((s2Index - s1Index) != 1)
           {
@@ -80,17 +82,20 @@ public class MoveEvent implements Event {
             mbta.moveTrainForward(this.t, s2);
             mbta.trainAndStationsKVP.put(this.t, mbta.trainBackwardStations.get(t));
             mbta.isTrainMovingForward = false;
+            mbta.trainAndIfItsMovingForward.put(this.t, false);
           }
         }
-        else if (mbta.trainBackwardStations.get(t) != null && !mbta.isTrainMovingForward)
+        else if (mbta.trainBackwardStations.get(t) != null && !mbta.trainAndIfItsMovingForward.get(this.t))
         {
           System.out.println("MOVING BACKWARD");
           mbta.isTrainMovingForward = false;
+          mbta.trainAndIfItsMovingForward.put(this.t, false);
           int s1Index = lineStations.indexOf(this.s1);
           int s2Index = lineStations.indexOf(this.s2);
           /* ensure that the two stations are adjacent */
           if ((s2Index - s1Index) != 1)
           {
+            System.out.println("HERE: 3");
             throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingBackward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "}.");
           }
           else
@@ -105,6 +110,7 @@ public class MoveEvent implements Event {
             mbta.moveTrainBackward(this.t, s2);
             mbta.trainAndStationsKVP.put(this.t, mbta.trainForwardStations.get(t));
             mbta.isTrainMovingForward = true;
+            mbta.trainAndIfItsMovingForward.put(this.t, true);
           }
         }
       }

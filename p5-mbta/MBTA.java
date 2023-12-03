@@ -22,6 +22,8 @@ public class MBTA {
   /* use to keep track on whether or not trains have passengers to drop off */
   public Map<Train, Boolean> trainAndIfPassengerHasBeenBoarded = new HashMap<>();
 
+  public Map<Train, Boolean> trainAndIfItsMovingForward = new HashMap<>();
+
   // Creates an initially empty simulation
   public MBTA() { }
 
@@ -49,6 +51,11 @@ public class MBTA {
 
       /* keep a list of original order of the stations for each train */
       this.originalTrainAndStationKVP.put(train, new LinkedList<>(trainStationList));
+
+      for(Train t : this.originalTrainAndStationKVP.keySet())
+      {
+        this.trainAndIfItsMovingForward.put(train, true);
+      }
     }
   }
 

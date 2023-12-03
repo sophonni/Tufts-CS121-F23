@@ -46,6 +46,8 @@ public class BoardEvent implements Event {
             {
               boardPassengers = new LinkedList<>();
               LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
+              System.out.println("Pass is: " + this.p);
+              System.out.println("Pass and Station: " + givenPassengerJourney);
               /* ensure that the journey to the given station for the given passenger has been initialize */
               if (givenPassengerJourney.contains(this.s))
               {
@@ -58,7 +60,7 @@ public class BoardEvent implements Event {
               }
               else
               {
-                throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Journey to station {" + this.s + "} for passenger {" + this.p.toString() + "} has not yet been initialized.");
+                throw new IllegalArgumentException("111111 Error in {BoardEvent#replayAndCheck}: Journey to station {" + this.s + "} for passenger {" + this.p.toString() + "} has not yet been initialized.");
               }
             }
             else
@@ -75,7 +77,7 @@ public class BoardEvent implements Event {
                 }
                 else
                 {
-                  throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Journey to station {" + this.s + "} for passenger {" + this.p.toString() + "} has not yet been initialized.");
+                  throw new IllegalArgumentException("222222222 Error in {BoardEvent#replayAndCheck}: Journey to station {" + this.s + "} for passenger {" + this.p.toString() + "} has not yet been initialized.");
                 }
               }
               else
