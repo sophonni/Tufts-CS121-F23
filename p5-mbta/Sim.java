@@ -1,8 +1,11 @@
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Sim {
 
   public static void run_sim(MBTA mbta, Log log) {
+    // Map<String, Thread> trainAndPassengersThreads = new HashMap<>();
     throw new UnsupportedOperationException();
   }
 

@@ -846,6 +846,13 @@ public class Tests {
 
 
 
+
+
+
+
+
+
+
   @Test public void autoGraderLogInValidTest()
   {
     MBTA mbta = new MBTA();
@@ -1160,6 +1167,115 @@ public class Tests {
 
     BoardEvent be2 = new BoardEvent(John, red, s2);
     be2.replayAndCheck(mbta);
+  }
+
+  @Test public void boardAndDeboard2Passengers()
+  {
+    MBTA mbta = new MBTA();
+    // mbta.loadConfig("sample.json");
+
+    Train red = Train.make("red");
+    // Train orange = Train.make("orange");
+    // Train green = Train.make("green");
+    // Train blue = Train.make("blue");
+
+    Station s1 = Station.make("Davis");
+    Station s2 = Station.make("Harvard");
+    Station s3 = Station.make("Kendall");
+    Station s4 = Station.make("Park");
+    Station s5 = Station.make("Downtown Crossing");
+    Station s6 = Station.make("South Station");
+    Station s7 = Station.make("Broadway");
+    Station s8 = Station.make("Andrew");
+    Station s9 = Station.make("JFK");
+
+    Passenger John = Passenger.make("John");
+    Passenger Alice = Passenger.make("Alice");
+
+    mbta.addLine("red", List.of("Davis", "Harvard", "Kendall", "Park"));
+    mbta.addJourney("Alice", List.of("Davis", "Kendall"));
+    mbta.addJourney("John", List.of("Harvard", "Kendall"));
+
+    BoardEvent be1 = new BoardEvent(Alice, red, s1);
+    be1.replayAndCheck(mbta);
+
+    MoveEvent me1 = new MoveEvent(red, s1, s2);
+    me1.replayAndCheck(mbta);
+
+    BoardEvent be2 = new BoardEvent(John, red, s2);
+    be2.replayAndCheck(mbta);
+
+    MoveEvent me2 = new MoveEvent(red, s2, s3);
+    me2.replayAndCheck(mbta);
+
+    DeboardEvent db1 = new DeboardEvent(Alice, red, s3);
+    db1.replayAndCheck(mbta);
+
+    DeboardEvent db2 = new DeboardEvent(John, red, s3);
+    db2.replayAndCheck(mbta);
+    System.out.println("Board Pass: " + mbta.trainToBoardedPassengers);
+    mbta.checkEnd();
+  }
+
+  @Test public void checkEndTest()
+  {
+    MBTA mbta = new MBTA();
+
+    Train a = Train.make("a");
+    Train b = Train.make("b");
+    Train c = Train.make("c");
+    Train d = Train.make("d");
+    Train e = Train.make("e");
+    Train f = Train.make("f");
+    Train g = Train.make("g");
+    Train h = Train.make("h");
+    Train i = Train.make("i");
+
+    Station A = Station.make("A");
+    Station B = Station.make("B");
+    Station C = Station.make("C");
+    Station D = Station.make("D");
+    Station E = Station.make("E");
+    Station F = Station.make("F");
+    Station G = Station.make("G");
+    Station H = Station.make("H");
+    Station I = Station.make("I");
+    Station J = Station.make("J");
+    Station K = Station.make("K");
+    Station L = Station.make("L");
+    Station M = Station.make("M");
+    Station N = Station.make("N");
+    Station O = Station.make("O");
+    Station P = Station.make("P");
+    Station Q = Station.make("Q");
+    Station R = Station.make("R");
+    Station S = Station.make("S");
+    Station T = Station.make("T");
+    Station U = Station.make("U");
+    Station V = Station.make("V");
+    Station W = Station.make("W");
+    Station X = Station.make("X");
+    Station Y = Station.make("Y");
+    Station Z = Station.make("Z");
+    Station AA = Station.make("AA");
+    Station BB = Station.make("BB");
+    Station CC = Station.make("CC");
+
+    mbta.addJourney("a", List.of("A", "B", "C"));
+    mbta.addJourney("a", List.of("D", "E", "F"));
+    mbta.addJourney("a", List.of("G", "H", "I"));
+    mbta.addJourney("a", List.of("J", "K", "L"));
+    mbta.addJourney("a", List.of("M", "N", "O"));
+    mbta.addJourney("a", List.of("P", "Q", "R"));
+    mbta.addJourney("a", List.of("S", "T", "U"));
+    mbta.addJourney("a", List.of("V", "W", "X"));
+    mbta.addJourney("a", List.of("Y", "Z", "AA"));
+    mbta.addJourney("a", List.of("BB", "CC", "DD"));
+
+    mbta.addJourney("Bob", List.of("J", "L"));
+    mbta.addJourney("Alice", List.of("A", "B"));
+
+    
   }
 
 

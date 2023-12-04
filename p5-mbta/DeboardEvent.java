@@ -54,6 +54,7 @@ public class DeboardEvent implements Event {
                 LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
                 System.out.println("DeBoard#Pass is: " + this.p);
                 System.out.println("DeBoard#Pass and Station: " + givenPassengerJourney);
+                System.out.println("Pass Sta: " + mbta.passengerAndStationsKVP);
                 /* ensure that the journey to the given station for the given passenger has been initialize */
                 if (givenPassengerJourney.contains(this.s))
                 {
@@ -71,6 +72,13 @@ public class DeboardEvent implements Event {
                   {
                     System.out.println("Remove Pass: " + this.p);
                     boardPassengers.remove(boardPassengers.indexOf(this.p));
+                    for(Train t : mbta.trainToBoardedPassengers.keySet())
+                    {
+                      if (mbta.trainToBoardedPassengers.get(t).contains(this.p))
+                      {
+                        mbta.trainToBoardedPassengers.get(t).remove(this.p);
+                      }
+                    }
                   }
                   mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
                 }

@@ -64,7 +64,6 @@ public class MoveEvent implements Event {
           mbta.trainAndIfItsMovingForward.put(this.t, true);
           int s1Index = lineStations.indexOf(this.s1);
           int s2Index = lineStations.indexOf(this.s2);
-          System.out.println("S2 - S2: " + (s2Index - s1Index));
           /* ensure that the two stations are adjacent */
           if ((s2Index - s1Index) != 1)
           {

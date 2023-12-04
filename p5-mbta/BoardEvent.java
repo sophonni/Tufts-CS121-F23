@@ -53,6 +53,7 @@ public class BoardEvent implements Event {
               {
                 boardPassengers.add(this.p);
                 
+                System.out.println("Remove sta: " + this.s);
                 /* remove the station they boarded from, from their journey */
                 givenPassengerJourney.remove(this.s);
                 mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
@@ -69,11 +70,15 @@ public class BoardEvent implements Event {
               // if (!boardPassengers.contains(this.p))
               // {
                 LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
+                System.out.println("Board#Has Pass: " + this.p);
+                System.out.println("Board#Has Pass and Station: " + givenPassengerJourney);
                 /* ensure that the journey to the given station for the given passenger has been initialize */
                 if (givenPassengerJourney.contains(this.s))
                 {
                   boardPassengers.add(this.p);
+                  givenPassengerJourney.remove(this.s);
                   mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
+                  mbta.trainAndIfPassengerHasBeenBoarded.put(this.t, true);
                 }
                 else
                 {

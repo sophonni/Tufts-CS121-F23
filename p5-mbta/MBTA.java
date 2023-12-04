@@ -114,6 +114,12 @@ public class MBTA {
       // System.out.println("Board Passenger: " + this.trainToBoardedPassengers);
       // System.out.println("Curr Train Line: " + this.trainAndStationsKVP);
       System.out.println("Train to Boarded Pass: " + this.trainToBoardedPassengers);
+
+      // if(this.trainToBoardedPassengers.get(t) != null)
+      // {
+      //   throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> train {" + t.toString() + "} ends before all passengers have been deboarded.");
+      // }
+
       if(this.trainToBoardedPassengers.get(t) == null || this.trainToBoardedPassengers.get(t).isEmpty())
       {
         System.out.println("YES EMPTY");
@@ -136,10 +142,10 @@ public class MBTA {
         // /* train should not move from its initial station when there's no passsenger to board or deboard */
         else
         {
-          if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.originalTrainAndStationKVP.get(t).getFirst()))
-          {
-            throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Train move to station {" + this.trainAndStationsKVP.get(t).getFirst() + "} while train is empty.");
-          }
+          // if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.originalTrainAndStationKVP.get(t).getFirst()))
+          // {
+          //   throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Train {" + t.toString() + "}move to station {" + this.trainAndStationsKVP.get(t).getFirst() + "} while train is empty.");
+          // }
         }
       }
       else
