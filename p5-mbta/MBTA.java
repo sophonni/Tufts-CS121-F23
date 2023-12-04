@@ -103,50 +103,11 @@ public class MBTA {
      */
     for (Train t : this.originalTrainAndStationKVP.keySet())
     {
-      /*
-       * get all passengers that board train 't'
-       * if null or empty, that's ok
-       * else through exception
-       * get first element of the ll from trainAndStationsKVP of the train 't'
-       */
-
-      // System.out.println("Curr Train: " + t);
-      // System.out.println("Board Passenger: " + this.trainToBoardedPassengers);
-      // System.out.println("Curr Train Line: " + this.trainAndStationsKVP);
       System.out.println("Train to Boarded Pass: " + this.trainToBoardedPassengers);
-
-      // if(this.trainToBoardedPassengers.get(t) != null)
-      // {
-      //   throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> train {" + t.toString() + "} ends before all passengers have been deboarded.");
-      // }
 
       if(this.trainToBoardedPassengers.get(t) == null || this.trainToBoardedPassengers.get(t).isEmpty())
       {
         System.out.println("YES EMPTY");
-        // System.out.println("Curr Station: " + this.trainAndStationsKVP.get(t).getFirst());
-        // System.out.println("Last Station: " + this.lastStationOfLastDeboardPassenger);
-
-        /* ensure that there are passenger/s that have boarded the train 't' */
-        if (this.trainAndIfPassengerHasBeenBoarded.get(t) != null)
-        {
-          /* get(t) can't returns false b/c if get(t) returns a non-null object, that means it's true */
-          // if (!this.trainAndIfPassengerHasBeenBoarded.get(t))
-          // {
-          //   if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.originalTrainAndStationKVP.get(t).getFirst()))
-          //   {
-          //     throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Stop at station {" + this.trainAndStationsKVP.get(t).getFirst() + "} while train is empty.");
-          //   }
-          // }
-        }
-
-        // /* train should not move from its initial station when there's no passsenger to board or deboard */
-        else
-        {
-          // if (!this.trainAndStationsKVP.get(t).getFirst().equals(this.originalTrainAndStationKVP.get(t).getFirst()))
-          // {
-          //   throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Train {" + t.toString() + "}move to station {" + this.trainAndStationsKVP.get(t).getFirst() + "} while train is empty.");
-          // }
-        }
       }
       else
       {
@@ -207,21 +168,6 @@ public class MBTA {
 
   public void moveTrainForward(Train t, Station currStation)
   {
-    // Station stationToMoveTowards = this.trainAndStationsKVP.get(t).get(this.trainAndStationsKVP.get(t).indexOf(currStation) + 1);
-    // Station otherTrainCurrStation = null;
-    // for (Train currTrain : this.trainAndStationsKVP.keySet())
-    // {
-    //   /* ensure that there's no train at the station that train 't' wants to move to : SD TODO : NEED TO DO A THREAD WAIT HERE : THROW EXCEPTION FOR NOW */
-    //   if (!currTrain.equals(t))
-    //   {
-    //     otherTrainCurrStation = this.trainAndStationsKVP.get(currTrain).getFirst();
-    //     if (otherTrainCurrStation.equals(stationToMoveTowards))
-    //     {
-    //       throw new IllegalArgumentException("Error in MBTA#moveTrainForward: Train {" + t.toString() + "} can't move to station {" + stationToMoveTowards.toString() + "} b/c train {" + currTrain.toString() + "} is at station {" + stationToMoveTowards.toString() + "}.");
-    //     }
-    //   }
-    // }
-
     /* remove currStation from the map for forward movement and add the front of the map for backward movement */
     LinkedList<Station> forwardStations = this.trainAndStationsKVP.get(t);
     forwardStations.remove(currStation);
@@ -241,20 +187,6 @@ public class MBTA {
   
   public void moveTrainBackward(Train t, Station currStation)
   {
-    // Station stationToMoveTowards = this.trainAndStationsKVP.get(t).get(this.trainAndStationsKVP.get(t).indexOf(currStation) + 1);
-    // Station otherTrainCurrStation = null;
-    // for (Train currTrain : this.trainAndStationsKVP.keySet())
-    // {
-    //   /* ensure that there's no train at the station that train 't' wants to move to : SD TODO : NEED TO DO A THREAD WAIT HERE : THROW EXCEPTION FOR NOW */
-    //   if (!currTrain.equals(t))
-    //   {
-    //     otherTrainCurrStation = this.trainAndStationsKVP.get(currTrain).getFirst();
-    //     if (otherTrainCurrStation.equals(stationToMoveTowards))
-    //     {
-    //       throw new IllegalArgumentException("Error in MBTA#moveTrainForward: Train {" + t.toString() + "} can't move to station {" + stationToMoveTowards.toString() + "} b/c train {" + currTrain.toString() + "} is at station {" + stationToMoveTowards.toString() + "}.");
-    //     }
-    //   }
-    // }
     /* remove currStation from the map for backward movement and add the front of the map for forward movement */
     LinkedList<Station> backwardStations = this.trainBackwardStations.get(t);
     backwardStations.remove(currStation);

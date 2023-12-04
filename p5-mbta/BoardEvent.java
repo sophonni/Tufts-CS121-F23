@@ -67,8 +67,6 @@ public class BoardEvent implements Event {
             else
             {
               // /* ensure that all passengers from all station that is willing to board the train have uniqe name e.g if John board red train from station1, John cannot board red train from any other stations */
-              // if (!boardPassengers.contains(this.p))
-              // {
                 LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
                 System.out.println("Board#Has Pass: " + this.p);
                 System.out.println("Board#Has Pass and Station: " + givenPassengerJourney);
@@ -84,11 +82,6 @@ public class BoardEvent implements Event {
                 {
                   throw new IllegalArgumentException("222222222 Error in {BoardEvent#replayAndCheck}: Journey to station {" + this.s + "} for passenger {" + this.p.toString() + "} has not yet been initialized.");
                 }
-              // }
-              // else
-              // {
-              //   throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Passenger {" + this.p.toString() + "} has already boarded the Train {" + this.t.toString() + "}.");
-              // }
             }
           }
           else
