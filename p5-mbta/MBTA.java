@@ -153,6 +153,15 @@ public class MBTA {
         throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> train {" + t.toString() + "} ends before all passengers have been deboarded.");
       }
     }
+
+    /* ensure that all passengers completed their journey */
+    for (Passenger p : this.passengerAndStationsKVP.keySet())
+    {
+      if (!this.passengerAndStationsKVP.get(p).isEmpty())
+      {
+        throw new IllegalArgumentException("Error in MBTA#checkEnd: Invalid Ending --> Passenger {" + p.toString() + "} with journey {" + this.passengerAndStationsKVP.get(p) + "} needs to be drop off.");
+      }
+    }
     return;
   }
 
