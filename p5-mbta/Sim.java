@@ -18,10 +18,37 @@ public class Sim {
       trainAndPassengersThreads.put("Passenger#" + p.toString(), new PassengerThread(mbta, p.toString(), log));
     }
 
-    for(String s : trainAndPassengersThreads.keySet())
+    for (Thread t : trainAndPassengersThreads.values())
     {
-      System.out.println("S: " + s);
-      trainAndPassengersThreads.get(s).run();
+      t.start();
+    }
+
+    // for (String s : trainAndPassengersThreads.keySet())
+    // {
+    //   if (s.contains("Train#"))
+    //   {
+    //     trainAndPassengersThreads.get(s).start();
+    //   }
+    // }
+
+    try
+    {
+      // join main with all threads
+      for (Thread t : trainAndPassengersThreads.values())
+      {
+        t.join();
+      }
+      // for (String s : trainAndPassengersThreads.keySet())
+      // {
+      //   if (s.contains("Train#"))
+      //   {
+      //     trainAndPassengersThreads.get(s).join();;
+      //   }
+      // }
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
     }
   }
 

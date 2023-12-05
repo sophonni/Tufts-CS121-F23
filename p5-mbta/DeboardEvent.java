@@ -21,10 +21,10 @@ public class DeboardEvent implements Event {
     return List.of(p.toString(), t.toString(), s.toString());
   }
   public void replayAndCheck(MBTA mbta) {
-    System.out.println("DEboard#: " + this.toString());
-    System.out.println("DEboard#TrainAndStations: " + mbta.trainAndStationsKVP);
-    System.out.println("DEboard#PassengersAndJourney: " + mbta.passengerAndStationsKVP);
-    System.out.println("DEboard#BoardedPassengers: " + mbta.trainToBoardedPassengers);
+    // System.out.println("DEboard#: " + this.toString());
+    // System.out.println("DEboard#TrainAndStations: " + mbta.trainAndStationsKVP);
+    // System.out.println("DEboard#PassengersAndJourney: " + mbta.passengerAndStationsKVP);
+    // System.out.println("DEboard#BoardedPassengers: " + mbta.trainToBoardedPassengers);
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
     /* ensure that the train exist */
     if (trainLine.containsKey(this.t) || this.t != null)
@@ -52,9 +52,9 @@ public class DeboardEvent implements Event {
               else
               {
                 LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
-                System.out.println("DeBoard#Pass is: " + this.p);
-                System.out.println("DeBoard#Pass and Station: " + givenPassengerJourney);
-                System.out.println("Pass Sta: " + mbta.passengerAndStationsKVP);
+                // System.out.println("DeBoard#Pass is: " + this.p);
+                // System.out.println("DeBoard#Pass and Station: " + givenPassengerJourney);
+                // System.out.println("Pass Sta: " + mbta.passengerAndStationsKVP);
                 /* ensure that the journey to the given station for the given passenger has been initialize */
                 if (givenPassengerJourney.contains(this.s))
                 {
@@ -65,7 +65,7 @@ public class DeboardEvent implements Event {
                   /* remove passenger from the map of boarded passenger if there journey is complete */
                   if (mbta.trainToBoardedPassengers.get(this.t) == null || mbta.passengerAndStationsKVP.get(this.p).isEmpty())
                   {
-                    System.out.println("Remove Pass: " + this.p);
+                    // System.out.println("Remove Pass: " + this.p);
                     boardPassengers.remove(boardPassengers.indexOf(this.p));
                     for(Train t : mbta.trainToBoardedPassengers.keySet())
                     {

@@ -24,25 +24,18 @@ public class TrainThread extends Thread{
              * 
              * Deadlock happens when some thread hold on to the lock and NEVER unlock it
              */
-
-            this.mbta.trainLock.lock();
-
+            mbta.trainLock.lock();
+            
             Train currTrain = Train.make(this.trainName);
             Station currStation = this.mbta.trainAndStationsKVP.get(currTrain).getFirst();
-            Station nxtStation;
-
-            if (mbta.isTrainMovingForward)
-            {
-                nxtStation = this.mbta.trainAndStationsKVP.get(currStation).get(this.mbta.trainAndStationsKVP.get(currStation).indexOf(currStation) + 1);
-            }
-            else
-            {
-                nxtStation = this.mbta.trainAndStationsKVP.get(currStation).get(this.mbta.trainAndStationsKVP.get(currStation).indexOf(currStation) - 1);
-            }
-
+            int currentIndex = this.mbta.trainAndStationsKVP.get(currTrain).indexOf(currStation);
+            
+            Station nxtStation = this.mbta.trainAndStationsKVP.get(currTrain).get(currentIndex + 1);
+            
             try
             {
                 Thread.sleep(1000);
+                //this.mbta.trainCondition.await(); //ISSUE: THIS CAUSE DEADLOCK
             }
             catch (InterruptedException ie)
             {
@@ -50,8 +43,12 @@ public class TrainThread extends Thread{
             }
             
             this.log.train_moves(currTrain, currStation, nxtStation);
-            this.mbta.trainCondition.signalAll();
-            this.mbta.trainLock.unlock();
+            MoveEvent moveEvent = new MoveEvent(currTrain, currStation, nxtStation);
+            moveEvent.replayAndCheck(this.mbta);
+            
+            
+            //mbta.trainCondition.signalAll(); // Signal other threads waiting on train movement
+            mbta.trainLock.unlock();
         }
     }
 }

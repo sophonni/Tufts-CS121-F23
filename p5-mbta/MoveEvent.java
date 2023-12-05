@@ -21,14 +21,14 @@ public class MoveEvent implements Event {
     return List.of(t.toString(), s1.toString(), s2.toString());
   }
   public void replayAndCheck(MBTA mbta) {
-    System.out.println("Move#: " + this.toString());
-    System.out.println("Move#TrainAndStations: " + mbta.trainAndStationsKVP);
-    System.out.println("Move#PassengersAndJourney: " + mbta.passengerAndStationsKVP);
-    System.out.println("Move#BoardedPassengers: " + mbta.trainToBoardedPassengers);
+    // System.out.println("Move#: " + this.toString());
+    // System.out.println("Move#TrainAndStations: " + mbta.trainAndStationsKVP);
+    // System.out.println("Move#PassengersAndJourney: " + mbta.passengerAndStationsKVP);
+    // System.out.println("Move#BoardedPassengers: " + mbta.trainToBoardedPassengers);
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
 
-    System.out.println("Forward List: " + mbta.trainForwardStations);
-    System.out.println("Backward List: " + mbta.trainBackwardStations);
+    // System.out.println("Forward List: " + mbta.trainForwardStations);
+    // System.out.println("Backward List: " + mbta.trainBackwardStations);
 
     for (Train currTrain : trainLine.keySet())
     {
@@ -59,7 +59,7 @@ public class MoveEvent implements Event {
         }
         else if (mbta.trainForwardStations.get(t) != null && mbta.trainAndIfItsMovingForward.get(this.t))
         {
-          System.out.println("MOVING FORWARD");
+          // System.out.println("MOVING FORWARD");
           mbta.isTrainMovingForward = true;
           mbta.trainAndIfItsMovingForward.put(this.t, true);
           int s1Index = lineStations.indexOf(this.s1);
@@ -71,13 +71,14 @@ public class MoveEvent implements Event {
           }
           else
           {
-            System.out.println("Moving Forward to: " + this.s2);
+            // System.out.println("Moving Forward to: " + this.s2);
             /* move train forward */
             mbta.moveTrainForward(this.t, s1);
           }
           /* starts moving train backward */
           if (mbta.trainForwardStations.get(this.t).size() == 1)
           {
+            System.out.println("Start moving backward");
             mbta.moveTrainForward(this.t, s2);
             mbta.trainAndStationsKVP.put(this.t, mbta.trainBackwardStations.get(t));
             mbta.isTrainMovingForward = false;
@@ -86,7 +87,7 @@ public class MoveEvent implements Event {
         }
         else if (mbta.trainBackwardStations.get(t) != null && !mbta.trainAndIfItsMovingForward.get(this.t))
         {
-          System.out.println("MOVING BACKWARD");
+          // System.out.println("MOVING BACKWARD");
           mbta.isTrainMovingForward = false;
           mbta.trainAndIfItsMovingForward.put(this.t, false);
           int s1Index = lineStations.indexOf(this.s1);
@@ -94,7 +95,7 @@ public class MoveEvent implements Event {
           /* ensure that the two stations are adjacent */
           if ((s2Index - s1Index) != 1)
           {
-            System.out.println("HERE: 3");
+            // System.out.println("HERE: 3");
             throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingBackward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "}.");
           }
           else
@@ -106,6 +107,7 @@ public class MoveEvent implements Event {
           /* starts moving train forward */
           if (mbta.trainBackwardStations.get(this.t).size() == 1)
           {
+            System.out.println("Start moving forward");
             mbta.moveTrainBackward(this.t, s2);
             mbta.trainAndStationsKVP.put(this.t, mbta.trainForwardStations.get(t));
             mbta.isTrainMovingForward = true;

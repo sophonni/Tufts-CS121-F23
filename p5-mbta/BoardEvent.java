@@ -21,10 +21,10 @@ public class BoardEvent implements Event {
     return List.of(p.toString(), t.toString(), s.toString());
   }
   public void replayAndCheck(MBTA mbta) {
-    System.out.println("Board#: " + this.toString());
-    System.out.println("Board#TrainAndStations: " + mbta.trainAndStationsKVP);
-    System.out.println("Board#PassengersAndJourney: " + mbta.passengerAndStationsKVP);
-    System.out.println("Board#BoardedPassengers: " + mbta.trainToBoardedPassengers);
+    // System.out.println("Board#: " + this.toString());
+    // System.out.println("Board#TrainAndStations: " + mbta.trainAndStationsKVP);
+    // System.out.println("Board#PassengersAndJourney: " + mbta.passengerAndStationsKVP);
+    // System.out.println("Board#BoardedPassengers: " + mbta.trainToBoardedPassengers);
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
     /* ensure that the train exist */
     if (trainLine.containsKey(this.t) || this.t != null)
@@ -46,14 +46,14 @@ public class BoardEvent implements Event {
             {
               boardPassengers = new LinkedList<>();
               LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
-              System.out.println("Board#Pass is: " + this.p);
-              System.out.println("Board#Pass and Station: " + givenPassengerJourney);
+              // System.out.println("Board#Pass is: " + this.p);
+              // System.out.println("Board#Pass and Station: " + givenPassengerJourney);
               /* ensure that the journey to the given station for the given passenger has been initialize */
               if (givenPassengerJourney.contains(this.s))
               {
                 boardPassengers.add(this.p);
                 
-                System.out.println("Remove sta: " + this.s);
+                // System.out.println("Remove sta: " + this.s);
                 /* remove the station they boarded from, from their journey */
                 givenPassengerJourney.remove(this.s);
                 mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
@@ -68,8 +68,8 @@ public class BoardEvent implements Event {
             {
               // /* ensure that all passengers from all station that is willing to board the train have uniqe name e.g if John board red train from station1, John cannot board red train from any other stations */
                 LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(this.p);
-                System.out.println("Board#Has Pass: " + this.p);
-                System.out.println("Board#Has Pass and Station: " + givenPassengerJourney);
+                // System.out.println("Board#Has Pass: " + this.p);
+                // System.out.println("Board#Has Pass and Station: " + givenPassengerJourney);
                 /* ensure that the journey to the given station for the given passenger has been initialize */
                 if (givenPassengerJourney.contains(this.s))
                 {
