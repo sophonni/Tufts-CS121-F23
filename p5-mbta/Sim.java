@@ -5,8 +5,24 @@ import java.util.Map;
 public class Sim {
 
   public static void run_sim(MBTA mbta, Log log) {
-    // Map<String, Thread> trainAndPassengersThreads = new HashMap<>();
-    throw new UnsupportedOperationException();
+    Map<String, Thread> trainAndPassengersThreads = new HashMap<>();
+
+    /* each train gets a Thread */
+    for (Train t : mbta.trainAndStationsKVP.keySet())
+    {
+      trainAndPassengersThreads.put("Train#" + t.toString(), new TrainThread(mbta, t.toString(), log));
+    }
+
+    for (Passenger p : mbta.passengerAndStationsKVP.keySet())
+    {
+      trainAndPassengersThreads.put("Passenger#" + p.toString(), new PassengerThread(mbta, p.toString(), log));
+    }
+
+    for(String s : trainAndPassengersThreads.keySet())
+    {
+      System.out.println("S: " + s);
+      trainAndPassengersThreads.get(s).run();
+    }
   }
 
   public static void main(String[] args) throws Exception {

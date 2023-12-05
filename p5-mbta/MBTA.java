@@ -2,6 +2,9 @@ import com.google.gson.*;
 import java.io.*;
 import java.time.format.SignStyle;
 import java.util.*;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MBTA {
   public Map<Train, LinkedList<Station>> trainAndStationsKVP = new HashMap<>();
@@ -23,6 +26,12 @@ public class MBTA {
   public Map<Train, Boolean> trainAndIfPassengerHasBeenBoarded = new HashMap<>();
 
   public Map<Train, Boolean> trainAndIfItsMovingForward = new HashMap<>();
+
+  public Lock trainLock = new ReentrantLock();
+  public Condition trainCondition = trainLock.newCondition();
+
+  public Lock passLock = new ReentrantLock();
+  public Condition passCondition = passLock.newCondition();
 
   // Creates an initially empty simulation
   public MBTA() { }

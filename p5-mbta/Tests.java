@@ -1,3 +1,4 @@
+import java.io.PrintWriter;
 import java.util.*;
 import static org.junit.Assert.*;
 import org.junit.*;
@@ -1321,51 +1322,30 @@ public class Tests {
   }
 
 
-
-
-
-
-  //////////////////////OTHER PEOPLE TEST CASES////////////////////////////////
-  // @Test public void others1() {
+  ///////////CONCURRENCY TESTING///////////
+  // @Test public void run_sim()
+  // {
   //   MBTA mbta = new MBTA();
-  
-  //   mbta.addLine("red", List.of("Braintree", "Alewife"));
-  //   mbta.addLine("green", List.of("Tufts", "Government Center"));
-  
-  //   Train rTrain = Train.make("red");
-  //   Train gTrain = Train.make("green");
-  
-  //   Station braintree = Station.make("Braintree");
-  //   Station alewife = Station.make("Alewife");
-  //   Station tufts = Station.make("Tufts");
-  //   Station govCenter = Station.make("Government Center");
-  
-  //   Log log = new Log(List.of(
-  //           new MoveEvent(rTrain, braintree, alewife),
-  //           new MoveEvent(gTrain, tufts, govCenter)
-  //   ));
-  
-  //   Verify.verify(mbta, log);
-  // }
+  //   mbta.loadConfig("sample.json");
+  //   Log log = new Log();
 
-  // @Test public void others2() {
-  //   MBTA sim = new MBTA();
-  //   Train red = Train.make("red");
-  //   Station stop1 = Station.make("stop1");
-  //   Station stop2 = Station.make("stop2");
-  //   Station stop3 = Station.make("stop3");
-  //   Passenger p1 = Passenger.make("p1");
+  //   Map<String, Thread> trainAndPassengersThreads = new HashMap<>();
 
-  //   sim.addLine("red", List.of("stop1", "stop2", "stop3"));
-  //   sim.addJourney("p1", List.of("stop1", "stop5"));
+  //   /* each train gets a Thread */
+  //   for (Train t : mbta.trainAndStationsKVP.keySet())
+  //   {
+  //     trainAndPassengersThreads.put("Train#" + t.toString(), new TrainThread(mbta, t.toString(), log));
+  //   }
 
-  //   List<Event> events = new LinkedList<>();
-  //   events.add(new BoardEvent(p1, red, stop1));
-  //   events.add(new MoveEvent(red, stop1, stop2));
-  //   events.add(new MoveEvent(red, stop2, stop3));
-  //   events.add(new DeboardEvent(p1, red, stop3));
+  //   for (Passenger p : mbta.passengerAndStationsKVP.keySet())
+  //   {
+  //     trainAndPassengersThreads.put("Passenger#" + p.toString(), new PassengerThread(mbta, p.toString(), log));
+  //   }
 
-  //   Log log = new Log(events);
-  //   Verify.verify(sim, log);
+  //   for(String s : trainAndPassengersThreads.keySet())
+  //   {
+  //     System.out.println("S: " + s);
+  //     trainAndPassengersThreads.get(s).run();
+  //   }
   // }
 }
