@@ -33,6 +33,9 @@ public class MBTA {
   public Lock passLock = new ReentrantLock();
   public Condition passCondition = passLock.newCondition();
 
+  public Map<Station, List<Passenger>> stationAndWaitingPassenger = new HashMap<>();
+ 
+
   // Creates an initially empty simulation
   public MBTA() { }
 
@@ -80,6 +83,16 @@ public class MBTA {
     }
     this.passengerAndStationsKVP.put(passenger, passengerStationList);
 
+    System.out.println("Pass Stations list: " + passengerStationList);
+    if (this.stationAndWaitingPassenger.get(passengerStationList.getFirst()) == null)
+    {
+      this.stationAndWaitingPassenger.put(passengerStationList.getFirst(), new LinkedList<>());
+      this.stationAndWaitingPassenger.get(passengerStationList.getFirst()).add(passenger);
+    }
+    else
+    {
+      this.stationAndWaitingPassenger.get(passengerStationList.getFirst()).add(passenger);
+    }
   }
 
   // Return normally if initial simulation conditions are satisfied, otherwise

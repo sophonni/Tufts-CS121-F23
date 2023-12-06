@@ -75,6 +75,21 @@ public class DeboardEvent implements Event {
                       }
                     }
                   }
+                  else
+                  {
+                    System.out.println("Station is: " + this.s);
+                    System.out.println("Wait Peopl: " + mbta.stationAndWaitingPassenger.get(this.s));
+                    if (mbta.stationAndWaitingPassenger.get(this.s) == null)
+                    {
+                      mbta.stationAndWaitingPassenger.put(s, new LinkedList<>());
+                      mbta.stationAndWaitingPassenger.get(this.s).add(p);
+                    }
+                    else
+                    {
+                      mbta.stationAndWaitingPassenger.get(this.s).add(this.p);
+                    }
+                    
+                  }
                   mbta.trainToBoardedPassengers.put(this.t, boardPassengers);
                 }
                 else

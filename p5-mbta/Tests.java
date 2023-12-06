@@ -1321,7 +1321,72 @@ public class Tests {
     }
   }
 
+  @Test public void waitinAtStationTest()
+  {
+    MBTA mbta = new MBTA();
+    mbta.loadConfig("sample4.json");
 
+    Train red = Train.make("red");
+
+    Passenger Bob = Passenger.make("Bob");
+    Passenger John = Passenger.make("John");
+    Passenger Alice = Passenger.make("Alice");
+    Passenger Bill = Passenger.make("Bill");
+    Passenger Ryan = Passenger.make("Ryan");
+    Passenger Sam = Passenger.make("Sam");
+
+    Station s1 = Station.make("Davis");
+    Station s2 = Station.make("Harvard");
+    Station s3 = Station.make("Kendall");
+    Station s4 = Station.make("Park");
+    Station s5 = Station.make("Downtown Crossing");
+    Station s6 = Station.make("South Station");
+    Station s7 = Station.make("Broadway");
+    Station s8 = Station.make("Andrew");
+    Station s9 = Station.make("JFK");
+
+    BoardEvent be1 = new BoardEvent(Bob, red, s1);
+    be1.replayAndCheck(mbta);
+    BoardEvent be2 = new BoardEvent(John, red, s1);
+    be2.replayAndCheck(mbta);
+    BoardEvent be3 = new BoardEvent(Alice, red, s1);
+    be3.replayAndCheck(mbta);
+
+    MoveEvent me1 = new MoveEvent(red, s1, s2);
+    me1.replayAndCheck(mbta);
+
+    MoveEvent me3 = new MoveEvent(red, s2, s3);
+    me3.replayAndCheck(mbta);
+
+    DeboardEvent db1 = new DeboardEvent(Bob, red, s3);
+    db1.replayAndCheck(mbta);
+
+    BoardEvent be4 = new BoardEvent(Bill, red, s3);
+    be4.replayAndCheck(mbta);
+    BoardEvent be5 = new BoardEvent(Bob, red, s3);
+    be5.replayAndCheck(mbta);
+    BoardEvent be6 = new BoardEvent(Ryan, red, s3);
+    be6.replayAndCheck(mbta);
+    BoardEvent be7 = new BoardEvent(Sam, red, s3);
+    be7.replayAndCheck(mbta);
+
+    MoveEvent me4 = new MoveEvent(red, s3, s4);
+    me4.replayAndCheck(mbta);
+
+    DeboardEvent db2 = new DeboardEvent(Bob, red, s4);
+    db2.replayAndCheck(mbta);
+    
+    DeboardEvent db3 = new DeboardEvent(Bill, red, s4);
+    db3.replayAndCheck(mbta);
+    
+    
+    
+    System.out.println("Waiting people: " + mbta.stationAndWaitingPassenger);
+    // System.out.println("Line: " + mbta.trainAndStationsKVP);
+    System.out.println("Journey: " + mbta.passengerAndStationsKVP);
+  }
+  
+  
   ///////////CONCURRENCY TESTING///////////
   // @Test public void run_sim()
   // {
