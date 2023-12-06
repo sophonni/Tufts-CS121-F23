@@ -27,11 +27,12 @@ public class MBTA {
 
   public Map<Train, Boolean> trainAndIfItsMovingForward = new HashMap<>();
 
-  public Lock trainLock = new ReentrantLock();
-  public Condition trainCondition = trainLock.newCondition();
+  public Map<Station, Map<Lock, Condition>> staionLockAndConditionKVP = new HashMap<>();
+  public Lock stationLock = new ReentrantLock();
+  public Condition stationCondition = stationLock.newCondition();
 
-  public Lock passLock = new ReentrantLock();
-  public Condition passCondition = passLock.newCondition();
+  // public Lock passLock = new ReentrantLock();
+  // public Condition passCondition = passLock.newCondition();
 
   public Map<Station, List<Passenger>> stationAndWaitingPassenger = new HashMap<>();
  
@@ -157,7 +158,6 @@ public class MBTA {
   // adds simulation configuration from a file
   public void loadConfig(String filename) {
     Gson gson = new Gson();
-
     try (Reader reader = new FileReader(filename)) {
 
       MBTAData mbtaData = gson.fromJson(reader, MBTAData.class);
@@ -185,6 +185,24 @@ public class MBTA {
     for (Train t : this.trainAndStationsKVP.keySet())
     {
       this.trainForwardStations.put(t, this.trainAndStationsKVP.get(t));
+    }
+
+    for (Train t : this.trainAndStationsKVP.keySet())
+    {
+      LinkedList<Station> stationOfTrain = this.trainAndStationsKVP.get(t);
+
+      for (Station s : stationOfTrain)
+      {
+        if (!this.staionLockAndConditionKVP.containsKey(s))
+        {
+          Lock newstationLock = new ReentrantLock();
+          Condition newStationCondition = newstationLock.newCondition();
+  
+          Map<Lock, Condition> lockToConditionMap = new HashMap<>();
+          lockToConditionMap.put(newstationLock, newStationCondition);
+          this.staionLockAndConditionKVP.put(s, lockToConditionMap);
+        }
+      }
     }
   }
 
