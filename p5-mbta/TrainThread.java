@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 public class TrainThread extends Thread{
     private MBTA mbta;
@@ -16,47 +18,90 @@ public class TrainThread extends Thread{
     {
         while (true)
         {
-            //this.mbta.stationLock.lock();;
-            // Train thisTrain = Train.make(this.trainName);
-            // Station thisTrainCurrStation = this.mbta.trainAndStationsKVP.get(thisTrain).getFirst();
-            // int currentIndex = this.mbta.trainAndStationsKVP.get(thisTrain).indexOf(thisTrainCurrStation);
-            // Station thisTrainNextStation = this.mbta.trainAndStationsKVP.get(thisTrain).get(currentIndex + 1);
+            Train thisTrain = Train.make(this.trainName);
+            Station thisTrainCurrStation = this.mbta.trainAndStationsKVP.get(thisTrain).getFirst();
+            int currentIndex = this.mbta.trainAndStationsKVP.get(thisTrain).indexOf(thisTrainCurrStation);
+            Station thisTrainNextStation = this.mbta.trainAndStationsKVP.get(thisTrain).get(currentIndex + 1);
 
-            // for (Train t : this.mbta.trainAndStationsKVP.keySet())
-            // {
-            //     if (!thisTrain.equals(t))
-            //     {
-            //         Station otherTrainCurrStation = this.mbta.trainAndStationsKVP.get(t).getFirst();
+            /* get lock of condition of the train's next station */
+            Map<Lock, Condition> stationLockAndCondition = this.mbta.staionLockAndConditionKVP.get(thisTrainNextStation);
+            Lock nxtStaLck = null;
+            Condition nxtStaLckCondition = null;
+            if (stationLockAndCondition != null)
+            {
+                for (Lock l : stationLockAndCondition.keySet())
+                {
+                    nxtStaLck = l;
+                    nxtStaLckCondition = stationLockAndCondition.get(nxtStaLck);
+                    break;
+                }
+            }
 
-            //         if (otherTrainCurrStation.equals(thisTrainCurrStation))
-            //         {
-            //             try
-            //             {
-            //                 this.mbta.stationCondition.wait();
-            //             }
-            //             catch (InterruptedException ie)
-            //             {
-            //                 throw new RuntimeException(ie);
-            //             }
-            //         }
-            //     }
-            // }
+            /* lock next station */
+            nxtStaLck.lock();
 
-            // this.log.train_moves(thisTrain, thisTrainCurrStation, thisTrainNextStation);
+            /* get list of train where its current station = station that this train want to move to */
+            List<Train> listOfOtherTrains = new ArrayList<>();
+            for (Train t : this.mbta.trainAndStationsKVP.keySet())
+            {
+                if (!thisTrain.equals(t))
+                {
+                    listOfOtherTrains.add(t);
+                }
+            }
+            
+            /* there are train/s at station that this train want to move to */
+            if (!listOfOtherTrains.isEmpty())
+            {
+                for (Train t : listOfOtherTrains)
+                {
+                    Station otherTrainCurrStation = this.mbta.trainAndStationsKVP.get(t).getFirst();
+                    while (otherTrainCurrStation.equals(thisTrainNextStation))
+                    {
+                        try
+                        {
+                            /* tell current train to wait before move to the train where there's train */
+                            nxtStaLckCondition.await();
+                        }
+                        catch (InterruptedException ie)
+                        {
+                            throw new RuntimeException(ie);
+                        }
+                    }
+                }
+                
+                /* the train in which this train want to move to, is free (no other train there) */
+                this.log.train_moves(thisTrain, thisTrainCurrStation, thisTrainNextStation);
+                MoveEvent moveEvent = new MoveEvent(thisTrain, thisTrainCurrStation, thisTrainNextStation);
+                moveEvent.replayAndCheck(mbta);
+                nxtStaLck.unlock();
+                nxtStaLckCondition.signalAll();
 
-            // try
-            // {
-            //     Thread.sleep(1000);
-            // }
-            // catch (InterruptedException ie)
-            // {
-            //     throw new RuntimeException(ie);
-            // }
-            // MoveEvent moveEvent = new MoveEvent(thisTrain, thisTrainCurrStation, thisTrainNextStation);
-            // moveEvent.replayAndCheck(mbta);
-
-            //this.mbta.stationCondition.signalAll();
-            //this.mbta.stationLock.unlock();
+                try
+                {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException ie)
+                {
+                    throw new RuntimeException(ie);
+                }
+            }
+            else
+            {
+                this.log.train_moves(thisTrain, thisTrainCurrStation, thisTrainNextStation);
+                MoveEvent moveEvent = new MoveEvent(thisTrain, thisTrainCurrStation, thisTrainNextStation);
+                moveEvent.replayAndCheck(mbta);
+                nxtStaLck.unlock();
+                nxtStaLckCondition.signalAll();
+                try
+                {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException ie)
+                {
+                    throw new RuntimeException(ie);
+                }
+            }
         }
     }
 }

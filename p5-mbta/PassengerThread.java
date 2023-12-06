@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 public class PassengerThread extends Thread {
     private MBTA mbta;
@@ -14,70 +16,109 @@ public class PassengerThread extends Thread {
 
     public void run()
     {
-        /*
-            * get first location of passenger journey
-            * iterate thorugh trainsToStation kvp
-            * if first of currTrain is == first location of passenger journey
-            * board passenger
-            * have passenger wait on the train
-            * debaord passenger when arraive at the next station of the passenger's journey
-        */
 
         while (true) {
             /* each passenger will take turns getting the current station station lock
              * have 1 lock per station
             */
-
+            Passenger passenger = Passenger.make(this.passengerName);
+            Station passInitStation = mbta.passengerAndStationsKVP.get(passenger).getFirst();
+            Station trainCurrStation = null;
+            Train trainToGetOn  = null;
             
-
-            // mbta.stationLock.lock();;
-    
-            // Passenger passenger = Passenger.make(this.passengerName);
-            // Station passInitStation = mbta.passengerAndStationsKVP.get(passenger).getFirst();
-            // Station trainCurrStation = null;
-            // Train trainToGetOn  = null;
+            Map<Lock, Condition> lockAndConditionOfPassInitStation = this.mbta.staionLockAndConditionKVP.get(passInitStation);
+            Lock stationLock = null;
+            Condition stationCondition = null;
+            if (lockAndConditionOfPassInitStation != null)
+            {
+                for (Lock l : lockAndConditionOfPassInitStation.keySet())
+                {
+                    stationLock = l;
+                    stationCondition = lockAndConditionOfPassInitStation.get(stationLock);
+                    break;
+                }
+            }
             
-            // /* get the train where its current station = passenger initial station */
-            // for (Train t : mbta.trainAndStationsKVP.keySet()) {
-            //     if (mbta.trainAndStationsKVP.get(t).getFirst().equals(passInitStation))
-            //     {
-            //         trainCurrStation = mbta.trainAndStationsKVP.get(t).getFirst();
-            //         trainToGetOn = t;
-            //         break;
-            //     }
-            // }
+            if ((stationLock != null) && (stationCondition != null))
+            {
+                stationLock.lock();
+                /* get the train where its current station = passenger initial station */
+                for (Train t : mbta.trainAndStationsKVP.keySet()) {
+                    if (mbta.trainAndStationsKVP.get(t).getFirst().equals(passInitStation))
+                    {
+                        System.out.println("BOARDING the train");
+                        stationLock.lock();
+                        trainCurrStation = mbta.trainAndStationsKVP.get(t).getFirst();
+                        trainToGetOn = t;
 
-            // if (trainCurrStation != null)
-            // {
-            //     while (!trainCurrStation.equals(passInitStation))
-            //     {
-            //         /* "temporarily" release the train lock to have the train class
-            //         lock onto it in order to move the train forward */
-            //         System.out.println("Wait to get ON");
-            //         try
-            //         {
-            //             mbta.stationCondition.await();
-            //         }
-            //         catch (InterruptedException ie)
-            //         {
-            //             throw new RuntimeException(ie);
-            //         }
-            //     }
-    
-            //     /* train current station matches with the passenger's initial station of their journey */
-            //     if (trainCurrStation.equals(passInitStation))
-            //     {
-            //         System.out.println("Board: ");
-            //         for (Passenger p : mbta.stationAndWaitingPassenger.get(passInitStation))
-            //         {
-            //             this.log.passenger_boards(passenger, trainToGetOn, trainCurrStation);
-            //             BoardEvent boardEvent = new BoardEvent(passenger, trainToGetOn, trainCurrStation);
-            //             boardEvent.replayAndCheck(mbta);
-            //         }
-            //     }
-            //     mbta.stationCondition.signalAll();
-            //     mbta.stationLock.unlock();
-            // }
+                        this.log.passenger_boards(passenger, trainToGetOn, trainCurrStation);
+                        BoardEvent boardEvent = new BoardEvent(passenger, trainToGetOn, passInitStation);
+                        boardEvent.replayAndCheck(mbta);
+                        // stationCondition.wa
+                        stationCondition.signalAll();
+                        stationLock.unlock();
+                        System.out.println("Unloack Thread");
+                        break;
+                    }
+                }
+                
+                Station passNxStation = mbta.passengerAndStationsKVP.get(passenger).getFirst();
+                lockAndConditionOfPassInitStation = this.mbta.staionLockAndConditionKVP.get(passInitStation);
+                if (lockAndConditionOfPassInitStation != null)
+                {
+                    for (Lock l : lockAndConditionOfPassInitStation.keySet())
+                    {
+                        stationLock = l;
+                        stationCondition = lockAndConditionOfPassInitStation.get(stationLock);
+                        break;
+                    }
+                }
+
+                if (stationLock != null && stationCondition != null)
+                {
+                    // while (!mbta.trainAndStationsKVP.get(trainToGetOn).getFirst().equals(passNxStation))
+                    // {
+                    //     System.out.println("Waiting to DEBOARD");
+                    //     try
+                    //     {
+                    //         stationCondition.await();
+                    //     }
+                    //     catch (InterruptedException ie)
+                    //     {
+                    //         throw new RuntimeException();
+                    //     }
+                    // }
+
+                    System.out.println("HERER");
+                    System.out.println("Train to get on: " + mbta.trainAndStationsKVP);
+                    System.out.println("Train: " + trainToGetOn);
+                    if (mbta.trainAndStationsKVP.get(trainToGetOn).getFirst().equals(passNxStation))
+                    {
+                        stationLock.lock();
+                        System.out.println("Deboard Pas");
+                        this.log.passenger_boards(passenger, trainToGetOn, trainCurrStation);
+                        DeboardEvent deboardEvent = new DeboardEvent(passenger, trainToGetOn, passNxStation);
+                        deboardEvent.replayAndCheck(mbta);
+                        stationCondition.signalAll();
+                        stationLock.unlock();
+                    }
+                    else
+                    {
+                        System.out.println("Waiting to DEBOARD");
+                        try
+                        {
+                            stationCondition.await();
+                        }
+                        catch (InterruptedException ie)
+                        {
+                            throw new RuntimeException();
+                        }
+                    }
+                }
+
+                stationCondition.signalAll();
+                stationLock.unlock();
+            }
         }
     }
 }
