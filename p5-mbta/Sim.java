@@ -5,53 +5,53 @@ import java.util.Map;
 public class Sim {
 
   public static void run_sim(MBTA mbta, Log log) {
-    // Map<String, Thread> trainAndPassengersThreads = new HashMap<>();
+    Map<String, Thread> trainAndPassengersThreads = new HashMap<>();
 
-    // /* each train gets a Thread */
-    // for (Train t : mbta.trainAndStationsKVP.keySet())
+    /* each train gets a Thread */
+    for (Train t : mbta.trainAndStationsKVP.keySet())
+    {
+      trainAndPassengersThreads.put("Train#" + t.toString(), new TrainThread(mbta, t.toString(), log));
+    }
+
+    for (Passenger p : mbta.passengerAndStationsKVP.keySet())
+    {
+      trainAndPassengersThreads.put("Passenger#" + p.toString(), new PassengerThread(mbta, p.toString(), log));
+    }
+
+    // System.out.println("Station and Lock: " + mbta.staionLockAndConditionKVP.keySet());
+
+    for (Thread t : trainAndPassengersThreads.values())
+    {
+      t.start();
+    }
+
+    // for (String s : trainAndPassengersThreads.keySet())
     // {
-    //   trainAndPassengersThreads.put("Train#" + t.toString(), new TrainThread(mbta, t.toString(), log));
-    // }
-
-    // for (Passenger p : mbta.passengerAndStationsKVP.keySet())
-    // {
-    //   trainAndPassengersThreads.put("Passenger#" + p.toString(), new PassengerThread(mbta, p.toString(), log));
-    // }
-
-    // // System.out.println("Station and Lock: " + mbta.staionLockAndConditionKVP.keySet());
-
-    // for (Thread t : trainAndPassengersThreads.values())
-    // {
-    //   t.start();
-    // }
-
-    // // for (String s : trainAndPassengersThreads.keySet())
-    // // {
-    // //   if (s.contains("Train#"))
-    // //   {
-    // //     trainAndPassengersThreads.get(s).start();
-    // //   }
-    // // }
-
-    // try
-    // {
-    //   //join main with all threads
-    //   for (Thread t : trainAndPassengersThreads.values())
+    //   if (s.contains("Train#"))
     //   {
-    //     t.join();
+    //     trainAndPassengersThreads.get(s).start();
     //   }
-    //   // for (String s : trainAndPassengersThreads.keySet())
-    //   // {
-    //   //   if (s.contains("Train#"))
-    //   //   {
-    //   //     trainAndPassengersThreads.get(s).join();;
-    //   //   }
-    //   // }
     // }
-    // catch (Exception e)
-    // {
-    //   e.printStackTrace();
-    // }
+
+    try
+    {
+      //join main with all threads
+      for (Thread t : trainAndPassengersThreads.values())
+      {
+        t.join();
+      }
+      // for (String s : trainAndPassengersThreads.keySet())
+      // {
+      //   if (s.contains("Train#"))
+      //   {
+      //     trainAndPassengersThreads.get(s).join();;
+      //   }
+      // }
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
     throw new UnsupportedOperationException();
   }
 

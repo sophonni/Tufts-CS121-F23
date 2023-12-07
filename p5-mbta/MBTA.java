@@ -204,7 +204,7 @@ public class MBTA {
       }
     }
   }
-  public void moveTrain(MBTA mbta, Station s1, Station s2, Train t)
+  synchronized public void moveTrain(MBTA mbta, Station s1, Station s2, Train t)
   {
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
 
@@ -302,7 +302,7 @@ public class MBTA {
       throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck}: Train {" + t.toString() + "} does not exist.");
     }
   }
-  public void boardPass(MBTA mbta, Passenger p, Station s, Train t)
+  synchronized public void boardPass(MBTA mbta, Passenger p, Station s, Train t)
   {
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
     /* ensure that the train exist */
@@ -342,7 +342,7 @@ public class MBTA {
                 givenPassengerJourney.remove(s);
                 mbta.trainToBoardedPassengers.put(t, boardPassengers);
                 mbta.trainAndIfPassengerHasBeenBoarded.put(t, true);
-                System.out.println("Pass Station List after board: " + mbta.stationAndWaitingPassenger.get(s));
+                //System.out.println("Pass Station List after board: " + mbta.stationAndWaitingPassenger.get(s));
               }
               else
               {
@@ -394,7 +394,7 @@ public class MBTA {
       throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Train {" + t.toString() + "} does not exist.");
     }
   }
-  public void deboardPass(MBTA mbta, Passenger p, Station s, Train t)
+  synchronized public void deboardPass(MBTA mbta, Passenger p, Station s, Train t)
   {
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
     /* ensure that the train exist */

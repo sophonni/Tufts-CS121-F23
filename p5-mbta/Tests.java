@@ -1385,6 +1385,62 @@ public class Tests {
     // System.out.println("Line: " + mbta.trainAndStationsKVP);
     System.out.println("Journey: " + mbta.passengerAndStationsKVP);
   }
+
+  @Test public void movingTest()
+  {
+    MBTA mbta = new MBTA();
+    mbta.loadConfig("sample4.json");
+
+    Train red = Train.make("red");
+
+    Passenger Bob = Passenger.make("Bob");
+    Passenger John = Passenger.make("John");
+    Passenger Alice = Passenger.make("Alice");
+    Passenger Bill = Passenger.make("Bill");
+    Passenger Ryan = Passenger.make("Ryan");
+    Passenger Sam = Passenger.make("Sam");
+
+    Station s1 = Station.make("Davis");
+    Station s2 = Station.make("Harvard");
+    Station s3 = Station.make("Kendall");
+    Station s4 = Station.make("Park");
+    Station s5 = Station.make("GREEN_PASS");
+    Station s6 = Station.make("Downtown Crossing");
+    Station s7 = Station.make("South Station");
+    Station s8 = Station.make("Broadway");
+    Station s9 = Station.make("Andrew");
+    Station s10 = Station.make("JFK");
+
+    mbta.moveTrain(mbta, s1, s2, red);
+    mbta.moveTrain(mbta, s2, s3, red);
+    mbta.moveTrain(mbta, s3, s4, red);
+    mbta.moveTrain(mbta, s4, s5, red);
+    mbta.moveTrain(mbta, s5, s6, red);
+    mbta.moveTrain(mbta, s6, s7, red);
+    mbta.moveTrain(mbta, s7, s8, red);
+    mbta.moveTrain(mbta, s8, s9, red);
+    mbta.moveTrain(mbta, s9, s10, red);
+    mbta.moveTrain(mbta, s10, s9, red);
+    mbta.moveTrain(mbta, s9, s8, red);
+    mbta.moveTrain(mbta, s8, s7, red);
+    mbta.moveTrain(mbta, s7, s6, red);
+    mbta.moveTrain(mbta, s6, s5, red);
+    mbta.moveTrain(mbta, s5, s4, red);
+    mbta.moveTrain(mbta, s4, s3, red);
+    mbta.moveTrain(mbta, s3, s2, red);
+    mbta.moveTrain(mbta, s2, s1, red);
+    mbta.moveTrain(mbta, s1, s2, red);
+    System.out.println("Line: " + mbta.trainAndStationsKVP.get(red));
+
+
+    // "Bob": [ "Davis", "Kendall", "Park"],
+    // "John": [ "Davis", "Park" ],
+    // "Alice": [ "Davis", "South Station"], 
+
+    // "Bill": [ "Kendall", "Park" ],
+    // "Ryan": [ "Kendall", "Downtown Crossing" ],
+    // "Sam": [ "Kendall", "JFK"]
+  }
   
   
   ///////////CONCURRENCY TESTING///////////
