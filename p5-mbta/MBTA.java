@@ -204,7 +204,296 @@ public class MBTA {
       }
     }
   }
+  public void moveTrain(MBTA mbta, Station s1, Station s2, Train t)
+  {
+    Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
 
+    // System.out.println("Forward List: " + mbta.trainForwardStations);
+    // System.out.println("Backward List: " + mbta.trainBackwardStations);
+
+    for (Train currTrain : trainLine.keySet())
+    {
+      if (!currTrain.equals(t))
+      {
+        if (mbta.trainAndStationsKVP.get(currTrain).getFirst().equals(s2))
+        {
+          throw new IllegalArgumentException("Error in MoveEvent#replayAndCheck: Train {" + t.toString() + "} can't move to station {" + s2.toString() + "} b/c train {" + currTrain.toString() + "} is at station {" + s2.toString() + "}.");
+        }
+      }
+    }
+
+    /* ensure that the train exist */
+    if (trainLine.containsKey(t))
+    {
+      LinkedList<Station> lineStations = trainLine.get(t);
+  
+      /* ensure that the two stations exist in the line */
+      if (!lineStations.contains(s1) || !lineStations.contains(s2) || s1 == null || s2 == null)
+      {
+        throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck}: Train can't move from station {" + s1.toString() + "} to station {" + s2.toString() + "}.");
+      }
+      else
+      {
+        if (!mbta.trainAndStationsKVP.get(t).getFirst().equals(s1))
+        {
+          throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingForward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "} because current station is {" + mbta.trainAndStationsKVP.get(t).getFirst().toString() + "}.");
+        }
+        else if (mbta.trainForwardStations.get(t) != null && mbta.trainAndIfItsMovingForward.get(t))
+        {
+          // System.out.println("MOVING FORWARD");
+          mbta.isTrainMovingForward = true;
+          mbta.trainAndIfItsMovingForward.put(t, true);
+          int s1Index = lineStations.indexOf(s1);
+          int s2Index = lineStations.indexOf(s2);
+          /* ensure that the two stations are adjacent */
+          if ((s2Index - s1Index) != 1)
+          {
+            throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingForward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "}.");
+          }
+          else
+          {
+            // System.out.println("Moving Forward to: " + s2);
+            /* move train forward */
+            mbta.moveTrainForward(t, s1);
+          }
+          /* starts moving train backward */
+          if (mbta.trainForwardStations.get(t).size() == 1)
+          {
+            System.out.println("Start moving backward");
+            mbta.moveTrainForward(t, s2);
+            mbta.trainAndStationsKVP.put(t, mbta.trainBackwardStations.get(t));
+            mbta.isTrainMovingForward = false;
+            mbta.trainAndIfItsMovingForward.put(t, false);
+          }
+        }
+        else if (mbta.trainBackwardStations.get(t) != null && !mbta.trainAndIfItsMovingForward.get(t))
+        {
+          // System.out.println("MOVING BACKWARD");
+          mbta.isTrainMovingForward = false;
+          mbta.trainAndIfItsMovingForward.put(t, false);
+          int s1Index = lineStations.indexOf(s1);
+          int s2Index = lineStations.indexOf(s2);
+          /* ensure that the two stations are adjacent */
+          if ((s2Index - s1Index) != 1)
+          {
+            // System.out.println("HERE: 3");
+            throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck#movingBackward}: Train can't move from station: {" + s1.toString() + "} to station {" + s2.toString() + "}.");
+          }
+          else
+          {
+            /* move train backward */
+            mbta.moveTrainBackward(t, s1);
+          }
+  
+          /* starts moving train forward */
+          if (mbta.trainBackwardStations.get(t).size() == 1)
+          {
+            System.out.println("Start moving forward");
+            mbta.moveTrainBackward(t, s2);
+            mbta.trainAndStationsKVP.put(t, mbta.trainForwardStations.get(t));
+            mbta.isTrainMovingForward = true;
+            mbta.trainAndIfItsMovingForward.put(t, true);
+          }
+        }
+      }
+    }
+    else
+    {
+      throw new IllegalArgumentException("Error in {MoveEvent#replayAndCheck}: Train {" + t.toString() + "} does not exist.");
+    }
+  }
+  public void boardPass(MBTA mbta, Passenger p, Station s, Train t)
+  {
+    Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
+    /* ensure that the train exist */
+    if (trainLine.containsKey(t) || t != null)
+    {
+      LinkedList<Station> lineStations = trainLine.get(t);
+      /* ensure the train line has stations */
+      if (lineStations != null)
+      {
+        /* ensure that the train stations contains the station the passenger is boarding from */
+        if (lineStations.contains(s))
+        {
+          /* ensure that the current station of the train is the station the passenger is boarding from */
+          if (lineStations.getFirst().equals(s))
+          {
+            LinkedList<Passenger> boardPassengers = mbta.trainToBoardedPassengers.get(t);
+
+            /* create a new list to store boarded passenger if there doesn't already exist a list */
+            if (boardPassengers == null)
+            {
+              boardPassengers = new LinkedList<>();
+              LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(p);
+              // System.out.println("Board#Pass is: " + p);
+              // System.out.println("Board#Pass and Station: " + givenPassengerJourney);
+              /* ensure that the journey to the given station for the given passenger has been initialize */
+              if (givenPassengerJourney.contains(s))
+              {
+                boardPassengers.add(p);
+
+                if (mbta.stationAndWaitingPassenger.get(s) != null)
+                {
+                  mbta.stationAndWaitingPassenger.get(s).remove(p);
+                }
+                
+                // System.out.println("Remove sta: " + s);
+                /* remove the station they boarded from, from their journey */
+                givenPassengerJourney.remove(s);
+                mbta.trainToBoardedPassengers.put(t, boardPassengers);
+                mbta.trainAndIfPassengerHasBeenBoarded.put(t, true);
+                System.out.println("Pass Station List after board: " + mbta.stationAndWaitingPassenger.get(s));
+              }
+              else
+              {
+                throw new IllegalArgumentException("111111 Error in {BoardEvent#replayAndCheck}: Journey to station {" + s + "} for passenger {" + p.toString() + "} has not yet been initialized.");
+              }
+            }
+            else
+            {
+              // /* ensure that all passengers from all station that is willing to board the train have uniqe name e.g if John board red train from station1, John cannot board red train from any other stations */
+                LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(p);
+                // System.out.println("Board#Has Pass: " + p);
+                // System.out.println("Board#Has Pass and Station: " + givenPassengerJourney);
+                /* ensure that the journey to the given station for the given passenger has been initialize */
+                if (givenPassengerJourney.contains(s))
+                {
+                  if (mbta.stationAndWaitingPassenger.get(s) != null)
+                  {
+                    mbta.stationAndWaitingPassenger.get(s).remove(p);
+                  }
+                  boardPassengers.add(p);
+                  // mbta.stationAndWaitingPassenger.get(s).remove(p);
+                  givenPassengerJourney.remove(s);
+                  mbta.trainToBoardedPassengers.put(t, boardPassengers);
+                  mbta.trainAndIfPassengerHasBeenBoarded.put(t, true);
+                }
+                else
+                {
+                  throw new IllegalArgumentException("222222222 Error in {BoardEvent#replayAndCheck}: Journey to station {" + s + "} for passenger {" + p.toString() + "} has not yet been initialized.");
+                }
+            }
+          }
+          else
+          {
+            throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Unable to board from station {" +s.toString() + "} as current station of the train is {" + lineStations.getFirst() + "}.");
+          }
+        }
+        else
+        {
+          throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Train {" + t + "} does not contains the station {" + s.toString() + "}.");
+        }
+      }
+      else
+      {
+        throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Unable to board onto Train {" + t.toString() + "}.");
+      }
+    }
+    else
+    {
+      throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Train {" + t.toString() + "} does not exist.");
+    }
+  }
+  public void deboardPass(MBTA mbta, Passenger p, Station s, Train t)
+  {
+    Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
+    /* ensure that the train exist */
+    if (trainLine.containsKey(t) || t != null)
+    {
+      LinkedList<Station> lineStations = trainLine.get(t);
+      /* ensure the train line has stations */
+      if (lineStations != null)
+      {
+        /* ensure that the train stations contains the station the passenger is deboarding at */
+        if (lineStations.contains(s))
+        {
+          /* ensure that the current station of the train matches with the station the passenger want to get off at */
+          if (lineStations.getFirst().equals(s))
+          {
+            LinkedList<Passenger> boardPassengers = mbta.trainToBoardedPassengers.get(t);
+
+            /* ensure that there are passengers that have boarded the train */
+            if (boardPassengers != null)
+            {
+              /* ensure the given passenger has boarded the given train */
+              if (!boardPassengers.contains(p))
+              {
+                throw new IllegalArgumentException("Error in {DeboardEvent#replayAndCheck}: Passenger {" + p.toString() + "} has not yet board the train {" + t.toString() + "}.");
+              }
+              else
+              {
+                LinkedList<Station> givenPassengerJourney = mbta.passengerAndStationsKVP.get(p);
+                // System.out.println("DeBoard#Pass is: " + p);
+                // System.out.println("DeBoard#Pass and Station: " + givenPassengerJourney);
+                // System.out.println("Pass Sta: " + mbta.passengerAndStationsKVP);
+                /* ensure that the journey to the given station for the given passenger has been initialize */
+                if (givenPassengerJourney.contains(s))
+                {
+                  if (mbta.passengerAndStationsKVP.get(p).size() == 1)
+                  {
+                    givenPassengerJourney.remove(s);
+                  }
+                  /* remove passenger from the map of boarded passenger if there journey is complete */
+                  if (mbta.trainToBoardedPassengers.get(t) == null || mbta.passengerAndStationsKVP.get(p).isEmpty())
+                  {
+                    // System.out.println("Remove Pass: " + p);
+                    boardPassengers.remove(boardPassengers.indexOf(p));
+                    for(Train train : mbta.trainToBoardedPassengers.keySet())
+                    {
+                      if (mbta.trainToBoardedPassengers.get(train).contains(p))
+                      {
+                        mbta.trainToBoardedPassengers.get(train).remove(p);
+                      }
+                    }
+                  }
+                  else
+                  {
+                    System.out.println("Station is: " + s);
+                    System.out.println("Wait Peopl: " + mbta.stationAndWaitingPassenger.get(s));
+                    if (mbta.stationAndWaitingPassenger.get(s) == null)
+                    {
+                      mbta.stationAndWaitingPassenger.put(s, new LinkedList<>());
+                      mbta.stationAndWaitingPassenger.get(s).add(p);
+                    }
+                    else
+                    {
+                      mbta.stationAndWaitingPassenger.get(s).add(p);
+                    }
+                    
+                  }
+                  mbta.trainToBoardedPassengers.put(t, boardPassengers);
+                }
+                else
+                {
+                  throw new IllegalArgumentException("Error in {DeboardEvent#replayAndCheck}: Journey to station {" + s + "} for passenger {" + p.toString() + "} has not yet been initialized.");
+                }
+              }
+            }
+            else
+            {
+              throw new IllegalArgumentException("Error in {DeboardEvent#replayAndCheck}: There doesn't exist any passengers that have boarded the train {" + t.toString() + "}.");
+            }
+          }
+          else
+          {
+            throw new IllegalArgumentException("Error in {DeboardEvent#replayAndCheck}: Unable to deboard at station {" +s.toString() + "} as current station of the train is {" + lineStations.getFirst() + "}.");
+          }
+        }
+        else
+        {
+          throw new IllegalArgumentException("Error in {DeboardEvent#replayAndCheck}: Train {" + t.toString() + "} does not contains the station {" + s.toString() + "}.");
+        }
+      }
+      else
+      {
+        throw new IllegalArgumentException("Error in {DeboardEvent#replayAndCheck}: Unable to deboard from Train {" + t.toString() + "}.");
+      }
+    }
+    else
+    {
+      throw new IllegalArgumentException("Error in {DeboardEvent#replayAndCheck}: Train {" + t.toString() + "} does not exist.");
+    }
+  }
   public void moveTrainForward(Train t, Station currStation)
   {
     /* remove currStation from the map for forward movement and add the front of the map for backward movement */
