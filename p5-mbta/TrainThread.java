@@ -53,6 +53,7 @@ public class TrainThread extends Thread{
             /* there are train/s at station that this train want to move to */
             if (!listOfOtherTrains.isEmpty())
             {
+                System.out.println("HERE");
                 for (Train t : listOfOtherTrains)
                 {
                     Station otherTrainCurrStation = this.mbta.trainAndStationsKVP.get(t).getFirst();
@@ -62,6 +63,7 @@ public class TrainThread extends Thread{
                         {
                             /* tell current train to wait before move to the train where there's train */
                             nxtStaLckCondition.await();
+                            System.out.println("RELASE");
                         }
                         catch (InterruptedException ie)
                         {
@@ -74,8 +76,8 @@ public class TrainThread extends Thread{
                 this.log.train_moves(thisTrain, thisTrainCurrStation, thisTrainNextStation);
                 MoveEvent moveEvent = new MoveEvent(thisTrain, thisTrainCurrStation, thisTrainNextStation);
                 moveEvent.replayAndCheck(mbta);
-                nxtStaLck.unlock();
                 nxtStaLckCondition.signalAll();
+                nxtStaLck.unlock();
 
                 try
                 {
@@ -88,11 +90,13 @@ public class TrainThread extends Thread{
             }
             else
             {
+                nxtStaLck.lock();
                 this.log.train_moves(thisTrain, thisTrainCurrStation, thisTrainNextStation);
                 MoveEvent moveEvent = new MoveEvent(thisTrain, thisTrainCurrStation, thisTrainNextStation);
                 moveEvent.replayAndCheck(mbta);
-                nxtStaLck.unlock();
                 nxtStaLckCondition.signalAll();
+                System.out.println("Here");
+                nxtStaLck.unlock();
                 try
                 {
                     Thread.sleep(1000);

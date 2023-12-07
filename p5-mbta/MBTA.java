@@ -84,7 +84,6 @@ public class MBTA {
     }
     this.passengerAndStationsKVP.put(passenger, passengerStationList);
 
-    System.out.println("Pass Stations list: " + passengerStationList);
     if (this.stationAndWaitingPassenger.get(passengerStationList.getFirst()) == null)
     {
       this.stationAndWaitingPassenger.put(passengerStationList.getFirst(), new LinkedList<>());
