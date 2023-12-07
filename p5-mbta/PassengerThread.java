@@ -90,7 +90,6 @@ public class PassengerThread extends Thread {
                             break;
                         }
                         trainToGetOn = null;
-    
                     }
                     
                     passNxtStaLck.lock();
@@ -120,7 +119,7 @@ public class PassengerThread extends Thread {
                             }
                             catch (Exception e)
                             {
-    
+                                System.out.println(e);
                             }
                             //passNxtStaCondition.signalAll();
                             //passNxtStaLck.unlock();
@@ -178,6 +177,7 @@ public class PassengerThread extends Thread {
         }
         catch (Exception e)
         {
+            System.out.println(e);
         }
     }
 }

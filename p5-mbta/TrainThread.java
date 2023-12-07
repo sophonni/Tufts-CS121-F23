@@ -92,11 +92,11 @@ public class TrainThread extends Thread{
             else
             {
                 nxtStaLck.lock();
-                synchronized(mbta)
-                {
+                // synchronized(mbta)
+                // {
                     this.log.train_moves(thisTrain, thisTrainCurrStation, thisTrainNextStation);
                     mbta.moveTrain(mbta, thisTrainCurrStation, thisTrainNextStation, thisTrain);
-                }
+                // }
                 // System.out.println("Next Station Condition Signal: " + nxtStaLckCondition);
                 nxtStaLckCondition.signalAll();
                 nxtStaLck.unlock();
@@ -109,8 +109,8 @@ public class TrainThread extends Thread{
                     throw new RuntimeException(ie);
                 }
             }
-            // nxtStaLckCondition.signalAll();
-            // nxtStaLck.unlock();
+            nxtStaLckCondition.signalAll();
+            nxtStaLck.unlock();
 
         }
     }
