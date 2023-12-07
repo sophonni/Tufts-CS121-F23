@@ -75,7 +75,6 @@ public class Sim {
 
     mbta.reset();
     mbta.loadConfig(args[0]);
-    System.out.println("Train And Station: " + mbta.trainAndStationsKVP);
     Verify.verify(mbta, log);
   }
 }

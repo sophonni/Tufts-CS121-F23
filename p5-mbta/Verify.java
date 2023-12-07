@@ -6,6 +6,8 @@ public class Verify {
   public static void verify(MBTA mbta, Log log) {
     mbta.checkStart();
     for (Event e : log.events()) {
+      // System.out.println("Train And Station: " + mbta.trainAndStationsKVP);
+      // System.out.println("Event is: " + e);
       e.replayAndCheck(mbta);
     }
     mbta.checkEnd();

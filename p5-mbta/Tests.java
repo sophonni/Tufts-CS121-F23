@@ -1,4 +1,5 @@
 import java.io.PrintWriter;
+import java.text.spi.DateFormatProvider;
 import java.util.*;
 import static org.junit.Assert.*;
 import org.junit.*;
@@ -1442,6 +1443,35 @@ public class Tests {
     // "Sam": [ "Kendall", "JFK"]
   }
   
+  @Test public void test1(){
+
+    MBTA mbta = new MBTA();
+    mbta.loadConfig("sample4.json");
+    Train red = Train.make("red");
+    Log l = new Log();
+
+    Passenger Bob = Passenger.make("Bob");
+
+    Station s1 = Station.make("Davis");
+    Station s2 = Station.make("Harvard");
+    Station s3 = Station.make("Kendall");
+    Station s4 = Station.make("Park");
+    Station s5 = Station.make("GREEN_PASS");
+    Station s6 = Station.make("Downtown Crossing");
+    Station s7 = Station.make("South Station");
+    Station s8 = Station.make("Broadway");
+    Station s9 = Station.make("Andrew");
+    Station s10 = Station.make("JFK");
+
+    // mbta.addLine("red", List.of("Davis", "Harvard", "Kendall", "Park", "GREEN_PASS", "Downtown Crossing", "South Station", "Broadway", "Andrew", "JFK"));
+    // mbta.addJourney("Bob", List.of("Davis", "Kendall"));
+
+    l.passenger_boards(Bob, red, s1);
+    l.train_moves(red, s1, s2);
+    l.train_moves(red, s2, s3);
+    l.passenger_deboards(Bob, red, s3);
+   Verify.verify(mbta, l);
+  }
   
   ///////////CONCURRENCY TESTING///////////
   // @Test public void run_sim()
