@@ -80,6 +80,7 @@ public class TrainThread extends Thread{
                 nxtStaLckCondition.signalAll();
                 nxtStaLck.unlock();
 
+                nxtStaLck.lock();
                 try
                 {
                     Thread.sleep(1000);
@@ -87,6 +88,18 @@ public class TrainThread extends Thread{
                 catch (InterruptedException ie)
                 {
                     throw new RuntimeException(ie);
+                }
+
+                nxtStaLck.lock();
+                try
+                {
+                    mbta.checkEnd();
+                    return;
+                }
+                finally
+                {
+                    nxtStaLckCondition.signalAll();
+                    nxtStaLck.unlock();
                 }
             }
             else
@@ -107,6 +120,18 @@ public class TrainThread extends Thread{
                 catch (InterruptedException ie)
                 {
                     throw new RuntimeException(ie);
+                }
+
+                nxtStaLck.lock();
+                try
+                {
+                    mbta.checkEnd();
+                    return;
+                }
+                catch (Exception e)
+                {
+                    nxtStaLckCondition.signalAll();
+                    nxtStaLck.unlock();
                 }
             }
             nxtStaLckCondition.signalAll();

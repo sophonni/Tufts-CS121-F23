@@ -121,55 +121,22 @@ public class PassengerThread extends Thread {
                             {
                                 System.out.println(e);
                             }
+
                             //passNxtStaCondition.signalAll();
                             //passNxtStaLck.unlock();
                         }
+                        // passNxtStaLck.lock();
+                        // try
+                        // {
+                        //     mbta.checkEnd();
+                        //     return;
+                        // }
+                        // catch (Exception e)
+                        // {
+                        //     passNxtStaCondition.signalAll();
+                        //     passNxtStaLck.unlock();
+                        // }
                     }
-                    // passNxtStaCondition.signalAll();
-                    // passCurrStaLck.unlock();
-    
-    
-                    // while (!mbta.trainAndStationsKVP.get(trainToGetOn).getFirst().equals(passInitStation))
-                    // {
-                    //     try
-                    //     {
-                    //         passCurrStaCondition.await();
-                    //     }
-                    //     catch (InterruptedException ie)
-                    //     {
-                    //         throw new RuntimeException(ie);
-                    //     }
-                    // }
-    
-                    // for (Train t : mbta.trainAndStationsKVP.keySet())
-                    // {
-                    //     if (mbta.trainAndStationsKVP.get(t).getFirst().equals(passNxtStation))
-                    //     {
-                    //         passNxtStation = mbta.trainAndStationsKVP.get(t).getFirst();
-                    //         trainToGetOn = t;
-    
-                    //         synchronized(mbta)
-                    //         {
-                    //             System.out.println("Found train at next station");
-                    //             this.log.passenger_deboards(passenger, trainToGetOn, passNxtStation);
-                    //             mbta.deboardPass(mbta, passenger, passNxtStation, trainToGetOn);
-                    //         }
-                    //         // passNxtStaCondition.signalAll();
-                    //         // passNxtStaLck.unlock();
-                    //         break;
-                    //     }
-                    // }
-                    // while (trainToGetOn == null)
-                    // {
-                    //     try
-                    //     {
-                    //         passNxtStaCondition.await();
-                    //     }
-                    //     catch (InterruptedException ie)
-                    //     {
-                    //         throw new RuntimeException(ie);
-                    //     }
-                    // }
                     passCurrStaCondition.signalAll();
                     passCurrStaLck.lock();
                 }

@@ -52,7 +52,7 @@ public class Sim {
     {
       e.printStackTrace();
     }
-    throw new UnsupportedOperationException();
+    // throw new UnsupportedOperationException();
   }
 
   public static void main(String[] args) throws Exception {
@@ -75,6 +75,7 @@ public class Sim {
 
     mbta.reset();
     mbta.loadConfig(args[0]);
+    System.out.println("Train And Station: " + mbta.trainAndStationsKVP);
     Verify.verify(mbta, log);
   }
 }

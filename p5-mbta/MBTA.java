@@ -125,11 +125,11 @@ public class MBTA {
      */
     for (Train t : this.originalTrainAndStationKVP.keySet())
     {
-      System.out.println("Train to Boarded Pass: " + this.trainToBoardedPassengers);
+      // System.out.println("Train to Boarded Pass: " + this.trainToBoardedPassengers);
 
       if(this.trainToBoardedPassengers.get(t) == null || this.trainToBoardedPassengers.get(t).isEmpty())
       {
-        System.out.println("YES EMPTY");
+        // System.out.println("YES EMPTY");
       }
       else
       {
