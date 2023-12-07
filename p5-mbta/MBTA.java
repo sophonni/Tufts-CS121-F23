@@ -206,6 +206,7 @@ public class MBTA {
   }
   synchronized public void moveTrain(MBTA mbta, Station s1, Station s2, Train t)
   {
+    // System.out.println("Pass List: " + mbta.passengerAndStationsKVP);
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
 
     // System.out.println("Forward List: " + mbta.trainForwardStations);
@@ -396,6 +397,7 @@ public class MBTA {
   }
   synchronized public void deboardPass(MBTA mbta, Passenger p, Station s, Train t)
   {
+    System.out.println("Pass List: " + mbta.passengerAndStationsKVP.get(p));
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
     /* ensure that the train exist */
     if (trainLine.containsKey(t) || t != null)
@@ -432,6 +434,7 @@ public class MBTA {
                   if (mbta.passengerAndStationsKVP.get(p).size() == 1)
                   {
                     givenPassengerJourney.remove(s);
+                    System.out.println("After Remove");
                   }
                   /* remove passenger from the map of boarded passenger if there journey is complete */
                   if (mbta.trainToBoardedPassengers.get(t) == null || mbta.passengerAndStationsKVP.get(p).isEmpty())

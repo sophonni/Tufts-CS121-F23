@@ -20,33 +20,33 @@ public class Sim {
 
     // System.out.println("Station and Lock: " + mbta.staionLockAndConditionKVP.keySet());
 
-    for (Thread t : trainAndPassengersThreads.values())
-    {
-      t.start();
-    }
-
-    // for (String s : trainAndPassengersThreads.keySet())
+    // for (Thread t : trainAndPassengersThreads.values())
     // {
-    //   if (s.contains("Train#"))
-    //   {
-    //     trainAndPassengersThreads.get(s).start();
-    //   }
+    //   t.start();
     // }
+
+    for (String s : trainAndPassengersThreads.keySet())
+    {
+      if (s.contains("Train#"))
+      {
+        trainAndPassengersThreads.get(s).start();
+      }
+    }
 
     try
     {
       //join main with all threads
-      for (Thread t : trainAndPassengersThreads.values())
-      {
-        t.join();
-      }
-      // for (String s : trainAndPassengersThreads.keySet())
+      // for (Thread t : trainAndPassengersThreads.values())
       // {
-      //   if (s.contains("Train#"))
-      //   {
-      //     trainAndPassengersThreads.get(s).join();;
-      //   }
+      //   t.join();
       // }
+      for (String s : trainAndPassengersThreads.keySet())
+      {
+        if (s.contains("Train#"))
+        {
+          trainAndPassengersThreads.get(s).join();;
+        }
+      }
     }
     catch (Exception e)
     {

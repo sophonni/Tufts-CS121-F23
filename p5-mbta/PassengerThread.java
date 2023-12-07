@@ -27,7 +27,11 @@ public class PassengerThread extends Thread {
                 Passenger passenger = Passenger.make(this.passengerName);
                 Station passInitStation = mbta.passengerAndStationsKVP.get(passenger).getFirst();
                 int currentIndex = this.mbta.passengerAndStationsKVP.get(passenger).indexOf(passInitStation);
-                Station passNxtStation = mbta.passengerAndStationsKVP.get(passenger).get(currentIndex + 1);
+                Station passNxtStation = null;
+                if (mbta.passengerAndStationsKVP.get(passenger).size() > 1)
+                {
+                    passNxtStation = mbta.passengerAndStationsKVP.get(passenger).get(currentIndex + 1);
+                }
     
                 Station trainCurrStation = null;
                 Train trainToGetOn  = null;
@@ -47,17 +51,20 @@ public class PassengerThread extends Thread {
                     }
                 }
     
-                /* get lock and condition of passNextStation */
-                Map<Lock, Condition> lckAndCondPassNxtStaKVP = this.mbta.staionLockAndConditionKVP.get(passNxtStation);
                 Lock passNxtStaLck = null;
                 Condition passNxtStaCondition = null;
-                if (lckAndCondPassNxtStaKVP != null)
+                if (passNxtStation != null)
                 {
-                    for (Lock l : lckAndCondPassNxtStaKVP.keySet())
+                    /* get lock and condition of passNextStation */
+                    Map<Lock, Condition> lckAndCondPassNxtStaKVP = this.mbta.staionLockAndConditionKVP.get(passNxtStation);
+                    if (lckAndCondPassNxtStaKVP != null)
                     {
-                        passNxtStaLck = l;
-                        passNxtStaCondition = lckAndCondPassNxtStaKVP.get(passNxtStaLck);
-                        break;
+                        for (Lock l : lckAndCondPassNxtStaKVP.keySet())
+                        {
+                            passNxtStaLck = l;
+                            passNxtStaCondition = lckAndCondPassNxtStaKVP.get(passNxtStaLck);
+                            break;
+                        }
                     }
                 }
                 
@@ -69,6 +76,7 @@ public class PassengerThread extends Thread {
                     {
                         if (mbta.trainAndStationsKVP.get(t).getFirst().equals(passInitStation))
                         {
+                            System.out.println("About to board");
                             trainCurrStation = mbta.trainAndStationsKVP.get(t).getFirst();
                             trainToGetOn = t;
     
@@ -92,59 +100,71 @@ public class PassengerThread extends Thread {
                         trainToGetOn = null;
                     }
                     
-                    passNxtStaLck.lock();
-                    if (trainToGetOn != null)
+                    if ((passNxtStaLck != null) && (passNxtStaCondition != null))
                     {
-                        while (!mbta.trainAndStationsKVP.get(trainToGetOn).getFirst().equals(passNxtStation))
+                        passNxtStaLck.lock();
+                        if (trainToGetOn != null)
                         {
-                            try
+                            while (!mbta.trainAndStationsKVP.get(trainToGetOn).getFirst().equals(passNxtStation))
                             {
-                                System.out.println("Wait to get off");
-                                passNxtStaCondition.await();
-                            }
-                            catch (InterruptedException ie)
+                                try
+                                {
+                                    System.out.println("Wait to get off");
+                                    passNxtStaCondition.await();
+                                }
+                                catch (InterruptedException ie)
+                                {
+                                    throw new RuntimeException(ie);
+                                }
+                            }    
+                            synchronized(mbta)
                             {
-                                throw new RuntimeException(ie);
+                                //System.out.println("About to deboard at: " + passNxtStation);
+                                passNxtStaLck.lock();
+                                try
+                                {
+                                    // passCurrStaLck.lock();
+                                    this.log.passenger_deboards(passenger, trainToGetOn, passNxtStation);
+                                    mbta.deboardPass(mbta, passenger, passNxtStation, trainToGetOn);
+                                    System.out.println("After deboard at: " + passNxtStation);
+                                    passCurrStaLck.unlock();
+                                    try
+                                    {
+                                        passCurrStaLck.lock();
+                                        System.out.println("Before");
+                                        mbta.checkEnd();
+                                        Thread.currentThread().interrupt();
+                                        System.out.println("Edding");
+                                        return;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        passNxtStaCondition.signalAll();
+                                        passNxtStaLck.unlock();
+                                    }
+                                    // passNxtStaCondition.signalAll();
+                                    // passNxtStaLck.unlock();
+                                }
+                                catch (Exception e)
+                                {
+                                    //e.printStackTrace();
+                                    //System.out.println(e);
+                                }
+    
                             }
-                        }    
-                        synchronized(mbta)
-                        {
-                            //System.out.println("About to deboard at: " + passNxtStation);
-                            //passNxtStaLck.lock();
-                            try
-                            {
-                                this.log.passenger_deboards(passenger, trainToGetOn, passNxtStation);
-                                mbta.deboardPass(mbta, passenger, passNxtStation, trainToGetOn);
-                                System.out.println("After deboard at: " + passNxtStation);
-                            }
-                            catch (Exception e)
-                            {
-                                System.out.println(e);
-                            }
-
-                            //passNxtStaCondition.signalAll();
-                            //passNxtStaLck.unlock();
+                            // passNxtStaLck.lock();
                         }
-                        // passNxtStaLck.lock();
-                        // try
-                        // {
-                        //     mbta.checkEnd();
-                        //     return;
-                        // }
-                        // catch (Exception e)
-                        // {
-                        //     passNxtStaCondition.signalAll();
-                        //     passNxtStaLck.unlock();
-                        // }
+                        passNxtStaCondition.signalAll();
+                        passNxtStaLck.unlock();
+                        //passCurrStaCondition.signalAll();
+                        //passCurrStaLck.lock();
                     }
-                    passCurrStaCondition.signalAll();
-                    passCurrStaLck.lock();
                 }
             }
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            //e.printStackTrace();
         }
     }
 }
