@@ -37,9 +37,7 @@ public class TrainThread extends Thread{
                 }
             }
 
-            /* lock next station */
-            nxtStaLck.lock();
-
+            
             /* get list of train where its current station = station that this train want to move to */
             List<Train> listOfOtherTrains = new ArrayList<>();
             for (Train t : this.mbta.trainAndStationsKVP.keySet())
@@ -50,6 +48,9 @@ public class TrainThread extends Thread{
                 }
             }
             
+            
+            /* lock next station */
+            nxtStaLck.lock();
             /* there are train/s at station that this train want to move to */
             if (!listOfOtherTrains.isEmpty())
             {
@@ -91,11 +92,13 @@ public class TrainThread extends Thread{
             else
             {
                 nxtStaLck.lock();
-                this.log.train_moves(thisTrain, thisTrainCurrStation, thisTrainNextStation);
-                mbta.moveTrain(mbta, thisTrainCurrStation, thisTrainNextStation, thisTrain);
+                synchronized(mbta)
+                {
+                    this.log.train_moves(thisTrain, thisTrainCurrStation, thisTrainNextStation);
+                    mbta.moveTrain(mbta, thisTrainCurrStation, thisTrainNextStation, thisTrain);
+                }
                 // System.out.println("Next Station Condition Signal: " + nxtStaLckCondition);
                 nxtStaLckCondition.signalAll();
-                System.out.println("Here");
                 nxtStaLck.unlock();
                 try
                 {
@@ -106,8 +109,8 @@ public class TrainThread extends Thread{
                     throw new RuntimeException(ie);
                 }
             }
-            nxtStaLckCondition.signalAll();
-            nxtStaLck.unlock();
+            // nxtStaLckCondition.signalAll();
+            // nxtStaLck.unlock();
 
         }
     }
