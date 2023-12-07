@@ -93,6 +93,7 @@ public class TrainThread extends Thread{
                 nxtStaLck.lock();
                 this.log.train_moves(thisTrain, thisTrainCurrStation, thisTrainNextStation);
                 mbta.moveTrain(mbta, thisTrainCurrStation, thisTrainNextStation, thisTrain);
+                // System.out.println("Next Station Condition Signal: " + nxtStaLckCondition);
                 nxtStaLckCondition.signalAll();
                 System.out.println("Here");
                 nxtStaLck.unlock();

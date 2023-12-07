@@ -448,8 +448,8 @@ public class MBTA {
                   }
                   else
                   {
-                    System.out.println("Station is: " + s);
-                    System.out.println("Wait Peopl: " + mbta.stationAndWaitingPassenger.get(s));
+                    // System.out.println("Station is: " + s);
+                    // System.out.println("Wait Peopl: " + mbta.stationAndWaitingPassenger.get(s));
                     if (mbta.stationAndWaitingPassenger.get(s) == null)
                     {
                       mbta.stationAndWaitingPassenger.put(s, new LinkedList<>());
