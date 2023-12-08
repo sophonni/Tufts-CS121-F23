@@ -16,7 +16,7 @@ public class TrainThread extends Thread{
 
     public void run()
     {
-        while (true)
+        while (!Thread.interrupted())
         {
             Train thisTrain = Train.make(trainName);
 
@@ -66,7 +66,7 @@ public class TrainThread extends Thread{
             }
             catch (InterruptedException ie)
             {
-                throw new RuntimeException();
+                return;
             }
         }
     }

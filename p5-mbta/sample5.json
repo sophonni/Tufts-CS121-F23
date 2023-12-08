@@ -4,6 +4,7 @@
     },
 
     "trips": {
-        "Bob": [ "Davis", "Kendall", "Davis"]
+        "Bob": [ "Davis", "Kendall", "Davis"],
+        "Alice": [ "GREEN_PASS", "Davis", "Harvard"]
     }
 }

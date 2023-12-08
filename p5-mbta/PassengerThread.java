@@ -113,14 +113,14 @@ public class PassengerThread extends Thread {
                         System.out.println("After deboard at: " + passNxtStation);
                         passNxtStaCondition.signalAll();
                         passNxtStaLck.unlock();
-                        try
-                        {
-                            mbta.checkEnd();
-                            return;
-                        }
-                        catch (Exception e)
-                        {
-                        }
+                        // try
+                        // {
+                        //     mbta.checkEnd();
+                        //     return;
+                        // }
+                        // catch (Exception e)
+                        // {
+                        // }
 
                     }
                 }

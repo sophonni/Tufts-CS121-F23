@@ -14,6 +14,8 @@ public class MBTA {
   public Map<Train, LinkedList<Station>> trainForwardStations = new HashMap<>();
   public Map<Train, LinkedList<Station>> trainBackwardStations = new HashMap<>();
 
+  public Map<String, Thread> trainAndPassengersThreads = new HashMap<>();
+
   /* use to keep track on passengers and the train they boarded */
   public Map<Train, LinkedList<Passenger>> trainToBoardedPassengers = new HashMap<>();
 
