@@ -4,6 +4,12 @@
     },
 
     "trips": {
-        "Bob": [ "Davis", "Kendall"]
+        "Bob": [ "Davis", "Kendall"],
+        "John": [ "Davis", "Park" ],
+        "Alice": [ "Davis", "South Station"], 
+
+        "Bill": [ "Kendall", "Park" ],
+        "Ryan": [ "Kendall", "Downtown Crossing" ],
+        "Sam": [ "Kendall", "JFK"]
     }
 }

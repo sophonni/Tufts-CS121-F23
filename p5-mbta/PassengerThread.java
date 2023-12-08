@@ -16,10 +16,8 @@ public class PassengerThread extends Thread {
 
     public void run()
     {
-
         try
         {
-
             while (true) {
                 /* each passenger will take turns getting the current station station lock
                  * have 1 lock per station
@@ -79,85 +77,51 @@ public class PassengerThread extends Thread {
                             System.out.println("About to board");
                             trainCurrStation = mbta.trainAndStationsKVP.get(t).getFirst();
                             trainToGetOn = t;
-    
-                            synchronized(mbta)
-                            {
-                                try
-                                {
-                                    this.log.passenger_boards(passenger, trainToGetOn, trainCurrStation);
-                                    mbta.boardPass(mbta, passenger, trainCurrStation, trainToGetOn);
-                                    System.out.println("After Board at: " + trainCurrStation);
-                                }
-                                catch (Exception e)
-                                {
-    
-                                }
-                                // passCurrStaCondition.signalAll();
-                                // passCurrStaLck.unlock();
-                            }
                             break;
                         }
-                        trainToGetOn = null;
+                        else
+                        {
+                            trainToGetOn = null;
+                        }
                     }
+
+                    while (trainToGetOn == null)
+                    {
+                        passCurrStaCondition.await();
+                    }
+
+                    mbta.boardPass(mbta, passenger, trainCurrStation, trainToGetOn);
+                    this.log.passenger_boards(passenger, trainToGetOn, trainCurrStation);
+                    passCurrStaCondition.signalAll();
+                    passCurrStaLck.unlock();
                     
                     if ((passNxtStaLck != null) && (passNxtStaCondition != null))
                     {
                         passNxtStaLck.lock();
-                        if (trainToGetOn != null)
+                        while (!mbta.trainAndStationsKVP.get(trainToGetOn).getFirst().equals(passNxtStation))
                         {
-                            while (!mbta.trainAndStationsKVP.get(trainToGetOn).getFirst().equals(passNxtStation))
-                            {
-                                try
-                                {
-                                    System.out.println("Wait to get off");
-                                    passNxtStaCondition.await();
-                                }
-                                catch (InterruptedException ie)
-                                {
-                                    throw new RuntimeException(ie);
-                                }
-                            }    
-                            synchronized(mbta)
-                            {
-                                //System.out.println("About to deboard at: " + passNxtStation);
-                                passNxtStaLck.lock();
-                                try
-                                {
-                                    // passCurrStaLck.lock();
-                                    this.log.passenger_deboards(passenger, trainToGetOn, passNxtStation);
-                                    mbta.deboardPass(mbta, passenger, passNxtStation, trainToGetOn);
-                                    System.out.println("After deboard at: " + passNxtStation);
-                                    passCurrStaLck.unlock();
-                                    try
-                                    {
-                                        passCurrStaLck.lock();
-                                        System.out.println("Before");
-                                        mbta.checkEnd();
-                                        Thread.currentThread().interrupt();
-                                        System.out.println("Edding");
-                                        return;
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        passNxtStaCondition.signalAll();
-                                        passNxtStaLck.unlock();
-                                    }
-                                    // passNxtStaCondition.signalAll();
-                                    // passNxtStaLck.unlock();
-                                }
-                                catch (Exception e)
-                                {
-                                    //e.printStackTrace();
-                                    //System.out.println(e);
-                                }
-    
-                            }
-                            // passNxtStaLck.lock();
-                        }
+                            System.out.println("Wait to get off");
+                            passNxtStaCondition.await();
+                        }    
+
+                        mbta.deboardPass(mbta, passenger, passNxtStation, trainToGetOn);
+                        this.log.passenger_deboards(passenger, trainToGetOn, passNxtStation);
+                        // if (mbta.trainToBoardedPassengers.isEmpty())
+                        // {
+                        //     return;
+                        // }
+                        System.out.println("After deboard at: " + passNxtStation);
                         passNxtStaCondition.signalAll();
                         passNxtStaLck.unlock();
-                        //passCurrStaCondition.signalAll();
-                        //passCurrStaLck.lock();
+                        try
+                        {
+                            mbta.checkEnd();
+                            return;
+                        }
+                        catch (Exception e)
+                        {
+                        }
+
                     }
                 }
             }
