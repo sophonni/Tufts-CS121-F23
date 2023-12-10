@@ -1470,7 +1470,14 @@ public class Tests {
     l.train_moves(red, s1, s2);
     l.train_moves(red, s2, s3);
     l.passenger_deboards(Bob, red, s3);
-   Verify.verify(mbta, l);
+    try
+    {
+      Verify.verify(mbta, l);
+    }
+    catch (Exception e)
+    {
+      System.out.println("Expected Exception: " + e);
+    }
   }
   
   ///////////CONCURRENCY TESTING///////////

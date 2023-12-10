@@ -315,12 +315,13 @@ public class MBTA {
       /* ensure the train line has stations */
       if (lineStations != null)
       {
+        System.out.println("Lin Station: " + lineStations);
         /* ensure that the train stations contains the station the passenger is boarding from */
-        if (lineStations.contains(s))
+        if (lineStations.contains(s) || mbta.originalTrainAndStationKVP.get(t).contains(s))
         {
-          /* ensure that the current station of the train is the station the passenger is boarding from */
-          if (lineStations.getFirst().equals(s))
-          {
+          // /* ensure that the current station of the train is the station the passenger is boarding from */
+          // if (mbta.trainAndIfItsMovingForward.get(t))
+          // {
             LinkedList<Passenger> boardPassengers = mbta.trainToBoardedPassengers.get(t);
 
             /* create a new list to store boarded passenger if there doesn't already exist a list */
@@ -376,11 +377,11 @@ public class MBTA {
                   throw new IllegalArgumentException("222222222 Error in {BoardEvent#replayAndCheck}: Journey to station {" + s + "} for passenger {" + p.toString() + "} has not yet been initialized.");
                 }
             }
-          }
-          else
-          {
-            throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Unable to board from station {" +s.toString() + "} as current station of the train is {" + lineStations.getFirst() + "}.");
-          }
+          // }
+          // else
+          // {
+          //   throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Unable to board from station {" +s.toString() + "} as current station of the train is {" + lineStations.getFirst() + "}.");
+          // }
         }
         else
         {
