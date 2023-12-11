@@ -307,6 +307,7 @@ public class MBTA {
   }
   public void boardPass(MBTA mbta, Passenger p, Station s, Train t)
   {
+    //System.out.println("Given station: " + s);
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
     /* ensure that the train exist */
     if (trainLine.containsKey(t) || t != null)
@@ -315,7 +316,7 @@ public class MBTA {
       /* ensure the train line has stations */
       if (lineStations != null)
       {
-        System.out.println("Lin Station: " + lineStations);
+        //System.out.println("Lin Station: " + lineStations);
         /* ensure that the train stations contains the station the passenger is boarding from */
         if (lineStations.contains(s) || mbta.originalTrainAndStationKVP.get(t).contains(s))
         {
@@ -385,6 +386,7 @@ public class MBTA {
         }
         else
         {
+          System.out.println("Station is: " + s);
           throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Train {" + t + "} does not contains the station {" + s.toString() + "}.");
         }
       }
