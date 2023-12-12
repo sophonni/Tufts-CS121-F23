@@ -120,6 +120,7 @@ public class MBTA {
   // raises an exception
   public void checkEnd() {
 
+    System.out.println("In Checkend");
     /*
      * The simulation ends when all passengers have arrived at their 
      * final stops. It is an error for the simulation to end early. 

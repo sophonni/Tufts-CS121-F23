@@ -72,7 +72,7 @@ public class TrainThread extends Thread{
                 nxtStaLck.unlock();
                 currStaCond.signalAll();
                 currStaLck.unlock();
-                Thread.sleep(1000);
+                Thread.sleep(100);
             }
             catch (InterruptedException ie)
             {
