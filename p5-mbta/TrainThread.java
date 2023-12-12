@@ -76,7 +76,7 @@ public class TrainThread extends Thread{
             }
             catch (InterruptedException ie)
             {
-                System.out.println("Exception: " + ie);
+                //System.out.println("Exception: " + ie);
                 return;
             }
         }

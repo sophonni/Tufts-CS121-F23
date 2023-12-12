@@ -386,7 +386,6 @@ public class MBTA {
         }
         else
         {
-          System.out.println("Station is: " + s);
           throw new IllegalArgumentException("Error in {BoardEvent#replayAndCheck}: Train {" + t + "} does not contains the station {" + s.toString() + "}.");
         }
       }
@@ -402,7 +401,7 @@ public class MBTA {
   }
   public void deboardPass(MBTA mbta, Passenger p, Station s, Train t)
   {
-    System.out.println("Pass List: " + mbta.passengerAndStationsKVP.get(p));
+    //System.out.println("Pass List: " + mbta.passengerAndStationsKVP.get(p));
     Map<Train, LinkedList<Station>> trainLine = mbta.trainAndStationsKVP;
     /* ensure that the train exist */
     if (trainLine.containsKey(t) || t != null)
@@ -439,7 +438,6 @@ public class MBTA {
                   if (mbta.passengerAndStationsKVP.get(p).size() == 1)
                   {
                     givenPassengerJourney.remove(s);
-                    System.out.println("After Remove");
                   }
                   /* remove passenger from the map of boarded passenger if there journey is complete */
                   if (mbta.trainToBoardedPassengers.get(t) == null || mbta.passengerAndStationsKVP.get(p).isEmpty())

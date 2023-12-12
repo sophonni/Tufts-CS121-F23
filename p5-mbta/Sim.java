@@ -39,17 +39,17 @@ public class Sim {
       for (Thread t : trainAndPassengersThreads.values())
       {
         t.join();
-        // try
-        // {
-        //   mbta.checkEnd();
-        //   for (String threadName : trainAndPassengersThreads.keySet())
-        //   {
-        //     trainAndPassengersThreads.get(threadName).interrupt();
-        //   }
-        // }
-        // catch (Exception e)
-        // {
-        // }
+        try
+        {
+          mbta.checkEnd();
+          for (String threadName : trainAndPassengersThreads.keySet())
+          {
+            trainAndPassengersThreads.get(threadName).interrupt();
+          }
+        }
+        catch (Exception e)
+        {
+        }
       }
       // for (String s : trainAndPassengersThreads.keySet())
       // {

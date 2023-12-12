@@ -22,6 +22,7 @@ public class PassengerThread extends Thread {
                 /* each passenger will take turns getting the current station station lock
                  * have 1 lock per station
                 */
+                System.out.println("Here");
                 Passenger passenger = Passenger.make(this.passengerName);
                 Station passInitStation = mbta.passengerAndStationsKVP.get(passenger).getFirst();
                 int currentIndex = this.mbta.passengerAndStationsKVP.get(passenger).indexOf(passInitStation);
@@ -94,7 +95,7 @@ public class PassengerThread extends Thread {
                     }                    
                     while (!mbta.trainAndStationsKVP.get(trainToGetOn).getFirst().equals(passInitStation))
                     {
-                        //System.out.println("Waiting to BOARD");
+                        System.out.println("Waiting to BOARD");
                         passCurrStaCondition.await();
                         //System.out.println("After wait BOARD");
                         break;
@@ -115,7 +116,7 @@ public class PassengerThread extends Thread {
 
                     //System.out.println("Before unlock pass curr");
                     passCurrStaLck.unlock();
-                    System.out.println("After unlock pass curr");
+                    //System.out.println("After unlock pass curr");
                     
                     
                     //System.out.println("Before lock pass nxt");
@@ -132,92 +133,18 @@ public class PassengerThread extends Thread {
                     //System.out.println("Before DEBOARD");
                     mbta.deboardPass(mbta, passenger, passNxtStation, trainToGetOn);
                     this.log.passenger_deboards(passenger, trainToGetOn, passNxtStation);
+                    // System.out.println("Pass Journey: " + mbta.passengerAndStationsKVP.get(passenger));
+                    // while (!mbta.passengerAndStationsKVP.get(passenger).isEmpty())
+                    // {
+                    //     System.out.println("Pass journey not compelte")
+                    //     passNxtStaCondition.await();
+                    // }
                     //System.out.println("After DEBOARD");
 
                     passNxtStaCondition.signalAll();
-                    
                     passNxtStaLck.unlock();
-
-                    //System.out.println("After board");
                     passCurrStaCondition.signalAll();
-
-                    //System.out.println("Before unlock pass curr");
                     passCurrStaLck.unlock();
-                    //System.out.println("After unlock pass curr");
-
-                    // passCurrStaCondition.signalAll();
-                    // passCurrStaLck.unlock();
-                        
-                    // if (trainToGetOn != null)
-                    // {
-                    //     System.out.println("Not null");
-                    // }
-
-                    // while (trainToGetOn == null)
-                    // {
-                    //     for (Train t : mbta.trainAndStationsKVP.keySet())
-                    //     {
-                    //         //System.out.println("Curr Train: " + t.toString() + " curr station: " + mbta.trainAndStationsKVP.get(t).getFirst());
-                    //         if (mbta.trainAndStationsKVP.get(t).getFirst().equals(passInitStation))
-                    //         {
-                    //             Station  = mbta.trainAndStationsKVP.get(t).getFirst();
-                    //             int 
-                    //             if (mbta.trainAndStationsKVP.get(t).get(currentIndex).equals(passInitStation))
-                    //             System.out.println("Found train");
-                    //             trainCurrStation = mbta.trainAndStationsKVP.get(t).getFirst();
-                    //             trainToGetOn = t;
-                    //             break;
-                    //         }
-                    //         else
-                    //         {
-                    //             System.out.println("train not found");
-                    //             trainToGetOn = null;
-                    //         }
-                    //     }
-                    //     passCurrStaCondition.await();
-
-                    //     if (trainToGetOn != null)
-                    //     {
-                    //         System.out.println("Not null");
-                    //         break;
-                    //     }
-                    // }
-
-                    
-                    // if ((passNxtStaLck != null) && (passNxtStaCondition != null))
-                    // {
-                    //     passNxtStaLck.lock();
-                    //     while (!mbta.trainAndStationsKVP.get(trainToGetOn).getFirst().equals(passNxtStation))
-                    //     {
-                    //         System.out.println("Waiting to deboard");
-                    //         passNxtStaCondition.await();
-                    //     }    
-
-                    //     try
-                    //     {
-                    //         mbta.deboardPass(mbta, passenger, passNxtStation, trainToGetOn);
-                    //     }
-                    //     catch (Exception e)
-                    //     {
-                    //         System.out.println("EXCEPTION DEBOARD: " + e);
-                    //     }
-                    //     this.log.passenger_deboards(passenger, trainToGetOn, passNxtStation);
-                    //     // if (mbta.trainToBoardedPassengers.isEmpty())
-                    //     // {
-                    //     //     return;
-                    //     // }
-                    //     passNxtStaCondition.signalAll();
-                    //     passNxtStaLck.unlock();
-                    //     // try
-                    //     // {
-                    //     //     mbta.checkEnd();
-                    //     //     return;
-                    //     // }
-                    //     // catch (Exception e)
-                    //     // {
-                    //     // }
-
-                    // }
                 }
             }
         }
